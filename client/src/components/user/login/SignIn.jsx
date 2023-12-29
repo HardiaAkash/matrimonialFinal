@@ -9,7 +9,7 @@ import Openeye from "@/components/svg/Openeye";
 // import RightSection from "./RightSection";
 
 
-const SignUp = () => {
+const SignIn = () => {
   const [loginDetails, setLoginDetails] = useState({
     userEmail: "",
     userNumber: "",
@@ -135,4 +135,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignIn;

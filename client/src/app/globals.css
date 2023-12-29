@@ -3,3 +3,6 @@
 @tailwind utilities;
 
 
+.custom-input{
+    @apply py-2 px-4 rounded  w-full placeholder:text-[#00000080] placeholder:text-[12px] text-[14px] text-[black] border hover:border-[#00000080];
+ }
