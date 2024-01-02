@@ -3,7 +3,7 @@ const userSchema = new mongoose.Schema({
     "userID": {
         type: String,
         required: [true],
-
+        unique: [true]
     },
     "firstname": {
         type: String,
@@ -68,6 +68,10 @@ const userSchema = new mongoose.Schema({
     },
     "image":{
         type: String,
+    },
+    "formStatus":{
+        type: String, 
+        default: "Pending"
     }
 
 })

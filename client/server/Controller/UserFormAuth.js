@@ -1,3 +1,4 @@
+const { mongoose } = require("mongoose");
 const UserForm = require("../Model/UserForm");
 const uploadOnS3 = require("../Utils/awsS3");
 
@@ -23,6 +24,7 @@ const HttpStatus = {
     MISSING_PAGE_PARAMS: "Please provide page number and limit.",
     SAVED_SUCC: "Saved Successfully!",
     NOT_FOUND: "Data not found."
+
   };
 exports.uploadImage = async (req, res, next) => {
     // console.log(req.file);
@@ -78,4 +80,98 @@ exports.uploadImage = async (req, res, next) => {
         // General server error
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(StatusMessage.SERVER_ERROR);
     }
+};
+
+
+exports.editFormById = async (req, res) => {
+  try {
+      const formId = req.params.id;
+
+      // Validate if id is a valid MongoDB ObjectId
+      if (!mongoose.Types.ObjectId.isValid(formId)) {
+          return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.NOT_FOUND);
+      }
+
+      // Build update object dynamically
+      const updateData = {};
+      const fields = ['firstname', 'lastname', 'address', 'dateOfBirth', 'email', 'education',
+                      'occupation', 'contactNumber', 'hobbies', 'gender', 'maritalStatus', 
+                      'religion', 'height', 'income', 'familyDetails', 'image'];
+
+      fields.forEach(field => {
+          if (req.body[field] !== undefined) {
+              updateData[field] = req.body[field];
+          }
+      });
+
+      // Update the form
+      const updatedForm = await UserForm.findByIdAndUpdate(
+          formId,
+          updateData,
+          { new: true } // Return the updated document
+      );
+
+      // Check if update was successful
+      if (!updatedForm) {
+          return res.status(HttpStatus.INVALID).json(StatusMessage.NOT_FOUND);
+      }
+
+      // Return success response with updated form
+      return res.status(HttpStatus.OK).json(updatedForm);
+
+  } catch (error) {
+      console.error(error);
+      return res.status(HttpStatus.SERVER_ERROR).json(StatusMessage.SERVER_ERROR);
+  }
+};
+
+exports.deleteFormById = async (req, res) => {
+  try {
+      const formId = req.params.id; // Assuming you pass the _id as a URL parameter
+
+      // Validate if id is a valid MongoDB ObjectId
+      if (!mongoose.Types.ObjectId.isValid(formId)) {
+          return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.NOT_FOUND);
+      }
+
+      // Delete the form
+      const deletedForm = await UserForm.findByIdAndDelete(formId);
+
+      // Check if deletion was successful
+      if (!deletedForm) {
+          return res.status(HttpStatus.INVALID).json(StatusMessage.NOT_FOUND);
+      }
+
+      // Return success response
+      return res.status(HttpStatus.OK).json("Deleted Successfully.");
+
+  } catch (error) {
+      console.error(error); // For debugging
+      return res.status(HttpStatus.SERVER_ERROR).json(StatusMessage.SERVER_ERROR);
+  }
+};
+exports.getFormById = async (req, res) => {
+  try {
+      const formId = req.params.id; // Assuming _id is passed as a URL parameter
+
+      // Validate if id is a valid MongoDB ObjectId
+      if (!mongoose.Types.ObjectId.isValid(formId)) {
+          return res.status(HttpStatus.BAD_REQUEST).json({ message: StatusMessage.INVALID_ID });
+      }
+
+      // Find the form by its _id
+      const form = await UserForm.findById(formId);
+
+      // Check if the form was found
+      if (!form) {
+          return res.status(HttpStatus.INVALID).json({ message: StatusMessage.NOT_FOUND });
+      }
+
+      // Return the found form
+      return res.status(HttpStatus.OK).json(form);
+
+  } catch (error) {
+      console.error(error); // For debugging purposes
+      return res.status(HttpStatus.SERVER_ERROR).json({ message: StatusMessage.SERVER_ERROR });
+  }
 };

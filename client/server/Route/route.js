@@ -4,6 +4,7 @@ const multer = require('multer');
 const { authorizeRoles, isAuthJWT } = require("../Utils/jwt");
 const { addAdmin, adminLogin } = require("../Controller/AdminAuth");
 const { addUser, userLogin, deleteUser, updateUser, logoutUser, getUserByID, viewUser } = require("../Controller/UserAuth");
+const { addForm, editFormById } = require("../Controller/UserFormAuth");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -18,6 +19,10 @@ router.route("/logoutUser").get(isAuthJWT, logoutUser)
 router.route("/getuser/:id").get(isAuthJWT,getUserByID)
 router.route("/viewUser").get(isAuthJWT,authorizeRoles("Admin"),viewUser)
 
+////////////////////////////form
+
+router.route("/addForm").post(isAuthJWT, addForm)
+router.route("/editForm/:id").put(isAuthJWT, editFormById)
 
 
 module.exports = router;

@@ -18,7 +18,8 @@ const userSchema = new mongoose.Schema({
         type:String,
     },
     "step":{
-        type:String
+        type:String,
+        default: 1
     },
     "role":{
         type:String,
