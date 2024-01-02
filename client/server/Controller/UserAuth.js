@@ -37,7 +37,11 @@ exports.verifyUser = async (req, res) => {
           error: StatusMessage.UNAUTHORIZED_ACCESS // Include the redirect path in the response
         });
       } else {
-        return res.status(HttpStatus.OK).json({ message: 'Verification successful' });
+        const decodedData = await jwt.verify(token, process.env.jwtKey);
+        const LoggedUser = await User.findOne({ email: decodedData?.email });
+        return res.status(HttpStatus.OK).json({ 
+          data: LoggedUser,
+          message: 'Verification successful' });
       }
       // If verification succeeds, proceed with other actions or return success
       // For example:
