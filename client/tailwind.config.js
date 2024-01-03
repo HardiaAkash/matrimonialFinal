@@ -12,8 +12,9 @@ module.exports = {
       primary: "#C21494",
       black: "#000",
       white:"#fff",
-      menu_primary : "#313a46",
-      menu_secondary:"#b8bbdf47",
+      menu_primary : "#3c576a",
+      menu_secondary:"#29465a",
+      "gray-100": '#00000080',
     },
     extend: {
       backgroundImage: {
@@ -22,9 +23,7 @@ module.exports = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
     },
-    colors:{
-      "gray-100": '#00000080'
-    }
+
   },
   plugins: [],
 }

@@ -96,7 +96,7 @@ const SideMenu = () => {
             <div className="">
               <div className="flex justify-center items-center whitespace-pre-wrap ">
                 <h1 className="2xl:text-[30px] lg:text-[26px] text-[24px] font-semibold  text-center whitespace-nowrap">
-                  Admin Dashboard
+                  Matrimonial 
                 </h1>
               </div>
               <div className="bg-white h-[1px] w-[77%] lg:w-[80%] 2xl:w-[83%] mx-auto mt-[40px]"></div>
@@ -109,7 +109,7 @@ const SideMenu = () => {
                   className={`pl-1 sm:pl-2 2xl:pl-3 py-3 mx-5 lg:mx-4 2xl:mx-5 rounded-md  flex gap-x-3 items-center cursor-pointer  transition-colors font-semibold dash-menu  hover:transition-all ease-in delay-100 duration-300  
                                     ${
                                       item.id === ComponentId
-                                        ? "bg-menu_secondary"
+                                        ? "bg-menu_secondary "
                                         : "hover:menu_secondary hover:text-white hover:rounded-md"
                                     }  `}
                   onClick={() => handleClick(item.id)}
