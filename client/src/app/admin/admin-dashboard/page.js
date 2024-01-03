@@ -1,4 +1,4 @@
-import SideMenu from '@/components/admin-dashboard/page'
+import SideMenu from '@/components/admin/admin-dashboard/page'
 import React from 'react'
 
 const page = () => {

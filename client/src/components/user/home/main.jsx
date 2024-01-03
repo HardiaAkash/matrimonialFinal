@@ -5,8 +5,6 @@ import Stepper from "./Stepper";
 const Main = () => {
 
     const [ activeStep, setActiveStep ] = useState(0);
-
-
     
   return (
     <>
