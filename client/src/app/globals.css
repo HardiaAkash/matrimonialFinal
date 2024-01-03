@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.custom-input{
+    @apply py-2 px-4 rounded  w-full placeholder:text-[#00000080] placeholder:text-[12px] text-[14px] text-[black] border hover:border-[#00000080];
+ }
+.login-input {
+    @apply py-2 px-4 rounded  w-full placeholder:text-[#00000080] placeholder:text-[12px] text-[14px] text-[black] border border-[#00000080] hover:border-[#f3f3f3];
+ }
+
+.login-input-label{
+    @apply text-[#1f2432]  text-[14px];
+ }
+
+ .login-btn{
+    background: linear-gradient(54deg, #383260, #d3d0e7)
+ }
