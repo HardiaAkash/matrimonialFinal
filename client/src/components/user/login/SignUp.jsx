@@ -72,7 +72,7 @@ const SignUp = () => {
         <div className="md:px-[50px] w-full mx-auto">
           <div className="relative flex flex-col 2xl:gap-x-20 xl:gap-x-10 gap-x-7 min-h-screen justify-center lg:shadow-none  items-center lg:flex-row space-y-8 md:space-y-0 w-[100%] px-[10px]bg-white lg:px-[40px] py-[20px] md:py-[40px] ">
             <div className="w-[100%] lg:w-[60%] xl:w-[50%]">
-              <form action="" className="" onSubmit={handleSubmit}>
+              <form  className="" onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-3 justify-center p-8 lg:p-14 md:max-w-[80%] lg:w-full lg:max-w-[100%] mx-auto ">
                   <div className="text-left ">
                     <p className="mb-2 2xl:text-[40px] md:text-[35px] text-[30px] leading-[38px] font-bold capitalize">

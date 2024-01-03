@@ -8,6 +8,7 @@
     "build": "next build"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.17",
     "aws-sdk": "^2.1528.0",
     "axios": "^1.6.3",
     "bcrypt": "^5.1.1",
