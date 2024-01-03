@@ -108,13 +108,13 @@ const Login = () => {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-[#1f2432] font-medium text-white p-2 rounded-lg  hover:bg-white hover:border hover:border-[gray] h-[50px] hover:text-[black] login-btn"
+                      className="w-full bg-[#1f2432] font-medium text-white p-2 rounded-lg  hover:bg-white hover:border hover:border-[gray] h-[50px] text-[white] hover:text-[white] "
                     >
                       {isLoading ? "Loading.." : "Login"}
                     </button>
                     {/* <Link to="/forgot-password"> */}
                       <div className="text-[16px] font-medium underline text-center py-3 cursor-password">
-                        Forgot password
+                        Forget password
                       </div>
                     {/* </Link> */}
                   </div>
