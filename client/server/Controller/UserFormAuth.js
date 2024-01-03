@@ -96,7 +96,7 @@ exports.editFormById = async (req, res) => {
       const updateData = {};
       const fields = ['firstname', 'lastname', 'address', 'dateOfBirth', 'email', 'education',
                       'occupation', 'contactNumber', 'hobbies', 'gender', 'maritalStatus', 
-                      'religion', 'height', 'income', 'familyDetails', 'image'];
+                      'religion', 'height', 'income', 'familyDetails', 'image','video'];
 
       fields.forEach(field => {
           if (req.body[field] !== undefined) {
@@ -175,3 +175,72 @@ exports.getFormById = async (req, res) => {
       return res.status(HttpStatus.SERVER_ERROR).json({ message: StatusMessage.SERVER_ERROR });
   }
 };
+
+exports.changeStatusForm = async (req, res) => {
+    try {
+        const formId = req.params.id; // Assuming _id is passed as a URL parameter
+        const {formStatus} = req.body
+        // Validate if id is a valid MongoDB ObjectId
+        if (!mongoose.Types.ObjectId.isValid(formId)) {
+            return res.status(HttpStatus.BAD_REQUEST).json({ message: StatusMessage.MISSING_DATA });
+        }
+        if (!formStatus) {
+            return res.status(HttpStatus.BAD_REQUEST).json({ message: StatusMessage.MISSING_DATA });
+        }
+        // Find the form by its _id
+        const updatedForm = await UserForm.findByIdAndUpdate(
+            formId,
+            {formStatus},
+            { new: true } // Return the updated document
+        );
+  
+        // Check if update was successful
+        if (!updatedForm) {
+            return res.status(HttpStatus.INVALID).json(StatusMessage.NOT_FOUND);
+        }
+  
+        // Return success response with updated form
+        return res.status(HttpStatus.OK).json(updatedForm);
+  
+    } catch (error) {
+        console.error(error); // For debugging purposes
+        return res.status(HttpStatus.SERVER_ERROR).json({ message: StatusMessage.SERVER_ERROR });
+    }
+  };
+
+  exports.viewForm = async (req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
+      const limit = parseInt(req.query.limit) || 1000; // Default limit to 10 if not specified
+      const search = req.query.search || "";
+  
+      if (!page || !limit) {
+        return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.MISSING_PAGE_PARAMS);
+      }
+  
+      const startIndex = (page - 1) * limit;
+  
+      const query = search ? {
+        $or: [
+          { name: { $regex: search, $options: 'i' } },
+          { contact: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } }
+        ]
+      } : {};
+  
+      const userForm = await UserForm.find(query).skip(startIndex).limit(limit);
+      const totalUsers = await UserForm.countDocuments(query);
+  
+      const pagination = {
+        currentPage: page,
+        totalPages: Math.ceil(totalUsers / limit),
+        totalUsers: totalUsers
+      };
+  
+      return res.status(HttpStatus.OK).json({ userForm, pagination });
+    } catch (error) {
+      console.error(error);
+      return res.status(HttpStatus.BAD_REQUEST).json("Error fetching users.");
+    }
+  };
+

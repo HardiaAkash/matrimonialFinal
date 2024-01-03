@@ -69,6 +69,9 @@ const userSchema = new mongoose.Schema({
     "image":{
         type: String,
     },
+    "video":{
+        type: String,
+    },
     "formStatus":{
         type: String, 
         default: "Pending"
