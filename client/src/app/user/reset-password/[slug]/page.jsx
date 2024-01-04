@@ -34,7 +34,7 @@ const ResetPassword = ({params}) => {
       if (response.status === 200) {
         toast.success("Password change successful!");
         setLoading(false);
-        router.push("/login");
+        router.push("/user/sign-in");
       } else {
         toast.error("Invalid password!");
         setLoading(false);
@@ -82,7 +82,7 @@ const ResetPassword = ({params}) => {
                     {isLoading ? "Loading.." : "Reset password"}
                   </button>
 
-                  <Link href="/user">
+                  <Link href="/user/sign-in">
                     <div className="text-[16px] font-medium underline text-center py-3 cursor-password">
                       Login
                     </div>
