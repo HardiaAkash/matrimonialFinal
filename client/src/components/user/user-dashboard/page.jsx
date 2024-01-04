@@ -12,6 +12,7 @@ import Dashboard from "./Dashboard";
 
 import CloseIcon from "./Svg/CloseIcon";
 import ViewApplicationDetails from "./PreviewForm";
+import Image from "next/image";
 
 const UserDashboadr = () => {
   const router = useRouter();
@@ -20,9 +21,11 @@ const UserDashboadr = () => {
   const [isLoader, setLoader] = useState(false);
   const [previewFormData, setPreviewFormData] = useState({});
   const [isPreview, setPreview] = useState(false);
+  const [isFormStep, setFormStep] = useState(2);
+
   const token = JSON.parse(localStorage.getItem("authToken" || ""));
   const userId = JSON.parse(localStorage.getItem("userID" || ""));
-  console.log(isPreview);
+
   const menus = [
     {
       id: 1,
@@ -72,6 +75,35 @@ const UserDashboadr = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("userID");
     router.push("/user/sign-in");
+    return;
+    setLoader(true);
+
+    const options = {
+      method: "GET",
+      url: `/api/auth/logoutUser`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    axios
+      .request(options)
+      .then((response) => {
+        console.log(response?.data);
+        if (response.status === 200) {
+          setLoader(false);
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("userID");
+          router.push("/user/sign-in");
+        } else {
+          setLoader(false);
+          return;
+        }
+      })
+      .catch((error) => {
+        setLoader(false);
+        console.error("Error:", error);
+      });
   };
 
   useEffect(() => {
@@ -97,11 +129,12 @@ const UserDashboadr = () => {
         console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
-          if (Array.isArray(response?.data)) {
+          if (response?.data?.length > 0) {
+            console.log("okkk");
             setPreviewFormData(response?.data[0]);
-            // if (response?.data[0]?.formStatus === "approved") {
-              setPreview(true);
-            // }
+            setPreview(true);
+          } else {
+            return;
           }
         } else {
           setLoader(false);
@@ -203,7 +236,25 @@ const UserDashboadr = () => {
                   {index === 1 && isPreview ? (
                     <ViewApplicationDetails previewData={previewFormData} />
                   ) : (
-                    item.component
+                    <>
+                      {isFormStep >= item.id ? (
+                        item.component
+                      ) : (
+                        <div className="text-center mt-14">
+                          <p className="text-gray-500 font-medium mb-6">
+                            Complete the previous steps to unlock this section.
+                          </p>
+                          {/* <Image src="/user/lock.jpg" alt="unlock" height={400} width={400} /> */}
+                          {/* <Image
+                            src="/user/lock.jpg"
+                            alt="login"
+                            height={500}
+                            width={500}
+                            className="mx-auto"
+                          /> */}
+                        </div>
+                      )}
+                    </>
                   )}
                 </>
               )}
