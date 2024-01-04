@@ -114,7 +114,7 @@ const Login = () => {
                     </button>
                     {/* <Link to="/forgot-password"> */}
                       <div className="text-[16px] font-medium underline text-center py-3 cursor-password">
-                        Forget password
+                      Forgot password
                       </div>
                     {/* </Link> */}
                   </div>

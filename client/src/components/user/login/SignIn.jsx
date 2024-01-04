@@ -1,14 +1,16 @@
 "use client";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from 'react-toastify';
-import Closeeye from "@/components/svg/Closeeye";
-import Openeye from "@/components/svg/Openeye";
+
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-// import { BASE_URL } from "./config";
-// import RightSection from "./RightSection";
+
+import Closeeye from "@/components/svg/Closeeye";
+import Openeye from "@/components/svg/Openeye";
+
+
 
 const SignIn = ({refreshData}) => {
   const router = useRouter();
@@ -83,10 +85,9 @@ const SignIn = ({refreshData}) => {
                     <p className="2xl:text-[16px] text-[14px] font-[400] leading-[26px mb-4 text-[#494949] mt-3">
                       Sign in with
                       <b
-                        className="cursor-pointer capitalize "
+                        className="cursor-pointer capitalize ml-2"
                         onClick={() => setLoginWith(!loginWith)}
                       >
-                        {" "}
                         {!loginWith ? "email" : "contact"}{" "}
                       </b>
                     </p>
@@ -139,7 +140,7 @@ const SignIn = ({refreshData}) => {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-[#1f2432] font-semibold text-white p-2 rounded-lg  hover:bg-white hover:border hover:border-[gray] h-[50px] login-btn text-[white] login-btn "
+                      className="w-full bg-[#1f2432] font-semibold text-white p-2 rounded-lg  hover:bg-white hover:border hover:border-[gray] h-[50px] login-btn  login-btn "
                     >
                       {isLoading ? "Loading.." : "Sign in"}
                     </button>
@@ -153,9 +154,9 @@ const SignIn = ({refreshData}) => {
                         </span>
                       </Link>
                     </div>
-                    <Link href="/user/forget-password">
+                    <Link href="/user/forgot-password">
                       <div className="text-[16px] font-medium underline text-center py-3 cursor-pointer">
-                        Forget password
+                        Forgot password
                       </div>
                     </Link>
                   </div>

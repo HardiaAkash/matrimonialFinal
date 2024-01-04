@@ -1,60 +1,67 @@
-import React, { Fragment, useState } from "react";
+"use client";
+import React, { Fragment, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+
+import ApplicationForm from "./ApplicationForm";
+import BackgroundCheck from "./BackgroundCheck";
+import VideoSubmission from "./VideoSubmission";
+import CounselingVideo from "./CounselingVideo";
+import MatchFound from "./MatchFound";
 import Dashboard from "./Dashboard";
 
 import CloseIcon from "./Svg/CloseIcon";
-// import PageIcon from "../assets/svg/page.svg";
-// import HomeIcon from "../assets/svg/home.svg";
-// import webIcon from "../assets/svg/web-site.svg";
-// import conversation from "../assets/svg/conversation.svg";
-// import contactIcon from "../assets/svg/contact-mail.svg";
-import UserHome from "../home/UserHome";
-import BackgroundCheck from "./BackgroundCheck";
-import VideoSubmission from "./VideoSubmission";
-
-export const menus = [
-  {
-    id: 1,
-    label: "Dashboard",
-    component: <Dashboard />,
-    // icon: HomeIcon,
-  },
-  {
-    id: 2,
-    label: "Application Form",
-    component: <UserHome />,
-    // // icon: PageIcon,
-  },
-  {
-    id: 3,
-    label: "Background Check",
-    component: <BackgroundCheck />,
-    // // icon: webIcon,
-  },
-  {
-    id: 4,
-    label: "Video Submission",
-    component: <VideoSubmission />,
-    // icon: conversation,
-  },
-  {
-    id: 5,
-    label: "Counseling Video",
-    // component: <ContactDetails />,
-    // // icon: contactIcon,
-  },
-  {
-    id: 6,
-    label: "Match Found",
-    // component: <ContactDetails />,
-    // // icon: contactIcon,
-  },
-];
+import ViewApplicationDetails from "./PreviewForm";
 
 const UserDashboadr = () => {
+  const router = useRouter();
   const [ComponentId, setComponentId] = useState(1);
   const [showDrawer, setShowDrawer] = useState(false);
-  const router = useRouter();
+  const [isLoader, setLoader] = useState(false);
+  const [previewFormData, setPreviewFormData] = useState({});
+  const [isPreview, setPreview] = useState(false);
+  const token = JSON.parse(localStorage.getItem("authToken" || ""));
+  const userId = JSON.parse(localStorage.getItem("userID" || ""));
+  console.log(isPreview);
+  const menus = [
+    {
+      id: 1,
+      label: "Dashboard",
+      component: <Dashboard />,
+      // icon: HomeIcon,
+    },
+    {
+      id: 2,
+      label: "Application Form",
+      component: <ApplicationForm />,
+      // component:`${isPreview ?  <ViewApplicationDetails previewData = {previewFormData} /> :  <ApplicationForm /> }` ,
+      // // icon: PageIcon,
+    },
+    {
+      id: 3,
+      label: "Background Check",
+      component: <BackgroundCheck />,
+      // // icon: webIcon,
+    },
+    {
+      id: 4,
+      label: "Video Submission",
+      component: <VideoSubmission />,
+      // icon: conversation,
+    },
+    {
+      id: 5,
+      label: "Counseling Video",
+      component: <CounselingVideo />,
+      // // icon: contactIcon,
+    },
+    {
+      id: 6,
+      label: "Match Found",
+      component: <MatchFound />,
+      // // icon: contactIcon,
+    },
+  ];
 
   const handleClick = (id) => {
     setComponentId(id);
@@ -67,12 +74,54 @@ const UserDashboadr = () => {
     router.push("/user/sign-in");
   };
 
+  useEffect(() => {
+    getAllData();
+  }, []);
+
+  const getAllData = () => {
+    setLoader(true);
+    const options = {
+      method: "POST",
+      url: `/api/auth/getFormByUser`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        userID: userId,
+      },
+    };
+    axios
+      .request(options)
+      .then((response) => {
+        console.log(response?.data);
+        if (response.status === 200) {
+          setLoader(false);
+          if (Array.isArray(response?.data)) {
+            setPreviewFormData(response?.data[0]);
+            // if (response?.data[0]?.formStatus === "approved") {
+              setPreview(true);
+            // }
+          }
+        } else {
+          setLoader(false);
+          return;
+        }
+      })
+      .catch((error) => {
+        setLoader(false);
+        console.error("Error:", error);
+      });
+  };
+
   return (
     <section className="">
       <div className="flex min-h-screen relative lg:static">
         <div
-          className=" py-2 px-3  absolute top-4 left-2 flex flex-col gap-[5px] cursor-pointer lg:hidden z-[1111]" 
-          onClick={() => {setShowDrawer(true), console.log("fdg")}}
+          className=" py-2 px-3  absolute top-4 left-2 flex flex-col gap-[5px] cursor-pointer lg:hidden z-[1111]"
+          onClick={() => {
+            setShowDrawer(true), console.log("fdg");
+          }}
         >
           <div className="bg-black h-[2px] w-[20px] z-[1111]"></div>
           <div className="bg-black h-[2px] w-[20px] z-[1111]"></div>
@@ -100,7 +149,7 @@ const UserDashboadr = () => {
             <div className="">
               <div className="flex justify-center items-center whitespace-pre-wrap ">
                 <h1 className="2xl:text-[30px] lg:text-[26px] text-[24px] font-semibold  text-center whitespace-nowrap text-[#f3f3f3]">
-                 Matrimonial
+                  Matrimonial
                 </h1>
               </div>
               <div className="bg-[#f3f3f394] h-[1px] w-[70%] mx-auto mt-[20px]"></div>
@@ -149,7 +198,15 @@ const UserDashboadr = () => {
         <div className="bg-[#f3f3f3] w-full">
           {menus.map((item, index) => (
             <Fragment key={index}>
-              {ComponentId === item.id && item.component}
+              {ComponentId === item.id && (
+                <>
+                  {index === 1 && isPreview ? (
+                    <ViewApplicationDetails previewData={previewFormData} />
+                  ) : (
+                    item.component
+                  )}
+                </>
+              )}
             </Fragment>
           ))}
         </div>
