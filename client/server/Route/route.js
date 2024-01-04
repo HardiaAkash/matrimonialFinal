@@ -3,7 +3,7 @@ const router = express.Router()
 const multer = require('multer');
 const { authorizeRoles, isAuthJWT } = require("../Utils/jwt");
 const { addAdmin, adminLogin } = require("../Controller/AdminAuth");
-const { addUser, userLogin, deleteUser, updateUser, logoutUser, getUserByID, viewUser } = require("../Controller/UserAuth");
+const { addUser, userLogin, deleteUser, updateUser, logoutUser, getUserByID, viewUser, forgotPwd, resetPassword } = require("../Controller/UserAuth");
 const { addForm, editFormById, changeStatusForm, uploadImage, viewForm, deleteFormById, getFormByUserID } = require("../Controller/UserFormAuth");
 const { addCounVideo, getAllCounsVideo } = require("../Controller/VideoAuth");
 const storage = multer.memoryStorage();
@@ -28,7 +28,8 @@ router.route("/editForm/:id").put(isAuthJWT, editFormById)
 router.route("/changeStatus/:id").put(isAuthJWT, authorizeRoles("Admin"),changeStatusForm)
 router.route("/viewForm").get(isAuthJWT,authorizeRoles("Admin"),viewForm)
 router.route("/getFormByUser").post(isAuthJWT,getFormByUserID)
-
+router.route("/forgotpassword").post(forgotPwd)
+router.route("/resetpassword").post(resetPassword)
 
 router.route("/counselVideo").post(isAuthJWT,authorizeRoles("Admin"),addCounVideo)
 router.route("/getCounselVideo").get(isAuthJWT, getAllCounsVideo)
