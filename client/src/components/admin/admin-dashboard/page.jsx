@@ -16,6 +16,7 @@ import Image from 'next/image';
 import Pages from '../pages';
 import { useRouter } from 'next/navigation'
 import AppForm from '../appForm';
+import ConsultVideo from '../consultVideo';
 
 
 
@@ -47,7 +48,7 @@ const SideMenu = () => {
           {
             id: 4,
             label: "Consultation Video",
-            component: "",
+            component:<ConsultVideo/>,
             icon: VideoIcon,
           },
 
@@ -111,7 +112,7 @@ const SideMenu = () => {
                                     ${
                                       item.id === ComponentId
                                         ? "bg-[#b8bbdf47]"
-                                        : "hover:[#] hover:text-[white] hover:rounded-md"
+                                        : "hover:bg-[#b8bbdf47] hover:text-[white] hover:rounded-md"
                                     }  `}
                   onClick={() => handleClick(item.id)}
                 >
