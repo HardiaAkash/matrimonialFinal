@@ -70,7 +70,7 @@ const userSchema = new mongoose.Schema({
         type: String,
     },
     "video":{
-        type: String,
+        type: Array,
     },
     "formStatus":{
         type: String, 

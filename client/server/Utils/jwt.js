@@ -36,9 +36,9 @@ exports.isAuthJWT = async (req, res, next) => {
 
   try {
     const decodedData = jwt.verify(token, process.env.jwtKey);
-
+    //  console.log(decodedData);
     req.user = await User.findOne({ email: decodedData?.email });
-
+    
     if (!req.user) {
       req.user = await Admin.findOne({ email: decodedData?.email });
     }
