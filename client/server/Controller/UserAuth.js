@@ -2,6 +2,8 @@ const User = require("../Model/User")
 
 const bcrypt = require('bcrypt');
 const { generateToken, verifyToken } = require("../Utils/jwt");
+const sendEmail = require("../Utils/SendEmail");
+const Admin = require("../Model/Admin");
 const HttpStatus = {
     OK: 200,
     INVALID: 201,
@@ -267,3 +269,127 @@ exports.verifyUser = async (req, res) => {
       return res.status(HttpStatus.BAD_REQUEST).json("Error fetching users.");
     }
   };
+
+  exports.forgotPwd = async (req, res) => {
+    const { contact, email } = req.body;
+    if (!(email || contact)) {
+      return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.INVALID_EMAIL_PASSWORD);
+    }
+    let user;
+    if (email) {
+      user = await User.findOne({ email });
+    } else {
+      user = await User.findOne({ contact });
+    }
+    if (!user) {
+      if (email) {
+        user = await Admin.findOne({ email });
+      } else {
+        user = await Admin.findOne({ contact });
+      }
+    }
+    if (!user) {
+      return res.status(HttpStatus.UNAUTHORIZED).json(StatusMessage.USER_NOT_FOUND);
+    }
+    const token = generateToken({ email: user.email });
+    const mailOptions = {
+      from: "akash.hardia@gmail.com",
+      to: user.email,
+      subject: "Reset Password Link",
+      text: `<h2>Hello! ${user.name} </h2>
+      <h3>Please follow the link to reset your password: http://localhost:5000/user/reset-password/${token}</h3>
+      <h3>Thanks and regards</h3>
+      `
+    };
+  
+    try {
+      const info = await sendEmail(mailOptions);
+      console.log("Email sent:", info);
+      return res.status(200).json("Reset link sent to registered mail.");
+    } catch (error) {
+      console.log("Error sending email:", error);
+      return res.status(500).json({ error: "Failed to send email" });
+    }
+  }
+
+  exports.resetPassword = async (req, res) => {
+    const { password } = req.body
+    let hashedPassword
+    if (!password) {
+      return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.MISSING_DATA);
+  
+    }
+    else {
+      hashedPassword = await bcrypt.hash(password, 10)
+    }
+    const authHeader = req.headers.authorization;
+    let token = '';
+    let user = ''
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.slice(7);
+    } else {
+      token = authHeader
+    }
+    // console.log(token);
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: "Please login to access this resource" });
+    } else {
+      const decodedData = verifyToken(token);
+      //   console.log(decodedData);
+      if (!decodedData) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(StatusMessage.USER_NOT_FOUND);
+      }
+      user = await User.findOne({ email: decodedData?.email });
+      if (user === null) {
+        user = await Admin.findOne({ email: decodedData?.email });
+      }
+      const role = user.role
+      const id = user._id?.toString(); // Accessing _id using dot notation
+      // console.log(userId);
+      console.log(role);
+      if (!role) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(StatusMessage.USER_NOT_FOUND);
+      }
+      if (role === "Admin") {
+        try {
+          const updatedUser = await Admin.findByIdAndUpdate(
+            id, // pass the ID directly
+            { password: hashedPassword }, // update only the password field
+            { new: true }
+          );
+          if (!updatedUser) {
+            return res.status(HttpStatus.BAD_REQUEST).json("User not found.");
+          }
+  
+          return res.status(HttpStatus.OK).json(StatusMessage.USER_UPDATED);
+        } catch (error) {
+          return res.status(HttpStatus.BAD_REQUEST).json("Error updating password.")
+        }
+      }
+      if (role === "User") {
+        try {
+          const updatedUser = await User.findByIdAndUpdate(
+            id, // pass the ID directly
+            { password: hashedPassword }, // update only the password field
+            { new: true }
+          );
+          if (!updatedUser) {
+            return res.status(HttpStatus.BAD_REQUEST).json("User not found.");
+          }
+  
+          return res.status(HttpStatus.OK).json(StatusMessage.USER_UPDATED);
+        } catch (error) {
+          return res.status(HttpStatus.BAD_REQUEST).json("Error updating password.")
+        }
+      }
+      // console.log("user", user._id);
+    }
+  }
+
+  

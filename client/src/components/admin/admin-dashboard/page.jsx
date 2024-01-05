@@ -50,7 +50,7 @@ const SideMenu = () => {
             component: "",
             icon: VideoIcon,
           },
-          
+
       
     ];
 
@@ -101,6 +101,7 @@ const SideMenu = () => {
               </div>
               <div className="bg-[white] h-[1px] w-[77%] lg:w-[80%] 2xl:w-[83%] mx-auto mt-[40px]"></div>
             </div>
+
 
             <div className="flex flex-col 2xl:gap-6 gap-3 ">
               {menu.map((item, index) => (

@@ -1,27 +1,36 @@
-import React from 'react';
-import { useState,useEffect } from 'react';
+import React from "react";
+import { useState, useEffect,Fragment } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 import axios from "axios";
-import Pagination from './pagination';
-
+import Pagination from "./pagination";
+import Loader from "./loader";
+import Preview from "./preview";
 
 const AppForm = () => {
-    const [allData, setAllData] = useState([]);
-    const [searchText, setSearchText] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const visiblePageCount = 10;
-    const token = JSON.parse(localStorage.getItem("token"));
+  const [allData, setAllData] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [genderText, setGenderText] = useState("");
+  const [isRefresh, setRefresh] = useState(false);
+  const [userId,setUserId]= useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [openAddPopup, setAddPopup] = useState(false);
+  const [openPopup,setOpenPopup]=useState(false);
+  const [isLoader, setLoader] = useState(false);
+  const [selectedItem,setSelectedItem]=useState("");
+  const visiblePageCount = 10;
+  const token = JSON.parse(localStorage.getItem("token"));
 
-// -------form api--------
+  // -------form api--------
 
-useEffect(() => {
-    getAllData(1);
+  useEffect(() => {
+    getAllData(currentPage, searchText, genderText);
   }, []);
 
-const getAllData = (pageNo) => {
-    // setLoader(true);
+  const getAllData = (pageNo, customSearch, genderSort) => {
+    setLoader(true);
     const options = {
       method: "GET",
-      url: `/api/auth/viewForm?page=${pageNo}&limit=${visiblePageCount}`,
+      url: `/api/auth/viewForm?page=${pageNo}&limit=${visiblePageCount}&search=${customSearch}&gender=${genderSort}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -32,83 +41,132 @@ const getAllData = (pageNo) => {
       .then((response) => {
         console.log(response?.data);
         if (response.status === 200) {
-        //   setLoader(false);
+          setLoader(false);
           setAllData(response?.data);
         } else {
-        //   setLoader(false);
+          setLoader(false);
           return;
         }
       })
       .catch((error) => {
-        // setLoader(false);
+        setLoader(false);
         console.error("Error:", error);
       });
   };
 
-//   ----------search api--------
-// const searchDataFunc = (search_cate) => {
+  // ----------search api--------
+
+  const searchDataFunc = (search_cate) => {
+    setLoader(true);
+
+    const options = {
+      method: "GET",
+      url: `/api/auth/viewForm?search=${search_cate}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    axios
+      .request(options)
+      .then((response) => {
+        console.log(response?.data);
+        if (response.status === 200) {
+          setLoader(false);
+          setAllData(response?.data);
+        } else {
+          setLoader(false);
+          return;
+        }
+      })
+      .catch((error) => {
+        setLoader(false);
+        console.error("Error:", error);
+      });
+  };
+
+  const handleSearchInput = (e) => {
+    e.persist(); // persist the synthetic event
+    setSearchText(e.target.value);
+    // setSearchText((prev) => e.target.value);
+    // if (e.target.value == "") {
+    //   getAllData(1);
+    // }else{
+    //   // setSearchData(search_cate)
+    //   searchDataFunc(e.target.value);
+    // }
+    setCurrentPage(1);
+    getAllData(1, e.target.value, genderText);
+  };
+
+  const refreshData = () => {
+    setRefresh(!isRefresh);
+  };
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    getAllData(newPage, searchText, genderText);
+  };
+  const genderHandler = (e) => {
+    setGenderText(e.target.value);
+    getAllData(currentPage, searchText, e.target.value);
+  };
+
+  const closeAddPopup = () => {
+    setAddPopup(false);
+  };
+
+  const closeAddPopupModel =()=>{
+    setOpenPopup(false);
+    
+  }
+
   
-//     const options = {
-//       method: "GET",
-//       url: `http://localhost:5000/api/auth/viewForm?page=${pageNo}&limit=${visiblePageCount}&gender=${gender}`,
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "multipart/form-data",
-//       },
-//     };
-//     axios
-//       .request(options)
-//       .then((response) => {
-//         console.log(response?.data);
-//         if (response.status === 200) {
-//           setAllData(response?.data);
-//         } else {
-//           return;
-//         }
-//       })
-//       .catch((error) => {
-//         console.error("Error:", error);
-//       });
-//   };
 
-
-
-    // const handleSearchInput = (e) => {
-    //     setSearchText(e.target.value);
-    //     if (e.target.value == "") {
-    //       getAllData(1);
-    //     }else{
-      
-    //       searchDataFunc(e.target.value);
-    //     }
-    //   };
-
-
-    const handlePageChange = (newPage) => {
-        setCurrentPage(newPage);
-        getAllData(newPage);
-      };
+  const handleOpenPopup=(id)=>{
+    const selectedItemData = allData.userForm.filter(item => item._id === id);
+    setSelectedItem(selectedItemData);
+    // console.log("selected",selectedItemData);
+    setUserId(id)
+    setAddPopup(true);
+  }
+  // console.log("aaaa",selectedItem);
 
   return (
-   <>
-    <section>
-    <div className="py-[30px] px-[20px] mx-auto mt-[20px] bg-[#f3f3f3] lg:mt-0 ">
-    <div className="rounded-[10px] bg-[white] py-[15px] flex justify-center md:justify-between gap-x-20 items-center flex-wrap md:flex-auto gap-y-5 px-[20px]">
+    <>
+      {isLoader && <Loader />}
+      <section>
+        <div className="py-[30px] px-[20px] mx-auto mt-[20px] bg-[#f3f3f3] lg:mt-0 ">
+          <div className="rounded-[10px] bg-[white] py-[15px] flex justify-center md:justify-between gap-x-20 items-center flex-wrap md:flex-auto gap-y-5 px-[20px]">
             <p className="text-[18px]  md:text-[24px] font-semibold text-left ">
               Application Forms
             </p>
           </div>
-         
+
           <div className="rounded-[10px] bg-[white] py-[1px] px-[20px]  justify-between items-center mt-[20px] p-6 overflow-x-scroll">
-            <div className="flex justify-end mt-3  ">
-              <input 
-              className="border p-1 border-[gray] rounded-md w-[222px] sm:w-[255px]"
-              autoComplete="nope"
-            //   value={searchText}
-            //       onChange={handleSearchInput}
-               type="text" 
-               placeholder="Search.." 
-               name="search" />
+            <div className="flex flex-col sm:flex-row items-center sm:items-stretch sm:justify-end mt-3 gap-3 ">
+              <input
+                className="border p-1 border-[gray] rounded-md w-[222px] sm:w-[255px]"
+                autoComplete="nope"
+                value={searchText}
+                onChange={handleSearchInput}
+                type="text"
+                placeholder="Search.."
+                name="search"
+              />
+              <select
+              className="w-28 sm:w-32  lg:w-24 xl:w-32
+              text-[12px]  sm:text-[14px] md:text-[16px] lg:text-[12px] xl:text-[14px] 2xl:text-[16px]"
+                name="gender"
+                id="genderSelect"
+                onChange={genderHandler}
+                value={genderText}
+              >
+                <option  value="" disabled>
+                  Select Gender
+                </option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
             </div>
             <table className="w-full min-w-[640px] table-auto mt-[20px] ">
               <thead>
@@ -140,6 +198,18 @@ const getAllData = (pageNo) => {
                       Gender
                     </p>
                   </th>
+
+                  <th className="py-3 px-2 text-left bg-[white]">
+                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                      Preview
+                    </p>
+                  </th>
+
+                  <th className="py-3 px-5 text-left bg-[white]">
+                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                      Status
+                    </p>
+                  </th>
                 </tr>
               </thead>
 
@@ -162,24 +232,89 @@ const getAllData = (pageNo) => {
                     <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
                       {items?.gender}
                     </td>
-                 
+                   <td>
+                    <button onClick={()=>handleOpenPopup(items?._id)}
+                     className="text-[12px] px-2 py-1 rounded-sm bg-[gray]">
+                      Preview
+                    </button>
+                   </td>
+
+                    <td>
+                      <select
+                      className="text-[14px] p-1"
+                        name="gender"
+                        id="genderSelect"
+                        // onChange={handleGenderChange}
+                      >
+                        <option value="pending">
+                          Pending
+                        </option>
+                        
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                      </select>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-
-
-
-          </div>
-          <Pagination
-              currentPage={allData?.pagination?.currentPage}
+        </div>
+        <Pagination
+          currentPage={allData?.pagination?.currentPage}
           totalPages={allData?.pagination?.totalPages}
           onPageChange={handlePageChange}
-          />
-    </section>
-   </>
-  )
-}
+        />
+      </section>
 
-export default AppForm
+      {/* ------------preview dialog box--------- */}
+      <Transition appear show={openAddPopup} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeAddPopup}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white px-7  sm:px-12 text-left align-middle shadow-2xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="flex justify-center lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"
+                  >
+                   Applicant's full detail
+                  </Dialog.Title>
+                  <Preview
+                    selectedItem={selectedItem}
+                    
+                    closeModal={closeAddPopupModel}
+                    refreshData={refreshData}
+                  />
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+
+    </>
+  );
+};
+
+export default AppForm;
