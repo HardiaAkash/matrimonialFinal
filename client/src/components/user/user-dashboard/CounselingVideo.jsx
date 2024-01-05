@@ -1,11 +1,13 @@
+"use client";
 import React, { Fragment, useState, useEffect } from "react";
 import axios from "axios";
 import Loader from "./WebsiiteLoader/Index";
 
-const CounselingVideo = () => {
+const CounselingVideo = ({refreshData}) => {
   const [isLoader, setLoader] = useState(false);
   const [counselingData, setCounselingData] = useState([]);
-  const token = JSON.parse(localStorage.getItem("authToken"));
+  const userId = JSON.parse(localStorage.getItem("userID" || ""));
+  const token = JSON.parse(localStorage.getItem("authToken" || ""));
 
   useEffect(() => {
     getAllData();
@@ -39,6 +41,41 @@ const CounselingVideo = () => {
       });
   };
 
+
+  const getUserUpdate = ( step ) => {
+    setLoader(true);
+    const options = {
+      method: "PUT",
+      url: `/api/auth/updateUser`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        id: userId,
+        updatedDetails:{
+          step : step
+        }
+      },
+    };
+    axios
+      .request(options)
+      .then((response) => {
+        // console.log(response?.data);
+        if (response.status === 200) {
+          refreshData()
+          setLoader(false);
+        } else {
+          setLoader(false);
+          return;
+        }
+      })
+      .catch((error) => {
+        setLoader(false);
+        console.error("Error:", error);
+      });
+  };
+  
   return (
     <>
       {isLoader && <Loader />}
@@ -55,7 +92,8 @@ const CounselingVideo = () => {
           </div>
           <div className=" flex flex-col items-center justify-center">
             {Array.isArray(counselingData) && counselingData?.length > 0 && (
-              <video controls className="max-w-[60%]">
+              <video controls className="max-w-[60%]" 
+              onPlay={()=>getUserUpdate(4)}>
                 <source src={counselingData[0]?.video} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>

@@ -12,7 +12,7 @@ export const marital_status = [
   "married",
 ];
 
-const ApplicationForm = () => {
+const ApplicationForm = ({refreshData}) => {
   const token = JSON.parse(localStorage.getItem("authToken"));
   const userId = JSON.parse(localStorage.getItem("userID"));
   const [formData, setFormData] = useState({
@@ -41,6 +41,7 @@ const ApplicationForm = () => {
   const [imageUpload, setImageUpload] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isSubmited, setSubmited] = useState(false);
+  const [isLoader, setLoader] = useState(false);
 
   const InputHandler = (e) => {
     if (e.target.name === "image") {
@@ -89,7 +90,7 @@ const ApplicationForm = () => {
         setFormData({ ...formData, ["image"]: response?.data?.url });
         setImageDisable(true);
         setImageUpload(false);
-        setSubmited(true);
+        // setSubmited(true);
       } else {
         setFormData({ ...formData, ["image"]: "" });
         setImageDisable(false);
@@ -103,7 +104,7 @@ const ApplicationForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (formData?.image == "" || formData?.hobbies?.length < 1) {
       toast.error("Please fill all feilds");
     } else {
@@ -120,7 +121,9 @@ const ApplicationForm = () => {
         if (response.status === 200) {
           toast.success("Details submit successfully.");
           setLoading(false);
-          // refreshdata();
+          setSubmited(true);
+          getUserUpdate(1)
+          refreshData();
         } else {
           toast.error(response?.data);
           setLoading(false);
@@ -133,6 +136,42 @@ const ApplicationForm = () => {
       }
     }
   };
+
+
+  const getUserUpdate = ( step ) => {
+    setLoader(true);
+    const options = {
+      method: "PUT",
+      url: `/api/auth/updateUser`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        id: userId,
+        updatedDetails:{
+          step : step
+        }
+      },
+    };
+    axios
+      .request(options)
+      .then((response) => {
+        // console.log(response?.data);
+        if (response.status === 200) {
+          setLoader(false);
+          refreshData()
+        } else {
+          setLoader(false);
+          return;
+        }
+      })
+      .catch((error) => {
+        setLoader(false);
+        console.error("Error:", error);
+      });
+  };
+  
 
   return (
     <>

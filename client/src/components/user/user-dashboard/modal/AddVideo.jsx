@@ -3,30 +3,40 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import Loader from "../WebsiiteLoader/Index";
 
-const AddVideo = ({ closeModal, isVideoUpload }) => {
+const AddVideo = ({ closeModal, isVideoUpload, updateId,getUserUpdate }) => {
   const token = JSON.parse(localStorage.getItem("authToken"));
+
+  const [formData, setFormData] = useState({
+    video: [],
+  });
   const [video, setVideo] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [videoDisable, setVideoDisable] = useState(false);
   const [videoUploading, setVideoUploading] = useState(false);
 
   const InputHandler = (e) => {
-    setVideo({ file: e.target.files[0] });
+    const file = e.target.files[0];
+    const maxSize = 20 * 1024 * 1024;
+    if (file && file.size > maxSize) {
+      toast.warn("Please upload video upto 20mb.");
+      e.target.value = null;
+    } else {
+      setVideo({ file: e.target.files[0] });
+    }
+  };
+
+  const addField = (e) => {
+    setVideoDisable(false);
+    setVideo("");
   };
 
   const uploadVideo = async (e) => {
-    // console.log(video);
     setVideoUploading(true);
 
-    // setVideoDisable(true);
-    // setVideoUploading(false);
-    // return;
     try {
       if (!video) {
         setVideoUploading(false);
-        return toast.warn("Please select a file.");
+        return toast.warn("Please upload a video.");
       }
 
       const response = await axios.post("api/auth/uploadImage", video, {
@@ -36,50 +46,50 @@ const AddVideo = ({ closeModal, isVideoUpload }) => {
         },
       });
       if (response.status === 200) {
-        // console.log('Video uploaded:', response?.data);
-        setVideoUrl(response?.data?.url);
-        // formData.video.push(response?.data?.url)
-        // setFormData({ ...formData, video: [...formData.video, videoUrl] });
+        // setVideoUrl(response?.data?.url);
+        const videoUrl = response?.data?.url;
+        setFormData({ ...formData, video: [...formData.video, videoUrl] });
         setVideoDisable(true);
         setVideoUploading(false);
       } else {
-        // setFormData({ ...formData, video: "" });
         setVideoDisable(false);
         setVideoUploading(false);
       }
     } catch (error) {
       console.error(
         "Error uploading video:",
-        error.response?.data || error.message
+        error?.response?.data || error?.message
       );
-      // Handle the error: show a message or perform an action accordingly
+      toast.error(error?.response?.data);
       setVideoUploading(false);
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    isVideoUpload(true)
-console.log(videoUrl)
-    closeModal();
-    return;
+    console.log(formData);
 
-    if (video == "") {
-      toast.error("Please fill all feilds");
+    if (formData?.video?.length < 1) {
+      toast.warn("Please upload atleast 1 video");
     } else {
       setLoading(true);
       try {
-        const response = await axios.post("/api/auth/AddVideo", video, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await axios.put(
+          `/api/auth/editForm/${updateId}`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (response.status === 200) {
-          // console.log('Login successful');
-          toast.success("Category created successfully.");
+          toast.success("Video submitted successfully.");
           setLoading(false);
-          refreshdata();
+          getUserUpdate(3)
+          localStorage.setItem( "isVideoUploded",JSON.stringify(true));
           closeModal();
         } else {
           // console.log(response);
@@ -89,8 +99,7 @@ console.log(videoUrl)
         }
       } catch (error) {
         console.error("Error during category:", error);
-        setError("Login failed please try again!");
-        toast.error("Something went wrong, try again later.");
+        toast.error(error?.response?.data);
         setLoading(false);
       }
     }
@@ -124,7 +133,15 @@ console.log(videoUrl)
                 </div>
               </div>
               <div className="">
-                
+                {videoDisable ? (
+                  <button
+                    className="p-2 border h-[20px] flex justify-center items-center"
+                    type="button"
+                    onClick={addField}
+                  >
+                    +
+                  </button>
+                ) : (
                   <button
                     className={`focus-visible:outline-none  text-white text-[13px] px-4 py-1 rounded
                                         ${
@@ -142,7 +159,27 @@ console.log(videoUrl)
                       ? "Loading.."
                       : "Upload"}{" "}
                   </button>
+                )}
               </div>
+              {/* <div className="">
+                <button
+                  className={`focus-visible:outline-none  text-white text-[13px] px-4 py-1 rounded
+                                        ${
+                                          videoDisable
+                                            ? "bg-[green]"
+                                            : "bg-[#070708bd]"
+                                        }`}
+                  type="button"
+                  onClick={uploadVideo}
+                  disabled={videoDisable || videoUploading}
+                >
+                  {videoDisable
+                    ? "Uploaded"
+                    : videoUploading
+                    ? "Loading.."
+                    : "Upload"}{" "}
+                </button>
+              </div> */}
             </div>
             <div className="mt-4 flex pt-6 items-center justify-center md:justify-end  md:flex-nowrap gap-y-3 gap-x-3 ">
               <button

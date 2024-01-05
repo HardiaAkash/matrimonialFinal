@@ -1,19 +1,57 @@
-"use client"
+"use client";
 import React, { Fragment, useState, useEffect } from "react";
-import { Dialog, Transition } from "@headlessui/react"; 
+import { Dialog, Transition } from "@headlessui/react";
 import Link from "next/link";
+import axios from "axios";
 import AddVideo from "./modal/AddVideo";
 
-
-const VideoSubmission = () => {
-    let [isOpen, setIsOpen] = useState(false);
-    let [isVideo, setVideo] = useState(false);
-
+const VideoSubmission = ({ formId, refreshData, previewData }) => {
+  let [isOpen, setIsOpen] = useState(false);
+  let [isVideo, setVideo] = useState(false);
+  const [isLoader, setLoader] = useState(false);
+  const userId = JSON.parse(localStorage.getItem("userID" || ""));
+  const token = JSON.parse(localStorage.getItem("authToken" || ""));
+  const isVideoUplod = JSON.parse(localStorage.getItem("isVideoUploded" || ""));
 
   const closeModal = () => {
     setIsOpen(false);
   };
 
+  const getUserUpdate = (step) => {
+    setLoader(true);
+    const options = {
+      method: "PUT",
+      url: `/api/auth/updateUser`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        id: userId,
+        updatedDetails: {
+          step: step,
+        },
+      },
+    };
+    axios
+      .request(options)
+      .then((response) => {
+        // console.log(response?.data);
+        if (response.status === 200) {
+          setLoader(false);
+          refreshData();
+        } else {
+          setLoader(false);
+          return;
+        }
+      })
+      .catch((error) => {
+        setLoader(false);
+        console.error("Error:", error);
+      });
+  };
+
+  console.log(previewData);
 
   return (
     <>
@@ -28,31 +66,47 @@ const VideoSubmission = () => {
               Video Submission
             </h5>
           </div>
-          <div className="md:w-[30%] mx-auto flex flex-col items-center justify-center">
-            <img
-              src="/user/bg_check.svg"
-              alt="welcome dashboard"
-              className="w-full"
-            />
-            <div className="mx-auto mt-6 text-center" >
-             <h5 className="pt-2 text-[20px] font-semibold mb-3 text-center">
-             Please upload your recorded video
-            </h5>
-                <button className={` text-white  w-[300px] mx-auto py-2 rounded-[4px] cursor-pointer
-                ${isVideo ? "bg-[gray]" : "login-btn" }
-                `}
-                disabled={isVideo}
-                onClick={()=>setIsOpen(true)}>
-                {isVideo ?  "Uploaded" : "Upload" }
-                </button>
+          {Array.isArray(previewData?.video) &&
+          previewData?.video?.length > 0 ? (
+            <div className="flex  gap-5  justify-center max-w-[80%] ">
+              {previewData?.video?.map((items, inx) => (
+                <div className="max-w-[50%]">
+                  <video controls className="max-h-[500px]">
+                    <source src={items} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              ))}
             </div>
-          </div>
+          ) : (
+            <div className="md:w-[30%] mx-auto flex flex-col items-center justify-center">
+              <img
+                src="/user/bg_check.svg"
+                alt="welcome dashboard"
+                className="w-full"
+              />
+              <div className="mx-auto mt-6 text-center">
+                <h5 className="pt-2 text-[20px] font-semibold mb-3 text-center">
+                  Please upload your recorded video
+                </h5>
+                <button
+                  className={` text-white  w-[300px] mx-auto py-2 rounded-[4px]
+                ${isVideoUplod ? "bg-[gray]" : "login-btn  cursor-pointer"}
+                `}
+                  disabled={isVideoUplod}
+                  onClick={() => setIsOpen(true)}
+                >
+                  {isVideoUplod ? "Uploaded" : "Upload"}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
-        {/*---------- Add popup---------- */}
-        <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-[111]" onClose={() => {}}>
+      {/*---------- Add popup---------- */}
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-[11]" onClose={() => {}}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -86,6 +140,8 @@ const VideoSubmission = () => {
                   <AddVideo
                     closeModal={closeModal}
                     isVideoUpload={setVideo}
+                    updateId={formId}
+                    getUserUpdate={getUserUpdate}
                   />
                 </Dialog.Panel>
               </Transition.Child>
@@ -93,7 +149,6 @@ const VideoSubmission = () => {
           </div>
         </Dialog>
       </Transition>
-
     </>
   );
 };
