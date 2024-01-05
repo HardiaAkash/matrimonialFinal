@@ -79,7 +79,7 @@ const handleSearchInput = (e) => {
 // };
 
 const searchDataFunc = (search_cate) => {
-  
+  setLoader(true);
   const options = {
     method: "GET",
     url: `/api/auth/viewUser?search=${search_cate}`,
@@ -94,12 +94,14 @@ const searchDataFunc = (search_cate) => {
       console.log(response?.data);
       if (response.status === 200) {
         setAllData(response?.data);
+        setLoader(false);
       } else {
         return;
       }
     })
     .catch((error) => {
       console.error("Error:", error);
+      setLoader(false);
     });
 };
 
@@ -254,7 +256,7 @@ function openModal(id)
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="bg-[white] w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white py-10 px-12 text-left align-middle shadow-2xl transition-all">
+                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white py-10 px-12 text-left align-middle shadow-2xl transition-all">
                   <Dialog.Title
                     as="h3"
                     className="flex justify-center lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"

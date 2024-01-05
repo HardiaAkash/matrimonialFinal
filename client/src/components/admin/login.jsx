@@ -7,6 +7,7 @@ import Openeye from "@/components/svg/Openeye";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
+import Loader from './loader';
 
 const Login = () => {
     const [loginDetails,setLoginDetails]=useState({
@@ -58,6 +59,7 @@ const Login = () => {
 
   return (
     <>
+    {isLoading && <Loader/>}
          <div className="flex items-center justify-center lg:min-h-screen  ">
          <ToastContainer/>
         <div className="md:px-[50px] w-full mx-auto">
