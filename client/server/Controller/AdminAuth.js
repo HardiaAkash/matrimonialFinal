@@ -2,6 +2,7 @@ const Admin = require("../Model/Admin")
 
 const bcrypt = require('bcrypt');
 const { generateToken, verifyToken } = require("../Utils/jwt");
+const User = require("../Model/User");
 const HttpStatus = {
     OK: 200,
     INVALID: 201,
@@ -31,6 +32,24 @@ exports.addAdmin = async (req, res) => {
 
         if (!email || !password) {
             return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.MISSING_DATA);
+        }
+        const existingUserByEmail = await User.findOne({ email });
+        if (existingUserByEmail) {
+          return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_EMAIL);
+        }
+    
+        const existingUserByContact = await User.findOne({ contact });
+        if (existingUserByContact) {
+          return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_CONTACT);
+        }
+        //////admin check
+        const existingAdminByEmail = await Admin.findOne({ email });
+        if (existingAdminByEmail) {
+          return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_EMAIL);
+        }
+        const existingAdminByContact = await Admin.findOne({ contact });
+        if (existingAdminByContact) {
+          return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_CONTACT);
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -70,8 +89,8 @@ exports.adminLogin = async (req, res) => {
 
         if (isPasswordMatch) {
             const token = generateToken({ email: admin.email });
-            await Admin.findByIdAndUpdate({ _id: admin._id?.toString() }, { activeToken: token }, { new: true })
-
+            const updateToken =   await Admin.findByIdAndUpdate({ _id: admin._id?.toString() }, { activeToken: token }, { new: true })
+// console.log(updateToken);
             return res.status(HttpStatus.OK).json({
                 message: `Welcome ${admin.email}`,
                 token: token,
