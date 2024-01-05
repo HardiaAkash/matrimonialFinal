@@ -3,6 +3,7 @@ const UserForm = require("../Model/UserForm");
 const uploadOnS3 = require("../Utils/awsS3");
 const { updateUser } = require("./UserAuth");
 const User = require("../Model/User");
+const sendEmail = require("../Utils/SendEmail");
 
 const HttpStatus = {
     OK: 200,
@@ -28,6 +29,30 @@ const StatusMessage = {
     NOT_FOUND: "Data not found."
 
 };
+const mailSend = async(reciever, status) =>{
+    console.log(reciever, status);
+    const mailOptions = {
+        from: "akash.hardia@gmail.com",
+        to: reciever,
+        subject: "Marriage Application Status",
+        text: `  <p>Dear Applicant,</p>
+        <p>We are writing to inform you about the status of your marriage application.</p>
+        <p>Your application has been marked as "${status}". Kindly proceed further and complete the necessary steps to continue the process.</p>
+        <br/>
+        <p>Thank you for your cooperation.</p>
+        <p>Best Regards,</p>
+          `
+      };
+      try {
+        const info = await sendEmail(mailOptions);
+        console.log("Email sent:", info);
+       
+      } catch (error) {
+        console.log("Error sending email:", error);
+       
+      }
+}
+
 exports.uploadImage = async (req, res, next) => {
     // console.log(req.file);
     try {
@@ -115,7 +140,7 @@ exports.editFormById = async (req, res) => {
         const updateData = {};
         const fields = ['firstname', 'lastname', 'address', 'dateOfBirth', 'email', 'education',
             'occupation', 'contactNumber', 'hobbies', 'gender', 'maritalStatus',
-            'religion', 'height', 'income', 'familyDetails', 'image', 'video'];
+            'religion', 'height', 'income', 'familyDetails', 'image', 'video','formStatus'];
 
         fields.forEach(field => {
             if (req.body[field] !== undefined) {
@@ -220,16 +245,25 @@ exports.changeStatusForm = async (req, res) => {
         if (!updatedForm) {
             return res.status(HttpStatus.INVALID).json(StatusMessage.NOT_FOUND);
         }
+        const userData = await User.findById({_id : updatedForm.userID})
+        console.log(userData);  
+        console.log(updatedForm.userID);
 
         // Return success response with updated form
         if (formStatus?.toLowerCase() === "pending" || formStatus?.toLowerCase() === "rejected") {
-          
+           if (userData) {
+               mailSend(userData.email, formStatus)
+            
+           }
             changeStepUser(updatedForm.userID, 1)
-
+ 
             
         } else {
             changeStepUser(updatedForm.userID, 2)
-
+            if (userData) {
+                mailSend(userData.email, formStatus)
+             
+            }
            
         }
         return res.status(HttpStatus.OK).json(updatedForm);
@@ -315,3 +349,64 @@ exports.getFormByUserID = async(req,res)=>{
     }
 }
 
+exports.changeMatchStatus = async (req, res) => {
+    try {
+        const formId = req.params.id; // Assuming _id is passed as a URL parameter
+        const { isMatched } = req.body
+        // console.log(isMatched);
+        // console.log(formId);
+        // console.log(req.body);
+        // console.log(req.params.id);
+        // Validate if id is a valid MongoDB ObjectId
+        if (!mongoose.Types.ObjectId.isValid(formId)) {
+            return res.status(HttpStatus.BAD_REQUEST).json({ message: StatusMessage.MISSING_DATA });
+        }
+        if (isMatched !== true && isMatched !== false) {
+            return res.status(HttpStatus.BAD_REQUEST).json({ message: StatusMessage.MISSING_DATA });
+        }
+
+
+        // Find the form by its _id
+        const updatedForm = await UserForm.findByIdAndUpdate(
+            formId,
+            { isMatched },
+            { new: true } // Return the updated document
+        );
+
+        // Check if update was successful
+        if (!updatedForm) {
+            return res.status(HttpStatus.INVALID).json(StatusMessage.NOT_FOUND);
+        }
+        const userData = await User.findById({_id : updatedForm.userID})
+        console.log(userData);  
+        console.log(updatedForm.userID);
+
+        // Return success response with updated form
+        if (isMatched && userData?.email ) {
+            const mailOptions = {
+                from: "akash.hardia@gmail.com",
+                to: userData?.email,
+                subject: `Congratulation ${userData?.name}!`,
+                text: ` <p>Dear ${userData?.name},</p>
+                <p>We are pleased to inform you that a suitable match has been found for your profile.</p>
+                <p>Please visit our office at your earliest convenience to proceed with the next steps of the process.</p>
+                <br/>
+                <p>Best Regards</p>
+                  `
+              };
+              try {
+                const info = await sendEmail(mailOptions);
+                console.log("Email sent:", info);
+               
+              } catch (error) {
+                console.log("Error sending email:", error);
+               
+              }
+        }
+        return res.status(HttpStatus.OK).json(updatedForm);
+
+    } catch (error) {
+        console.error(error); // For debugging purposes
+        return res.status(HttpStatus.SERVER_ERROR).json({ message: StatusMessage.SERVER_ERROR });
+    }
+};
