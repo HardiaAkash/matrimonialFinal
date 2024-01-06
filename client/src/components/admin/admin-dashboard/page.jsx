@@ -16,6 +16,7 @@ import Image from 'next/image';
 import Pages from '../pages';
 import { useRouter } from 'next/navigation'
 import AppForm from '../appForm';
+import ConsultVideo from '../consultVideo';
 
 
 
@@ -47,10 +48,10 @@ const SideMenu = () => {
           {
             id: 4,
             label: "Consultation Video",
-            component: "",
+            component:<ConsultVideo/>,
             icon: VideoIcon,
           },
-          
+
       
     ];
 
@@ -102,6 +103,7 @@ const SideMenu = () => {
               <div className="bg-[white] h-[1px] w-[77%] lg:w-[80%] 2xl:w-[83%] mx-auto mt-[40px]"></div>
             </div>
 
+
             <div className="flex flex-col 2xl:gap-6 gap-3 ">
               {menu.map((item, index) => (
                 <div
@@ -110,7 +112,7 @@ const SideMenu = () => {
                                     ${
                                       item.id === ComponentId
                                         ? "bg-[#b8bbdf47]"
-                                        : "hover:[#] hover:text-[white] hover:rounded-md"
+                                        : "hover:bg-[#b8bbdf47] hover:text-[white] hover:rounded-md"
                                     }  `}
                   onClick={() => handleClick(item.id)}
                 >

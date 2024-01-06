@@ -4,6 +4,8 @@ import axios from "axios";
 import Pagination from "./pagination";
 import { Dialog, Transition } from "@headlessui/react";
 import Delete from "./delete";
+import Loader from "./loader";
+import { ToastContainer } from "react-toastify";
 
 const Pages = () => {
   const [allData, setAllData] = useState([]);
@@ -30,7 +32,7 @@ const Pages = () => {
     setLoader(true);
     const options = {
       method: "GET",
-      url: `http://localhost:5000/api/auth/viewUser?page=${pageNo}&limit=${visiblePageCount}`,
+      url: `/api/auth/viewUser?page=${pageNo}&limit=${visiblePageCount}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -77,7 +79,7 @@ const handleSearchInput = (e) => {
 // };
 
 const searchDataFunc = (search_cate) => {
-  
+  setLoader(true);
   const options = {
     method: "GET",
     url: `/api/auth/viewUser?search=${search_cate}`,
@@ -92,12 +94,14 @@ const searchDataFunc = (search_cate) => {
       console.log(response?.data);
       if (response.status === 200) {
         setAllData(response?.data);
+        setLoader(false);
       } else {
         return;
       }
     })
     .catch((error) => {
       console.error("Error:", error);
+      setLoader(false);
     });
 };
 
@@ -132,6 +136,9 @@ function openModal(id)
 
   return (
     <>
+
+    {isLoader && <Loader/>}
+    <ToastContainer/>
       <section>
         <div className="py-[30px] px-[20px] mx-auto mt-[20px] bg-[#f3f3f3] lg:mt-0 ">
           <div className="rounded-[10px] bg-[white] py-[15px] flex justify-center md:justify-between gap-x-20 items-center flex-wrap md:flex-auto gap-y-5 px-[20px]">
@@ -249,7 +256,7 @@ function openModal(id)
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="bg-[white] w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white py-10 px-12 text-left align-middle shadow-2xl transition-all">
+                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white py-10 px-12 text-left align-middle shadow-2xl transition-all">
                   <Dialog.Title
                     as="h3"
                     className="flex justify-center lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"

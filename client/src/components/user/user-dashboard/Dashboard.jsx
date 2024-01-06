@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+"use client"
+import React, { Fragment ,useState} from "react";
 import { Menu, Transition } from "@headlessui/react";
 // import { Link } from "react-router-dom";
 
@@ -9,7 +10,7 @@ import SignOutIcon from "./Svg/SignOutIcon";
 import Link from "next/link";
 
 
-const Dashboard = () => {
+const Dashboard = ({handleSignout}) => {
   return (
     <>
       <section>
@@ -41,22 +42,22 @@ const Dashboard = () => {
 
                     <Menu.Item>
                       <Link
-                        href="/change-password"
+                        href="/user/change-password"
                         className="flex gap-x-3 hover:bg-lightBlue-600 hover:underline text-gray-700 rounded  text-sm group transition-colors items-center"
                       >
                         {/* <PasswordIcon className="h-4 w-4 mr-2" /> */}
-                        Change password
+                        Change Password
                       </Link>
                     </Menu.Item>
                     <Menu.Item>
-                      <Link
-                        href="/admin-login"
+                      <div
+                        // href="/user/sign-in"
                         className="flex gap-x-3 hover:bg-lightBlue-600 hover:underline text-gray-700 rounded  text-sm group transition-colors items-center"
-
+onClick={()=>handleSignout()}
                       >
                         {/* <SignOutIcon  /> */}
                         Sign out
-                      </Link>
+                      </div>
                     </Menu.Item>
                   </div>
                 </Menu.Items>

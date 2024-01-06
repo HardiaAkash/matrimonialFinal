@@ -7,6 +7,7 @@ import Openeye from "@/components/svg/Openeye";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
+import Loader from './loader';
 
 const Login = () => {
     const [loginDetails,setLoginDetails]=useState({
@@ -58,6 +59,7 @@ const Login = () => {
 
   return (
     <>
+    {isLoading && <Loader/>}
          <div className="flex items-center justify-center lg:min-h-screen  ">
          <ToastContainer/>
         <div className="md:px-[50px] w-full mx-auto">
@@ -108,13 +110,13 @@ const Login = () => {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-[#1f2432] font-medium text-white p-2 rounded-lg  hover:bg-white hover:border hover:border-[gray] h-[50px] text-[white] hover:text-[white] "
+                      className="w-full bg-[#1f2432] font-medium text-white p-2 rounded-lg  hover:bg-[black] hover:border hover:border-[gray] h-[50px] text-[white] hover:text-[white] "
                     >
                       {isLoading ? "Loading.." : "Login"}
                     </button>
                     {/* <Link to="/forgot-password"> */}
                       <div className="text-[16px] font-medium underline text-center py-3 cursor-password">
-                        Forget password
+                      Forgot password
                       </div>
                     {/* </Link> */}
                   </div>

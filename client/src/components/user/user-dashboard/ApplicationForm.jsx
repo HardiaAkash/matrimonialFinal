@@ -1,9 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
-import Loader from "../user-dashboard/WebsiiteLoader/Index";
-import Image from "next/image";
+import Loader from "./WebsiiteLoader/Index";
 
 export const marital_status = [
   "single",
@@ -13,7 +12,7 @@ export const marital_status = [
   "married",
 ];
 
-const UserHome = () => {
+const ApplicationForm = ({refreshData}) => {
   const token = JSON.parse(localStorage.getItem("authToken"));
   const userId = JSON.parse(localStorage.getItem("userID"));
   const [formData, setFormData] = useState({
@@ -32,52 +31,17 @@ const UserHome = () => {
     familyDetails: "",
     address: "",
     contactNumber: "",
-    email: "admin@gmail.com",
+    email: "",
     image: "",
     userID: userId,
   });
-
   const [photograph, setPhotograph] = useState("");
-  const [previewData, setPreviewData] = useState("");
   const [hobby, setHobby] = useState("");
   const [imageDisable, setImageDisable] = useState(false);
   const [imageUpload, setImageUpload] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [isSubmited, setSubmited] = useState(false);
   const [isLoader, setLoader] = useState(false);
-  const [isError, setError] = useState("");
-  const [isRefresh, setRefresh] = useState(false);
-
-  useEffect(() => {
-    getAllData();
-  }, [isRefresh]);
-
-  const getAllData = () => {
-    setLoader(true);
-    const options = {
-      method: "GET",
-      url: `/api/auth/viewCategory`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    };
-    axios
-      .request(options)
-      .then((response) => {
-        console.log(response?.data);
-        if (response.status === 200) {
-          setLoader(false);
-          setPreviewData(response?.data);
-        } else {
-          setLoader(false);
-          return;
-        }
-      })
-      .catch((error) => {
-        setLoader(false);
-        console.error("Error:", error);
-      });
-  };
 
   const InputHandler = (e) => {
     if (e.target.name === "image") {
@@ -95,7 +59,6 @@ const UserHome = () => {
         ...formData,
         hobbies: [...(formData.hobbies || []), hobby],
       });
-      // Clear the hobby input field after adding it to the formData
       setHobby("");
     }
   };
@@ -106,7 +69,7 @@ const UserHome = () => {
     setFormData({ ...formData, [`hobbies`]: newHobbies });
   };
 
-  const uploadImage = async (e) => {
+  const uploadImage = async () => {
     setImageUpload(true);
 
     if (photograph == "" || photograph == undefined) {
@@ -127,6 +90,7 @@ const UserHome = () => {
         setFormData({ ...formData, ["image"]: response?.data?.url });
         setImageDisable(true);
         setImageUpload(false);
+        // setSubmited(true);
       } else {
         setFormData({ ...formData, ["image"]: "" });
         setImageDisable(false);
@@ -140,45 +104,79 @@ const UserHome = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // if (formData.file == "") {
-    //   toast.error("Please fill all feilds");
-    // } else {
-    //   setLoading(true);
-    try {
-      const response = await axios.post("/api/auth/addForm", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      console.log(formData);
-      console.log(response);
-      if (response.status === 200) {
-        // console.log('Login successful');
-        toast.success("Details submit successfully.");
-        setLoading(false);
-        // refreshdata();
-        // closeModal();
-      } else {
-        // console.log(response);
-        setError("Invalid details");
-        toast.error(response);
+  
+    if (formData?.image == "" || formData?.hobbies?.length < 1) {
+      toast.error("Please fill all feilds");
+    } else {
+      setLoading(true);
+      try {
+        const response = await axios.post("/api/auth/addForm", formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        // console.log(formData)
+        // console.log(response)
+        if (response.status === 200) {
+          toast.success("Details submit successfully.");
+          setLoading(false);
+          setSubmited(true);
+          getUserUpdate(1)
+          refreshData();
+        } else {
+          toast.error(response?.data);
+          setLoading(false);
+          return;
+        }
+      } catch (error) {
+        console.error("Error during category:", error);
+        toast.error(error?.response?.data || "server error");
         setLoading(false);
       }
-    } catch (error) {
-      console.error("Error during category:", error);
-      setError("Login failed please try again!");
-      toast.error(error?.response?.data || "server error");
-      setLoading(false);
     }
-    // }
   };
+
+
+  const getUserUpdate = ( step ) => {
+    setLoader(true);
+    const options = {
+      method: "PUT",
+      url: `/api/auth/updateUser`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        id: userId,
+        updatedDetails:{
+          step : step
+        }
+      },
+    };
+    axios
+      .request(options)
+      .then((response) => {
+        // console.log(response?.data);
+        if (response.status === 200) {
+          setLoader(false);
+          refreshData()
+        } else {
+          setLoader(false);
+          return;
+        }
+      })
+      .catch((error) => {
+        setLoader(false);
+        console.error("Error:", error);
+      });
+  };
+  
 
   return (
     <>
-      {isLoader && <Loader />}
       <ToastContainer />
+      {imageUpload && <Loader />}
       <section className="bg-[#f3f3f3] rounded max-h-[100vh] overflow-y-scroll">
         <div className="container mx-auto">
           <div className="py-[40px] lg:py-[70px] flex flex-col justify-center">
@@ -186,15 +184,14 @@ const UserHome = () => {
               applicaton form
             </h4>
             <form className="" onSubmit={handleSubmit}>
-              <div className="py-[20px] max-w-[80%] mx-auto grid md:grid-cols-2 gap-3 gap-x-10 items-end justify-center">
+              <div className="py-[20px] max-w-[80%] mx-auto grid md:grid-cols-2 gap-3 gap-x-10 items-start justify-center">
                 {/*-----------first name -----------*/}
                 <div className="">
                   <input
                     type="text"
                     name="firstname"
                     placeholder="First name"
-                    className="login-input w-full mt-2 custom-input"
-                    value={previewData?.firstname}
+                    className="login-input w-full mt-2 custom-input capitalize"
                     onChange={InputHandler}
                     pattern="[A-Za-z]+"
                     maxLength={84}
@@ -208,8 +205,7 @@ const UserHome = () => {
                     type="text"
                     name="lastname"
                     placeholder="Last name"
-                    className="login-input w-full mt-2 custom-input"
-                    value={previewData?.lastname}
+                    className="login-input w-full mt-2 custom-input capitalize"
                     onChange={InputHandler}
                     pattern="[A-Za-z]+"
                     maxLength={84}
@@ -224,7 +220,6 @@ const UserHome = () => {
                     name="dateOfBirth"
                     placeholder="DOB"
                     className="login-input w-full mt-2 custom-input"
-                    value={previewData?.dateOfBirth}
                     onChange={InputHandler}
                     pattern="^(0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/\d{4}$"
                     title=" DD/MM/YYYY "
@@ -239,7 +234,6 @@ const UserHome = () => {
                     name="height"
                     placeholder="Height"
                     className="login-input w-full mt-2 custom-input"
-                    value={previewData?.height}
                     onChange={InputHandler}
                     required
                   />
@@ -250,7 +244,7 @@ const UserHome = () => {
                   <label htmlFor="gender" className="login-input-label ">
                     Gender :
                   </label>
-                  <div className="flex gap-x-5  py-3">
+                  <div className="flex gap-x-5  py-3 px-4">
                     <label className="text-[14px] flex gap-x-2 cursor-pointer">
                       <input
                         type="radio"
@@ -258,7 +252,6 @@ const UserHome = () => {
                         name="gender"
                         id="gender"
                         checked={formData.gender === "male"}
-                        defaultChecked={previewData?.gender}
                         onChange={InputHandler}
                       />
                       Male
@@ -270,7 +263,6 @@ const UserHome = () => {
                         name="gender"
                         id="gender"
                         checked={formData.gender === "female"}
-                        defaultChecked={previewData?.gender}
                         onChange={InputHandler}
                       />
                       Female
@@ -290,12 +282,11 @@ const UserHome = () => {
 
                 {/*----------- marital Status -----------*/}
                 <div className="py-2">
-                  <span className="login-input-label "> Marital Status:</span>
+                  <span className="login-input-label "> Marital status:</span>
                   <select
                     name="maritalStatus"
-                    value={previewData?.maritalStatus}
                     onChange={InputHandler}
-                    className="login-input w-full mt-2 custom-input normal-case  "
+                    className="login-input w-full mt-2 custom-input bg-white capitalize"
                   >
                     <option className="text-gray-100 " value="">
                       Choose marital status
@@ -314,8 +305,7 @@ const UserHome = () => {
                     type="text"
                     name="religion"
                     placeholder="Religion"
-                    className="login-input w-full mt-2 custom-input"
-                    value={previewData?.religion}
+                    className="login-input w-full mt-2 custom-input capitalize"
                     onChange={InputHandler}
                     pattern="[A-Za-z]+"
                     maxLength={84}
@@ -329,8 +319,7 @@ const UserHome = () => {
                     type="text"
                     name="education"
                     placeholder="Highest education"
-                    className="login-input w-full mt-2 custom-input"
-                    value={previewData?.education}
+                    className="login-input w-full mt-2 custom-input capitalize"
                     onChange={InputHandler}
                     required
                   />
@@ -343,8 +332,7 @@ const UserHome = () => {
                     type="text"
                     name="occupation"
                     placeholder="Occupation"
-                    className="login-input w-full mt-2 custom-input"
-                    value={previewData?.occupation}
+                    className="login-input w-full mt-2 custom-input capitalize"
                     onChange={InputHandler}
                     required
                   />
@@ -357,37 +345,43 @@ const UserHome = () => {
                     name="income"
                     placeholder="income"
                     className="login-input w-full mt-2 custom-input"
-                    value={previewData?.income}
                     onChange={InputHandler}
                     required
                   />
                 </div>
 
                 {/*----------- hobbies -----------*/}
-                {/* <div className="flex items-center gap-5">
-                  <input
-                    type="text"
-                    name="hobby"
-                    placeholder="Hobbies"
-                    className="login-input w-full mt-2 custom-input"
-                    value={hobby}
-                    onChange={InputHandler}
-                  />
-                  <button type="button" className="border rounded px-1 py-1 text-[10px] cursor-pointer " onClick={handleAddHobbies}>
-                    +
-                  </button>
-                </div> */}
-                <div className="">
-                    <span className="login-input-label "> Hobbies:</span>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3  flex-col">
-                    {previewData?.hobbies?.length > 0 &&
-                      previewData?.hobbies?.map((hob, inx) => (
-                        <p className="flex gap-x-2 text-[12px]" key={inx}>
-                          <span className="max-w-[100px] text-ellipsis overflow-hidden flex whitespace-nowrap">
-                            {" "}
-                            {inx + 1}. {hob}
+                <div className="flex flex-col items-center gap-5">
+                  <div className="flex w-full gap-6">
+                    <input
+                      type="text"
+                      name="hobby"
+                      placeholder="Hobbies"
+                      className="login-input w-full mt-2 custom-input capitalize"
+                      value={hobby}
+                      onChange={InputHandler}
+                    />
+                    <button
+                      type="button"
+                      className="rounded px-1 py-1 text-[18px] cursor-pointer font-bold"
+                      onClick={handleAddHobbies}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3  flex-col gap-3 justify-between w-full px-2">
+                    {formData?.hobbies?.length > 0 &&
+                      formData?.hobbies?.map((hob, inx) => (
+                        <p className="flex gap-x-2 text-[14px]" key={inx}>
+                          <span className="max-w-[100px] text-ellipsis overflow-hidden flex whitespace-nowrap capitalize">
+                            <b className="mr-2">{inx + 1}.</b> {hob}
                           </span>
-                          {/* <span className="cursor-pointer" onClick={()=>removeHobbies(inx)}> x</span>  */}
+                          <span
+                            className="cursor-pointer font-medium"
+                            onClick={() => removeHobbies(inx)}
+                          >
+                            x
+                          </span>
                         </p>
                       ))}
                   </div>
@@ -400,7 +394,6 @@ const UserHome = () => {
                     name="familyDetails"
                     placeholder="Family Details"
                     className="login-input w-full mt-2 custom-input h-[80px]"
-                    value={previewData?.familyDetails}
                     onChange={InputHandler}
                     required
                   ></textarea>
@@ -413,7 +406,6 @@ const UserHome = () => {
                     name="address"
                     placeholder="Address"
                     className="login-input w-full mt-2 custom-input h-[80px]"
-                    value={previewData?.address}
                     onChange={InputHandler}
                     required
                   ></textarea>
@@ -426,7 +418,6 @@ const UserHome = () => {
                     name="contactNumber"
                     placeholder="Mobile no."
                     className="login-input w-full mt-2 custom-input"
-                    value={previewData?.contactNumber}
                     onChange={InputHandler}
                     required
                   />
@@ -438,9 +429,9 @@ const UserHome = () => {
                     type="email"
                     name="email"
                     placeholder="Email"
-                    disabled={true}
+                    // disabled={true}
+                    // value={formData.email}
                     className="login-input w-full mt-2 custom-input"
-                    value={previewData?.email}
                     onChange={InputHandler}
                     required
                   />
@@ -452,7 +443,7 @@ const UserHome = () => {
                       Picture
                     </span>
                     <div className="flex items-center w-full">
-                      {/* <input
+                      <input
                         id="file"
                         type="file"
                         name="image"
@@ -460,14 +451,10 @@ const UserHome = () => {
                         onChange={InputHandler}
                         className="w-full bg-cyan-500 hover:bg-cyan-600 "
                         accept="image/png,image/jpg, image/jpeg , image/*"
-                      /> */}
-                      {
-                        previewData?.image !== "" &&
-                        <Image src={ previewData?.image} alt="profile" height={200} width={200} />
-                      }
+                      />
                     </div>
                   </div>
-                  {/* <div className="">
+                  <div className="">
                     <button
                       className={`focus-visible:outline-none text-[13px] px-4 py-1 rounded
                                 ${
@@ -487,19 +474,18 @@ const UserHome = () => {
                         ? "Loading.."
                         : "Upload"}
                     </button>
-                  </div> */}
+                  </div>
                 </div>
-                {/* <div className=""></div> */}
                 <div className=""></div>
-                {/* <div className="mt-6 text-right">
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full max-w-[120px] bg-[#1f2432] font-medium text-white p-2 rounded-lg  hover:bg-white hover:border hover:bg-[white] hover:border-[gray] hover:text-[black] text-[white] transition-all delay-75"
-                >
-                  {isLoading ? "Loading.." : "Submit"}
-                </button>
-                </div> */}
+                <div className="mt-6 text-right">
+                  <button
+                    type="submit"
+                    disabled={isLoading || isSubmited}
+                    className={`w-full max-w-[200px] bg-[#1f2432] font-medium p-2 rounded-lg hover:border hover:bg-[white] hover:border-[gray] hover:text-[black] text-[white] transition-all delay-75 ${isSubmited ? "bg-[gray]" :""}`}
+                  >
+                    {isLoading ? "Loading.." : isSubmited ? "Submited" : "Submit"}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -509,4 +495,4 @@ const UserHome = () => {
   );
 };
 
-export default UserHome;
+export default ApplicationForm;

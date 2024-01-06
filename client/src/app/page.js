@@ -1,6 +1,5 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import Stepper from "@/components/user/home/Stepper-copy";
 import SignIn from "@/components/user/login/SignIn";
 import { ToastContainer } from "react-toastify";
 import UserDashboadr from "@/components/user/user-dashboard/page";
