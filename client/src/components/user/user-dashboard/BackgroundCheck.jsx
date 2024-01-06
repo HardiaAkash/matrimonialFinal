@@ -1,8 +1,55 @@
-import React, { Fragment } from "react";
-
+"use client";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 import Link from "next/link";
 
-const BackgroundCheck = () => {
+const BackgroundCheck = ({refreshData}) => {
+  const router = useRouter();
+  const [isLoader, setLoader] = useState(false);
+  const token = JSON.parse(localStorage.getItem("authToken" || ""));
+
+  const userId = JSON.parse(localStorage.getItem("userID" || ""));
+
+  const getUserUpdate = ( step ) => {
+    // router.push("https://www.google.com/","_blank"); 
+    setLoader(true);
+    const options = {
+      method: "PUT",
+      url: `/api/auth/updateUser`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        id: userId,
+        updatedDetails:{
+          step : step
+        }
+      },
+    };
+    axios
+      .request(options)
+      .then((response) => {
+        // console.log(response?.data);
+        if (response.status === 200) {
+          setLoader(false);
+          refreshData()
+          setTimeout(()=>{
+            window.open('https://www.google.com/', '_blank');
+          },500)
+        } else {
+          setLoader(false);
+          return;
+        }
+      })
+      .catch((error) => {
+        setLoader(false);
+        console.error("Error:", error);
+      });
+  };
+  
+
   return (
     <>
       <section>
@@ -24,11 +71,12 @@ const BackgroundCheck = () => {
               className="w-full"
             />
           <div className="mx-auto mt-6" >
-            <Link href="https://www.google.com/">
-                <button className="login-btn text-white  w-[300px] mx-auto py-2 rounded-[4px]">
+            {/* <Link href="https://www.google.com/"> */}
+                <button className="login-btn text-white  w-[300px] mx-auto py-2 rounded-[4px]" 
+                onClick={()=>getUserUpdate(2)}>
                 Check Background
                 </button>
-            </Link>
+            {/* </Link> */}
           </div>
           </div>
         </div>

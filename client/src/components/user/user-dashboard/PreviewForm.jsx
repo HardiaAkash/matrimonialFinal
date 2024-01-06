@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import Loader from "../user-dashboard/WebsiiteLoader/Index";
@@ -13,41 +13,26 @@ export const marital_status = [
   "married",
 ];
 
-const ViewApplicationDetails = ({ previewData }) => {
+const ViewApplicationDetails = ({ previewData, refreshData }) => {
   const token = JSON.parse(localStorage.getItem("authToken"));
-  const userId = JSON.parse(localStorage.getItem("userID"));
+  // const isUpdated = JSON.parse(localStorage.getItem("isFromUpdated"));
+  const [isUpdated, setIsUpdated] = useState(JSON.parse(localStorage.getItem("isFromUpdated")));
   const [formData, setFormData] = useState(previewData);
-  // ({
-  // firstname: "",
-  // lastname: "",
-  // dateOfBirth: "",
-  // gender: "male",
-  // maritalStatus: "",
-  // religion: "",
-  // height: "",
-  // education: "",
-  // occupation: "",
-  // income: "",
-  // hobbies: [],
-  // familyDetails: "",
-  // address: "",
-  // contactNumber: "",
-  // email: "admin@gmail.com",
-  // image: "",
-  // userID: userId,
-  // });
-
   const [photograph, setPhotograph] = useState("");
-
   const [hobby, setHobby] = useState("");
   const [isStatus, setStatus] = useState(true);
   const [imageDisable, setImageDisable] = useState(false);
   const [imageUpload, setImageUpload] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [isLoader, setLoader] = useState(false);
-  const [isError, setError] = useState("");
-  const [isRefresh, setRefresh] = useState(false);
-  const [isUpdated, setUpdated] = useState(false);
+
+  console.log(isUpdated);
+
+  useEffect(() => {
+    if ( (previewData?.formStatus)?.toLowerCase() === "rejected") {
+      localStorage.setItem("isFromUpdated", JSON.stringify(false));
+      setIsUpdated(false)
+    }
+  }, []);
 
   const InputHandler = (e) => {
     if (e.target.name === "image") {
@@ -113,59 +98,58 @@ const ViewApplicationDetails = ({ previewData }) => {
     }
   };
 
+  console.log(formData);
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // console.log(formData);
-    // return
-    if (formData?.image == "" || formData?.hobbies?.length < 1) {
-      toast.error("Please fill all feilds");
+    if ((formData.formStatus)?.toLowerCase() !== "pending") {
+      // console.log("okkk");
+      setFormData({ ...formData, ["formStatus"]: "Pending" });
     } else {
-      setLoading(true);
-      try {
-        const response = await axios.post(
-          `/api/auth/editForm/${userId}`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
+      // return
+      if (formData?.image == "" || formData?.hobbies?.length < 1) {
+        toast.error("Please fill all feilds");
+      } else {
+        setLoading(true);
+        try {
+          const response = await axios.put(
+            `/api/auth/editForm/${previewData?._id}`,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (response.status === 200) {
+            toast.success("Details updated successfully.");
+            setLoading(false);
+            localStorage.setItem("isFromUpdated", JSON.stringify(true));
+            // setUpdated(true);
+            setStatus(true);
+            refreshData();
+          } else {
+            setLoading(false);
+            return;
           }
-        );
-        console.log(response);
-        if (response.status === 200) {
-          // console.log('Login successful');
-          toast.success("Details updated successfully.");
-          setLoading(false);
-          setUpdated(true);
-          // refreshdata();
-          // closeModal();
-        } else {
-          // console.log(response);
-          setLoading(false);
-          return;
-        }
-      } catch (error) {
-        if (error?.response?.status === 404) {
-          toast.error("server error");
-          setLoading(false);
-          return;
-        } else {
-          console.error("Error during category:", error);
-          setError("Login failed please try again!");
-          toast.error(error?.response?.data || "server error");
-          setLoading(false);
+        } catch (error) {
+          if (error?.response?.status === 404) {
+            toast.error("server error");
+            setLoading(false);
+            return;
+          } else {
+            console.error("Error during category:", error);
+            toast.error(error?.response?.data || "server error");
+            setLoading(false);
+          }
         }
       }
     }
   };
 
- 
-
   return (
     <>
-      {(isLoader || imageUpload) && <Loader />}
+      {imageUpload && <Loader />}
       <ToastContainer />
       <section className="bg-[#f3f3f3] rounded max-h-[100vh] overflow-y-scroll w-full">
         <div className="container mx-auto">
@@ -173,14 +157,46 @@ const ViewApplicationDetails = ({ previewData }) => {
             <h4 className=" md:text-[40px] text-[30px] font-semibold text-center">
               Preview application form
             </h4>
-            <div className="flex items-center justify-between px-10  mb-6 py-4">
-              <p className=""></p>
-              <p
-                className="text-right  cursor-pointer font-medium"
-                onClick={() => setStatus(false)}
-              >
-                Edit
-              </p>
+            <div className=" px-10  mb-6 py-4">
+              {/* previewData */}
+              {/* {!isUpdated ? ( */}
+              {/* <>
+                  <p
+                    className="text-right cursor-pointer font-medium"
+                    onClick={() => setStatus(false)}
+                  >
+                    Edit
+                  </p>
+                </> */}
+              {/* // ) : (
+              //   <p className="text-center  cursor-pointer font-medium text-[16px] ">
+              //     Your application form is complete, please wait for the admin
+              //     to approve it.
+              //   </p>
+              // )} */}
+
+              {!((previewData?.formStatus )?.toLowerCase() === "approved") ? (
+                <>
+                  {isUpdated ? (
+                    <p className="text-center  cursor-pointer font-medium text-[16px] ">
+                      Your application form is complete, please wait for the
+                      admin to approve it.
+                    </p>
+                  ) : (
+                    <p
+                      className="text-right cursor-pointer font-medium"
+                      onClick={() => setStatus(false)}
+                    >
+                      Edit
+                    </p>
+                  )}
+                </>
+              )
+            :
+            <p className="text-center  cursor-pointer font-medium text-[16px] text-[green] px-2 py-2">
+            Your application form has been approved, Please proceed further.
+          </p>
+            }
             </div>
             <form className="" onSubmit={handleSubmit}>
               <div className="py-[20px] max-w-[80%] mx-auto grid md:grid-cols-2 gap-3 gap-x-10 items-start justify-center">
@@ -191,7 +207,7 @@ const ViewApplicationDetails = ({ previewData }) => {
                     type="text"
                     name="firstname"
                     placeholder="First name"
-                    className="login-input w-full mt-2 custom-input"
+                    className="login-input w-full mt-2 custom-input capitalize"
                     value={formData?.firstname}
                     onChange={InputHandler}
                     pattern="[A-Za-z]+"
@@ -208,7 +224,7 @@ const ViewApplicationDetails = ({ previewData }) => {
                     type="text"
                     name="lastname"
                     placeholder="Last name"
-                    className="login-input w-full mt-2 custom-input"
+                    className="login-input w-full mt-2 custom-input capitalize"
                     value={formData?.lastname}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -323,7 +339,7 @@ const ViewApplicationDetails = ({ previewData }) => {
                     type="text"
                     name="religion"
                     placeholder="Religion"
-                    className="login-input w-full mt-2 custom-input"
+                    className="login-input w-full mt-2 custom-input capitalize"
                     value={formData?.religion}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -342,7 +358,7 @@ const ViewApplicationDetails = ({ previewData }) => {
                     type="text"
                     name="education"
                     placeholder="Highest education"
-                    className="login-input w-full mt-2 custom-input"
+                    className="login-input w-full mt-2 custom-input capitalize"
                     value={formData?.education}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -358,7 +374,7 @@ const ViewApplicationDetails = ({ previewData }) => {
                     type="text"
                     name="occupation"
                     placeholder="Occupation"
-                    className="login-input w-full mt-2 custom-input"
+                    className="login-input w-full mt-2 custom-input capitalize"
                     value={formData?.occupation}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -416,7 +432,7 @@ const ViewApplicationDetails = ({ previewData }) => {
                                   className="flex gap-x-2 text-[14px]"
                                   key={inx}
                                 >
-                                  <span className="max-w-[100px] text-ellipsis overflow-hidden flex whitespace-nowrap">
+                                  <span className="max-w-[100px] text-ellipsis overflow-hidden flex whitespace-nowrap capitalize">
                                     {inx + 1}. {hob}
                                   </span>
                                   <span
@@ -441,7 +457,7 @@ const ViewApplicationDetails = ({ previewData }) => {
                         <div className="grid md:grid-cols-2 lg:grid-cols-3  flex-col  custom-input">
                           {formData?.hobbies?.map((hob, inx) => (
                             <p className="flex gap-x-2 text-[12px]" key={inx}>
-                              <span className="max-w-[100px] text-ellipsis overflow-hidden flex whitespace-nowrap">
+                              <span className="max-w-[100px] text-ellipsis overflow-hidden flex whitespace-nowrap capitalize">
                                 {inx + 1}. {hob}
                               </span>
                               {/* <span className="cursor-pointer" onClick={()=>removeHobbies(inx)}> x</span>  */}
@@ -518,7 +534,7 @@ const ViewApplicationDetails = ({ previewData }) => {
                     <span className="login-input-label cursor-pointer mb-3">
                       Picture
                     </span>
-                    {console.log(formData)}
+                    {/* {console.log(formData)} */}
                     {isStatus ? (
                       <>
                         {formData?.image !== "" && (
@@ -559,20 +575,20 @@ const ViewApplicationDetails = ({ previewData }) => {
                             </button>
                           </div>
                         ) : (
-                        <div className="flex items-center w-full gap-2 mt-2">
-                          <input
-                            id="file"
-                            type="file"
-                            name="image"
-                            disabled={imageDisable}
-                            onChange={InputHandler}
-                            className="w-full bg-cyan-500 hover:bg-cyan-600 "
-                            accept="image/png,image/jpg, image/jpeg , image/*"
-                          />
+                          <div className="flex items-center w-full gap-2 mt-2">
+                            <input
+                              id="file"
+                              type="file"
+                              name="image"
+                              disabled={imageDisable}
+                              onChange={InputHandler}
+                              className="w-full bg-cyan-500 hover:bg-cyan-600 "
+                              accept="image/png,image/jpg, image/jpeg , image/*"
+                            />
 
-                          <div className="">
-                            <button
-                              className={`focus-visible:outline-none text-[13px] px-4 py-1 rounded
+                            <div className="">
+                              <button
+                                className={`focus-visible:outline-none text-[13px] px-4 py-1 rounded
                                 ${
                                   imageDisable
                                     ? " bg-[green]"
@@ -580,18 +596,18 @@ const ViewApplicationDetails = ({ previewData }) => {
                                     ? "bg-[gray]"
                                     : "bg-[#070708bd] text-[white]"
                                 }`}
-                              type="button"
-                              onClick={uploadImage}
-                              disabled={imageDisable || imageUpload}
-                            >
-                              {imageDisable
-                                ? "Uploaded"
-                                : imageUpload
-                                ? "Loading.."
-                                : "Upload"}
-                            </button>
+                                type="button"
+                                onClick={uploadImage}
+                                disabled={imageDisable || imageUpload}
+                              >
+                                {imageDisable
+                                  ? "Uploaded"
+                                  : imageUpload
+                                  ? "Loading.."
+                                  : "Upload"}
+                              </button>
+                            </div>
                           </div>
-                        </div>
                         )}
                       </>
                     )}
@@ -604,7 +620,7 @@ const ViewApplicationDetails = ({ previewData }) => {
                   <div className="mt-6 text-right">
                     <button
                       type="submit"
-                      disabled={isLoading}
+                      disabled={isLoading || isUpdated}
                       className={`w-full max-w-[120px] bg-[#1f2432] font-medium  p-2 rounded-lg hover:border hover:bg-[white] hover:border-[gray] hover:text-[black] text-[white] transition-all delay-75 
                     ${isUpdated ? "bg-[gray]" : ""}`}
                     >

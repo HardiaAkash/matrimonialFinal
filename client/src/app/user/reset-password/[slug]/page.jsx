@@ -6,16 +6,20 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import OpenEye from "@/components/user/user-dashboard/Svg/OpenEye";
+import CloseEye from "@/components/user/user-dashboard/Svg/CloseEye";
 
 
 const ResetPassword = ({params}) => {
-    console.log(params.slug)
+    // console.log(params.slug)
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const resetToken = "";
+  const [showPassword, setShowPassword] = useState(false);
+  const resetToken = params?.slug || "";
   const token = JSON.parse(localStorage.getItem("authToken" || ""));
 
+  console.log(params.slug)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -26,7 +30,7 @@ const ResetPassword = ({params}) => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${resetToken}`,
           },
         }
       );
@@ -61,16 +65,22 @@ const ResetPassword = ({params}) => {
                     Please enter a new password to access admin dashboard
                   </p>
                 </div>
-                <div className="md:py-2">
+                <div className="relative flex justify-center items-center md:py-2">
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder="Password"
-                    className="login-input w-full mt-2 custom-input"
+                    className="login-input w-full custom-input"
                     onChange={(e) => setPassword(e.target.value)}
                     minLength={8}
                     required
                   />
+                   <div
+                        className="absolute right-[10px] cursor-pointer"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <OpenEye /> : <CloseEye />}
+                      </div>
                 </div>
 
                 <div className="mt-4">

@@ -4,7 +4,7 @@ const multer = require('multer');
 const { authorizeRoles, isAuthJWT } = require("../Utils/jwt");
 const { addAdmin, adminLogin } = require("../Controller/AdminAuth");
 const { addUser, userLogin, deleteUser, updateUser, logoutUser, getUserByID, viewUser, forgotPwd, resetPassword, changeUserPwd, verifyUser } = require("../Controller/UserAuth");
-const { addForm, editFormById, changeStatusForm, uploadImage, viewForm, deleteFormById, getFormByUserID } = require("../Controller/UserFormAuth");
+const { addForm, editFormById, changeStatusForm, uploadImage, viewForm, deleteFormById, getFormByUserID, changeMatchStatus } = require("../Controller/UserFormAuth");
 const { addCounVideo, getAllCounsVideo } = require("../Controller/VideoAuth");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -33,6 +33,6 @@ router.route("/viewForm").get(isAuthJWT,authorizeRoles("Admin"),viewForm)
 router.route("/getFormByUser").post(isAuthJWT,getFormByUserID)
 router.route("/counselVideo").post(isAuthJWT,authorizeRoles("Admin"),addCounVideo)
 router.route("/getCounselVideo").get(isAuthJWT, getAllCounsVideo)
-
+router.route("/isMatched/:id").post(isAuthJWT, authorizeRoles("Admin"),changeMatchStatus)
 
 module.exports = router;
