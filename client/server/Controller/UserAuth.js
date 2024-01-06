@@ -222,12 +222,12 @@ exports.updateUser = async (req, res) => {
     }
 
     const updatedUser = await User.findByIdAndUpdate(id, updatedDetails, { new: true });
-
+    
     if (!updatedUser) {
       return res.status(HttpStatus.BAD_REQUEST).json("User not found.");
     }
 
-    return res.status(HttpStatus.OK).json(StatusMessage.USER_UPDATED);
+    return res.status(HttpStatus.OK).json(updatedUser);
   } catch (error) {
     console.error(error);
     if (error.code === 11000 && error.keyPattern && error.keyPattern.email === 1) {

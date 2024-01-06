@@ -410,3 +410,62 @@ exports.changeMatchStatus = async (req, res) => {
         return res.status(HttpStatus.SERVER_ERROR).json({ message: StatusMessage.SERVER_ERROR });
     }
 };
+
+exports.approvedForm = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 1000;
+        const search = req.query.search || "";
+        const gender = req.query.gender;
+        // Check if isMatched query param exists and convert it to boolean
+        const isMatched = req.query.isMatched !== undefined ? req.query.isMatched === 'true' : undefined;
+          
+        if (!page || !limit) {
+            return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.MISSING_PAGE_PARAMS);
+        }
+
+        const startIndex = (page - 1) * limit;
+        let query = { formStatus: "approved" }; // Filter for approved forms
+
+        // Search query
+        if (search) {
+            const searchQuery = {
+                $or: [
+                    { firstname: { $regex: search, $options: 'i' } },
+                    { contactNumber: { $regex: search, $options: 'i' } },
+                    { email: { $regex: search, $options: 'i' } }
+                ]
+            };
+            query = { ...query, ...searchQuery };
+        }
+
+        // Gender query
+        if (gender) {
+            const genderQuery = { gender: { $regex: `^${gender}$`, $options: 'i' } };
+            query = { ...query, ...genderQuery };
+        }
+
+        // isMatched query
+        if (isMatched !== undefined) {
+            query.isMatched = isMatched;
+        }
+
+        console.log('Final Query:', query); // For debugging purposes
+
+        const userForm = await UserForm.find(query).skip(startIndex).limit(limit);
+        const totalUsers = await UserForm.countDocuments(query);
+
+        const pagination = {
+            currentPage: page,
+            totalPages: Math.ceil(totalUsers / limit),
+            totalUsers
+        };
+
+        return res.status(HttpStatus.OK).json({ userForm, pagination });
+    } catch (error) {
+        console.error(error);
+        return res.status(HttpStatus.BAD_REQUEST).json("Error fetching users.");
+    }
+};
+
+
