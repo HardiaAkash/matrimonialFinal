@@ -88,8 +88,8 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId,getUserUpdate }) => {
         if (response.status === 200) {
           toast.success("Video submitted successfully.");
           setLoading(false);
-          getUserUpdate(3)
-          localStorage.setItem( "isVideoUploded",JSON.stringify(true));
+          getUserUpdate(4)
+          // localStorage.setItem( "isVideoUploded",JSON.stringify(true));
           closeModal();
         } else {
           // console.log(response);

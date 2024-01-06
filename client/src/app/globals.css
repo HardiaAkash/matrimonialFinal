@@ -13,7 +13,14 @@
 .login-input-label{
     @apply text-[#1f2432]  text-[14px];
  }
+.custom-radio{
+    @apply cursor-pointer select-none rounded-[20px] py-[7px] text-center peer-checked:bg-[#000c] peer-checked:text-[white] text-[14px] font-medium w-[90px] px-1 max-w-[90px] flex flex-col justify-center items-center capitalize border border-[#000c]
+ }
+.sidemenu_btn{
+    @apply px-4 py-3 mx-5 rounded-md  flex gap-x-3 items-center cursor-pointer  transition-colors font-semibold hover:transition-all ease-in delay-100 duration-300  text-[#f3f3f3] hover:bg-menu_secondary border border-[transparent] hover:border-[#f3f3f35e] hover:text-[white] 
+ }
 
  .login-btn{
     background: linear-gradient(54deg, #383260, #d3d0e7)
  }
+ 

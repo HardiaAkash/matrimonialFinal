@@ -154,10 +154,10 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
       <section className="bg-[#f3f3f3] rounded max-h-[100vh] overflow-y-scroll w-full">
         <div className="container mx-auto">
           <div className="2xl:py-[70px] py-[40px] flex flex-col justify-center  mb-6">
-            <h4 className=" md:text-[40px] text-[30px] font-semibold text-center">
+            <h4 className=" md:text-[40px] sm:text-[30px] text-[24px] font-semibold text-center pt-[8px]">
               Preview application form
             </h4>
-            <div className=" px-10  mb-6 py-4">
+            <div className="px-[10px] md:px-10  mb-6 py-4">
               {/* previewData */}
               {/* {!isUpdated ? ( */}
               {/* <>
@@ -199,7 +199,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
             }
             </div>
             <form className="" onSubmit={handleSubmit}>
-              <div className="py-[20px] max-w-[80%] mx-auto grid md:grid-cols-2 gap-3 gap-x-10 items-start justify-center">
+              <div className="py-[20px] lg:max-w-[80%] lg:px-0 px-[20px] mx-auto  flex flex-col md:grid md:grid-cols-2 gap-3 gap-x-10 items-start justify-center">
                 {/*-----------first name -----------*/}
                 <div className="">
                   <span className="login-input-label "> First Name:</span>
@@ -257,17 +257,19 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   <input
                     type="text"
                     name="height"
-                    placeholder="Height"
+                    placeholder="Height (cm)"
                     className="login-input w-full mt-2 custom-input"
                     value={formData?.height}
                     onChange={InputHandler}
+                    pattern="[0-9]*"
+                    title="Please enter only numbers"
                     disabled={isStatus}
                     required
                   />
                 </div>
 
                 {/*----------- gender -----------*/}
-                <div className="py-2">
+                {/* <div className="py-2">
                   <label htmlFor="gender" className="login-input-label ">
                     Gender :
                   </label>
@@ -298,16 +300,54 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       />
                       Female
                     </label>
-                    {/* <label className="text-[14px] flex gap-x-3 cursor-pointer">
-                  <input
-                    type="radio"
-                    value="other"
-                    name="isSubpage"
-                    checked={formData.isSubpage === "other"}
-                    onChange={InputHandler}
-                  />
-                  Other
-                </label> */}
+                    
+                  </div>
+                </div> */}
+
+                <div className="py-2">
+                  <label htmlFor="gender" className="login-input-label ">
+                    Gender :
+                  </label>
+                  <div className="flex md:gap-x-5 gap-x-2  py-3 md:px-4">
+                    <div>
+                      <input
+                        type="radio"
+                        name="gender"
+                        id="male"
+                        value="male"
+                        className="peer hidden"
+                        checked={formData.gender === "male"}
+                        defaultChecked={formData?.gender}
+                        onChange={InputHandler}
+                      />
+                      <label htmlFor="male" className="custom-radio"> male </label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        name="gender"
+                        id="female"
+                        value="female"
+                        className="peer hidden"
+                        checked={formData.gender === "female"}
+                        defaultChecked={formData?.gender}
+                        onChange={InputHandler}
+                      />
+                      <label htmlFor="female" className="custom-radio" >female </label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        name="gender"
+                        id="other"
+                        value="other"
+                        className="peer hidden"
+                        checked={formData.gender === "other"}
+                        defaultChecked={formData?.gender}
+                         onChange={InputHandler}
+                      />
+                      <label htmlFor="other" className="custom-radio" >other </label>
+                    </div>
                   </div>
                 </div>
 
@@ -344,6 +384,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     onChange={InputHandler}
                     disabled={isStatus}
                     pattern="[A-Za-z]+"
+                    title="Enter only alphabets"
                     maxLength={84}
                     required
                   />
@@ -510,6 +551,8 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     value={formData?.contactNumber}
                     onChange={InputHandler}
                     disabled={isStatus}
+                    pattern="[0-9]*"
+                    title="Please enter only numbers"
                     required
                   />
                 </div>

@@ -11,7 +11,8 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
   const [isLoader, setLoader] = useState(false);
   const userId = JSON.parse(localStorage.getItem("userID" || ""));
   const token = JSON.parse(localStorage.getItem("authToken" || ""));
-  const isVideoUplod = JSON.parse(localStorage.getItem("isVideoUploded" || ""));
+  // const isVideoUplod = JSON.parse(localStorage.getItem("isVideoUploded" || ""));
+  const [isVideoUplod, setIsVideoUplod] = useState(false);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -51,56 +52,63 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
       });
   };
 
+  useEffect(() => {
+    if (previewData?.video?.length > 0) {
+      getUserUpdate(4);
+      setIsVideoUplod(true)
+    }
+  }, []);
+
   console.log(previewData);
 
   return (
     <>
-      <section>
-        <div className="flex flex-col h-[100vh] justify-center gap-20 items-center bg-white relative">
-          <div className="absolute right-[35px] top-[15px] cursor-pointer ">
-            {/* <ProfileIcon /> */}
-          </div>
-          <div className="text-center">
-            {/* <h3 className="text-[28px] font-bold">Welcome</h3> */}
+      <section className="bg-white">
+        <div className="container mx-auto">
+          <div className="text-center pt-[40px]">
             <h5 className="pt-2 md:text-[40px] text-[30px] font-semibold ">
               Video Submission
             </h5>
           </div>
-          {Array.isArray(previewData?.video) &&
-          previewData?.video?.length > 0 ? (
-            <div className="flex  gap-5  justify-center max-w-[80%] ">
-              {previewData?.video?.map((items, inx) => (
-                <div className="max-w-[50%]">
-                  <video controls className="max-h-[500px]">
-                    <source src={items} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              ))}
+          <div className="flex flex-col justify-center gap-20 items-center  relative pt-[80px]">
+            <div className="absolute right-[35px] top-[15px] cursor-pointer ">
             </div>
-          ) : (
-            <div className="md:w-[30%] mx-auto flex flex-col items-center justify-center">
-              <img
-                src="/user/bg_check.svg"
-                alt="welcome dashboard"
-                className="w-full"
-              />
-              <div className="mx-auto mt-6 text-center">
-                <h5 className="pt-2 text-[20px] font-semibold mb-3 text-center">
-                  Please upload your recorded video
-                </h5>
-                <button
-                  className={` text-white  w-[300px] mx-auto py-2 rounded-[4px]
+            {Array.isArray(previewData?.video) &&
+            previewData?.video?.length > 0 ? (
+              <div className="flex md:flex-row flex-col gap-5  justify-center max-w-[80%] ">
+                {previewData?.video?.map((items, inx) => (
+                  <div className="lg:max-w-[50%] md:max-w-[70%] max-w-[80%] mx-auto">
+                    <video controls className="">
+                      <source src={items} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="md:w-[30%] mx-auto flex flex-col items-center justify-center">
+                <img
+                  src="/user/bg_check.svg"
+                  alt="welcome dashboard"
+                  className="w-full"
+                />
+                <div className="mx-auto mt-6 text-center">
+                  <h5 className="pt-2 text-[20px] font-semibold mb-3 text-center">
+                    Please upload your recorded video
+                  </h5>
+                  <button
+                    className={` text-white  w-[300px] mx-auto py-2 rounded-[4px]
                 ${isVideoUplod ? "bg-[gray]" : "login-btn  cursor-pointer"}
                 `}
-                  disabled={isVideoUplod}
-                  onClick={() => setIsOpen(true)}
-                >
-                  {isVideoUplod ? "Uploaded" : "Upload"}
-                </button>
+                    disabled={isVideoUplod}
+                    onClick={() => setIsOpen(true)}
+                  >
+                    {isVideoUplod ? "Uploaded" : "Upload"}
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </section>
 

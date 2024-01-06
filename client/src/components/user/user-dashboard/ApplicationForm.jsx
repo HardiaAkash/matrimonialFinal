@@ -12,7 +12,7 @@ export const marital_status = [
   "married",
 ];
 
-const ApplicationForm = ({refreshData}) => {
+const ApplicationForm = ({ refreshData }) => {
   const token = JSON.parse(localStorage.getItem("authToken"));
   const userId = JSON.parse(localStorage.getItem("userID"));
   const [formData, setFormData] = useState({
@@ -104,8 +104,8 @@ const ApplicationForm = ({refreshData}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    if (formData?.image == "" || formData?.hobbies?.length < 1) {
+
+    if (formData?.image == "" || formData?.hobbies?.length < 1 || formData?.maritalStatus === "")  {
       toast.error("Please fill all feilds");
     } else {
       setLoading(true);
@@ -122,7 +122,7 @@ const ApplicationForm = ({refreshData}) => {
           toast.success("Details submit successfully.");
           setLoading(false);
           setSubmited(true);
-          getUserUpdate(1)
+          getUserUpdate(1);
           refreshData();
         } else {
           toast.error(response?.data);
@@ -137,8 +137,7 @@ const ApplicationForm = ({refreshData}) => {
     }
   };
 
-
-  const getUserUpdate = ( step ) => {
+  const getUserUpdate = (step) => {
     setLoader(true);
     const options = {
       method: "PUT",
@@ -149,9 +148,9 @@ const ApplicationForm = ({refreshData}) => {
       },
       data: {
         id: userId,
-        updatedDetails:{
-          step : step
-        }
+        updatedDetails: {
+          step: step,
+        },
       },
     };
     axios
@@ -160,7 +159,7 @@ const ApplicationForm = ({refreshData}) => {
         // console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
-          refreshData()
+          refreshData();
         } else {
           setLoader(false);
           return;
@@ -171,7 +170,6 @@ const ApplicationForm = ({refreshData}) => {
         console.error("Error:", error);
       });
   };
-  
 
   return (
     <>
@@ -184,7 +182,7 @@ const ApplicationForm = ({refreshData}) => {
               applicaton form
             </h4>
             <form className="" onSubmit={handleSubmit}>
-              <div className="py-[20px] max-w-[80%] mx-auto grid md:grid-cols-2 gap-3 gap-x-10 items-start justify-center">
+              <div className="py-[20px] lg:max-w-[80%]  mx-auto flex flex-col md:grid md:grid-cols-2 gap-3 gap-x-10 items-start justify-center lg:px-0 px-[20px]">
                 {/*-----------first name -----------*/}
                 <div className="">
                   <input
@@ -232,9 +230,11 @@ const ApplicationForm = ({refreshData}) => {
                   <input
                     type="text"
                     name="height"
-                    placeholder="Height"
+                    placeholder="Height (cm)"
                     className="login-input w-full mt-2 custom-input"
                     onChange={InputHandler}
+                    pattern="[0-9]*"
+                    title="Please enter only numbers"
                     required
                   />
                 </div>
@@ -244,39 +244,43 @@ const ApplicationForm = ({refreshData}) => {
                   <label htmlFor="gender" className="login-input-label ">
                     Gender :
                   </label>
-                  <div className="flex gap-x-5  py-3 px-4">
-                    <label className="text-[14px] flex gap-x-2 cursor-pointer">
+                  <div className="flex md:gap-x-5 gap-x-2  py-3  md:px-4">
+                    <div>
                       <input
                         type="radio"
-                        value="male"
                         name="gender"
-                        id="gender"
+                        id="male"
+                        value="male"
+                        className="peer hidden"
                         checked={formData.gender === "male"}
                         onChange={InputHandler}
                       />
-                      Male
-                    </label>
-                    <label className="text-[14px] flex gap-x-2 cursor-pointer">
+                      <label htmlFor="male" className="custom-radio"> male </label>
+                    </div>
+                    <div>
                       <input
                         type="radio"
-                        value="female"
                         name="gender"
-                        id="gender"
+                        id="female"
+                        value="female"
+                        className="peer hidden"
                         checked={formData.gender === "female"}
                         onChange={InputHandler}
                       />
-                      Female
-                    </label>
-                    {/* <label className="text-[14px] flex gap-x-3 cursor-pointer">
-                  <input
-                    type="radio"
-                    value="other"
-                    name="isSubpage"
-                    checked={formData.isSubpage === "other"}
-                    onChange={InputHandler}
-                  />
-                  Other
-                </label> */}
+                      <label htmlFor="female" className="custom-radio" >female </label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        name="gender"
+                        id="other"
+                        value="other"
+                        className="peer hidden"
+                        checked={formData.gender === "other"}
+                         onChange={InputHandler}
+                      />
+                      <label htmlFor="other" className="custom-radio" >other </label>
+                    </div>
                   </div>
                 </div>
 
@@ -308,6 +312,7 @@ const ApplicationForm = ({refreshData}) => {
                     className="login-input w-full mt-2 custom-input capitalize"
                     onChange={InputHandler}
                     pattern="[A-Za-z]+"
+                    title="Enter only alphabets"
                     maxLength={84}
                     required
                   />
@@ -369,6 +374,7 @@ const ApplicationForm = ({refreshData}) => {
                       +
                     </button>
                   </div>
+                  <div className="text-[13px] text-left w-full px-2 font-[400]">Note* : Click on add button to add a hobby</div>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3  flex-col gap-3 justify-between w-full px-2">
                     {formData?.hobbies?.length > 0 &&
                       formData?.hobbies?.map((hob, inx) => (
@@ -418,6 +424,8 @@ const ApplicationForm = ({refreshData}) => {
                     name="contactNumber"
                     placeholder="Mobile no."
                     className="login-input w-full mt-2 custom-input"
+                    pattern="[0-9]*"
+                    title="Please enter only numbers"
                     onChange={InputHandler}
                     required
                   />
@@ -481,9 +489,15 @@ const ApplicationForm = ({refreshData}) => {
                   <button
                     type="submit"
                     disabled={isLoading || isSubmited}
-                    className={`w-full max-w-[200px] bg-[#1f2432] font-medium p-2 rounded-lg hover:border hover:bg-[white] hover:border-[gray] hover:text-[black] text-[white] transition-all delay-75 ${isSubmited ? "bg-[gray]" :""}`}
+                    className={`w-full max-w-[200px] bg-[#1f2432] font-medium p-2 rounded-lg hover:border hover:bg-[white] hover:border-[gray] hover:text-[black] text-[white] transition-all delay-75 ${
+                      isSubmited ? "bg-[gray]" : ""
+                    }`}
                   >
-                    {isLoading ? "Loading.." : isSubmited ? "Submited" : "Submit"}
+                    {isLoading
+                      ? "Loading.."
+                      : isSubmited
+                      ? "Submited"
+                      : "Submit"}
                   </button>
                 </div>
               </div>

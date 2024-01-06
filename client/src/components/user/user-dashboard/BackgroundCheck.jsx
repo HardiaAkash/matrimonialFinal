@@ -73,7 +73,7 @@ const BackgroundCheck = ({refreshData}) => {
           <div className="mx-auto mt-6" >
             {/* <Link href="https://www.google.com/"> */}
                 <button className="login-btn text-white  w-[300px] mx-auto py-2 rounded-[4px]" 
-                onClick={()=>getUserUpdate(2)}>
+                onClick={()=>getUserUpdate(3)}>
                 Check Background
                 </button>
             {/* </Link> */}
