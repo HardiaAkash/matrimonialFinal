@@ -66,15 +66,19 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true],
     },
-    "image":{
+    "image": {
         type: String,
     },
-    "video":{
+    "video": {
         type: Array,
     },
-    "formStatus":{
-        type: String, 
+    "formStatus": {
+        type: String,
         default: "Pending"
+    },
+    "isMatched": {
+        type: Boolean,
+        default: false
     }
 
 })
