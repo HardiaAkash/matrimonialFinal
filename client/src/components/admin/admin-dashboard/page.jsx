@@ -17,6 +17,7 @@ import Pages from '../pages';
 import { useRouter } from 'next/navigation'
 import AppForm from '../appForm';
 import ConsultVideo from '../consultVideo';
+import ProfileMatch from '../profileMatch';
 
 
 
@@ -50,6 +51,12 @@ const SideMenu = () => {
             label: "Consultation Video",
             component:<ConsultVideo/>,
             icon: VideoIcon,
+          },
+          {
+            id: 5,
+            label: "Profile Match",
+            component:<ProfileMatch/>,
+            icon: Users,
           },
 
       

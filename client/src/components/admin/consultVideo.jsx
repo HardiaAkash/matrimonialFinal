@@ -4,7 +4,8 @@ import Loader from "./loader";
 
 const ConsultVideo = () => {
   const [formData, setFormData] = useState({
-    video: [],
+    name:"Counselling",
+    video:"",
   });
   const [allData, setAllData] = useState([]);
   const [video, setVideo] = useState("");
@@ -61,14 +62,14 @@ const ConsultVideo = () => {
       });
       if (response.status === 200) {
         // setVideoUrl(response?.data?.url);
-        console.log(response?.data);
-        const videoUrl = response?.data?.url;
-        setFormData({ ...formData, video: [...formData.video, videoUrl] });
-        setVideoDisable(true);
-        console.log("Form Dta", formData);
-        setVideoUploading(false);
-        closePopup();
-        setIsLoader(false);
+        console.log(response?.data?.url);
+        // const videoUrl = response?.data?.url;
+        setFormData({ ...formData, video: response?.data?.url});
+        // setVideoDisable(true);
+      
+        getVideoAws({e, videoA: response?.data?.url})
+        // closePopup();
+        
       } else {
         setVideoDisable(false);
         setVideoUploading(false);
@@ -84,6 +85,42 @@ const ConsultVideo = () => {
       setVideoUploading(false);
     }
   };
+
+  const getVideoAws = async (e) => {
+    console.log(e.videoA);
+    // console.log(videoA);
+    console.log("Form Dta", formData);
+    
+    try {
+       
+
+        const response = await axios.post("/api/auth/counselVideo", {
+          name:"Counselling",
+          video: e?.videoA
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (response.status === 200) {
+            console.log(response.data);
+            closePopup();
+            setVideoUploading(false);
+            setIsLoader(false);
+            getVideoApi();
+        } else {
+            console.error("Failed to upload video");
+          
+        }
+    } catch (error) {
+        console.error("Error uploading video:", error.message);
+        
+    }
+};
+
+
   const inputHandler = (e) => {
     const file = e.target.files[0];
   
@@ -121,20 +158,21 @@ const ConsultVideo = () => {
           {/* Popup for uploading video */}
           {showPopup && (
             <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-75 z-10">
-              <div className="max-w-md w-full bg-white p-6 rounded-md ">
-                <h2 className="text-xl font-semibold mb-4">Upload Video</h2>
-                <input type="file" onChange={inputHandler} className="mb-4 cursor-pointer " />
-
-                <div className="flex justify-around">
+              <div className="w-[200px] sm:w-[300px] md:w-[350px] bg-white p-6 rounded-md ">
+                <h2 className="text-xl flex justify-center font-semibold mb-4">Upload Video</h2>
+                <div className="flex sm:ml-7 ml-2">
+                <input type="file" onChange={inputHandler} className="mb-4 cursor-pointer " accept="video/mp4,video/x-m4v,video/*"/>
+</div>
+                <div className="flex sm:flex-row flex-col justify-around">
                   <button
                     onClick={uploadVideo}
-                    disabled={videoDisable || videoUploading}
-                    className="text-[green] hover:shadow-sm cursor-pointer rounded-md border-[green] border px-3 py-1 transition duration-300 ease-in-out transform hover:scale-105"
+                    disabled={ videoUploading}
+                    className="mb-3 sm:mb-0 text-[green] text-[14px] hover:shadow-sm cursor-pointer rounded-md border-[green] border px-3 py-1 transition duration-300 ease-in-out transform hover:scale-105"
                   >
                     {videoUploading ? "Uploading..." : "Upload Video"}
                   </button>
                   <button
-                    className="text-[red] hover:shadow-sm cursor-pointer rounded-md border-[red] border px-3 py-1 transition duration-300 ease-in-out transform hover:scale-105"
+                    className="text-[red] text-[14px] hover:shadow-sm cursor-pointer rounded-md border-[red] border px-3 py-1 transition duration-300 ease-in-out transform hover:scale-105"
                     onClick={closePopup}
                   >
                     Cancel
@@ -160,9 +198,9 @@ const ConsultVideo = () => {
 
         <div className="mt-7 flex justify-center  px-5 md:px-0  ">
         {allData.map((videoUrl, index) => (
-          <div key={index} className="mx-auto">
+          <div key={new Date().getTime()} className="mx-auto">
             <video width={700} height={350} controls>
-              <source src={videoUrl.video} type="video/mp4" />
+              <source src={videoUrl.video+ '?v=' + new Date().getTime()} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
