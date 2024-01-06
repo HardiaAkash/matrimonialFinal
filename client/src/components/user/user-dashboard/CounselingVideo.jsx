@@ -80,9 +80,8 @@ const CounselingVideo = ({refreshData}) => {
     <>
       {isLoader && <Loader />}
       <section>
-        <div className="flex flex-col h-[100vh] justify-center 2xl:gap-20 md:gap-10 gap-6 items-center bg-white relative">
-          <div className="absolute right-[35px] top-[15px] cursor-pointer "></div>
-          <div className="text-center">
+        <div className="justify-center 2xl:gap-20 md:gap-10 gap-6 items-center bg-white ">
+          <div className="text-center pt-[40px]">
             <h5 className="pt-2 text-[20px] font-medium  text-center">
               Watch our 
             </h5>
@@ -90,10 +89,10 @@ const CounselingVideo = ({refreshData}) => {
               Counseling Video
             </h5>
           </div>
-          <div className=" flex flex-col items-center justify-center">
+          <div className=" flex flex-col items-center justify-center lg:pt-[40px] pt-[20px]">
             {Array.isArray(counselingData) && counselingData?.length > 0 && (
               <video controls className="max-w-[60%]" 
-              onPlay={()=>getUserUpdate(4)}>
+              onPlay={()=>getUserUpdate(5)}>
                 <source src={counselingData[0]?.video} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>

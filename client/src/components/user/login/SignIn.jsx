@@ -1,7 +1,7 @@
 "use client";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -51,8 +51,8 @@ const SignIn = ({ refreshData }) => {
         );
         localStorage.setItem("userID", JSON.stringify(response?.data?.userID));
         // navigate("/admin-dashboard");
-        refreshData();
         router.push("/");
+        refreshData();
       } else {
         setError("Invalid credentails");
         localStorage.removeItem("authToken");

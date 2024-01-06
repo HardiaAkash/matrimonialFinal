@@ -5,8 +5,10 @@ import axios from "axios";
 import Pagination from "./pagination";
 import Loader from "./loader";
 import Preview from "./preview";
+import MatchPopup from "./matchPopup";
+import { toast } from "react-toastify";
 
-const AppForm = () => {
+const ProfileMatch = () => {
   const [allData, setAllData] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [genderText, setGenderText] = useState("");
@@ -18,8 +20,12 @@ const AppForm = () => {
   const [isLoader, setLoader] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
   const [formStatus, setFormStatus] = useState("");
+
+  const [dialogMatch, setDialogMatch] = useState(false);
+  const [matchId, setMatchId] = useState("");
   const visiblePageCount = 10;
   const token = JSON.parse(localStorage.getItem("token"));
+  const [checkedItems, setCheckedItems] = useState({});
 
   // -------form api--------
 
@@ -31,7 +37,7 @@ const AppForm = () => {
     setLoader(true);
     const options = {
       method: "GET",
-      url: `/api/auth/viewForm?page=${pageNo}&limit=${visiblePageCount}&search=${customSearch}&gender=${genderSort}`,
+      url: `/api/auth/approvedForm?page=${pageNo}&limit=${visiblePageCount}&search=${customSearch}&gender=${genderSort}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -57,45 +63,39 @@ const AppForm = () => {
 
   // ----------search api--------
 
-  const searchDataFunc = (search_cate) => {
-    setLoader(true);
+  //   const searchDataFunc = (search_cate) => {
+  //     setLoader(true);
 
-    const options = {
-      method: "GET",
-      url: `/api/auth/viewForm?search=${search_cate}`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    };
-    axios
-      .request(options)
-      .then((response) => {
-        console.log(response?.data);
-        if (response.status === 200) {
-          setLoader(false);
-          setAllData(response?.data);
-        } else {
-          setLoader(false);
-          return;
-        }
-      })
-      .catch((error) => {
-        setLoader(false);
-        console.error("Error:", error);
-      });
-  };
+  //     const options = {
+  //       method: "GET",
+  //       url: `/api/auth/viewForm?search=${search_cate}`,
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     };
+  //     axios
+  //       .request(options)
+  //       .then((response) => {
+  //         console.log(response?.data);
+  //         if (response.status === 200) {
+  //           setLoader(false);
+  //           setAllData(response?.data);
+  //         } else {
+  //           setLoader(false);
+  //           return;
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         setLoader(false);
+  //         console.error("Error:", error);
+  //       });
+  //   };
 
   const handleSearchInput = (e) => {
-    e.persist(); // persist the synthetic event
+    e.persist();
     setSearchText(e.target.value);
-    // setSearchText((prev) => e.target.value);
-    // if (e.target.value == "") {
-    //   getAllData(1);
-    // }else{
-    //   // setSearchData(search_cate)
-    //   searchDataFunc(e.target.value);
-    // }
+
     setCurrentPage(1);
     getAllData(1, e.target.value, genderText);
   };
@@ -131,32 +131,46 @@ const AppForm = () => {
     setAddPopup(true);
   };
 
-  // ---------approve api-----------
-  const handleApprove = async (e,id) => {
-    console.log(e.target.value);
-    console.log(id);
-  
-    setLoader(true);
+  //   -------Match checkbox----------
+  const handleMatch = async (id, isMatched) => {
     try {
-      const response = await axios.put(`/api/auth/changeStatus/${id}`,{formStatus:e.target.value} ,{
+      const options = {
+        method: "POST",
+        url: `/api/auth/isMatched/${id}`,
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          authorization: token,
         },
-      });
+        data: {
+          isMatched: isMatched,
+        },
+      };
+
+      const response = await axios(options);
 
       if (response.status === 200) {
-        setLoader(false);
-
+        console.log(response);
         refreshData();
-        
+        // toast.success("Match successful!");
+        setDialogMatch(false)
+        setMatchId("")
+        // setCheckedItems((prev) => ({ ...prev, [id]: isMatched }));
+        // setMatchId(response?.data)
       } else {
-        setLoader(false);
+        throw new Error("Failed to handle match");
       }
     } catch (error) {
-      setLoader(false);
       console.error(error);
     }
+  };
+
+  const handleChange = async (id) => {
+    // const newValue = !isChecked;
+    // setIsChecked(newValue);
+    const newValue = !checkedItems[id];
+    setCheckedItems((prev) => ({ ...prev, [id]: newValue }));
+
+    await handleMatch(id, newValue);
   };
 
   return (
@@ -182,7 +196,7 @@ const AppForm = () => {
                 name="search"
               />
               <select
-                className="w-28 sm:w-32  lg:w-[104px] xl:w-32 border border-[gray] rounded
+                className="w-28 sm:w-32  lg:w-[103px] xl:w-32 border border-[gray] rounded
               text-[12px]  sm:text-[14px] md:text-[16px] lg:text-[12px] xl:text-[14px] 2xl:text-[16px] cursor-pointer"
                 name="gender"
                 id="genderSelect"
@@ -234,67 +248,63 @@ const AppForm = () => {
                     </p>
                   </th>
 
-                  <th className="py-3 px- text-left bg-[white]">
+                  <th className="py-3 px-5 text-left bg-[white]">
                     <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      Status
+                      Match
                     </p>
                   </th>
                 </tr>
               </thead>
 
               <tbody>
-                {allData?.userForm?.map((items, index) => (
-                  <tr key={index}>
-                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
-                      {items?.firstname}
-                    </td>
-                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize ">
-                      {items?.address}
-                    </td>
+                {allData?.userForm?.map((items, index) => {
+                  console.log(items);
+                  return (
+                    <tr key={index}>
+                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
+                        {items?.firstname}
+                      </td>
+                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize ">
+                        {items?.address}
+                      </td>
 
-                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
-                      {items?.contactNumber}
-                    </td>
-                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
-                      {items?.email}
-                    </td>
-                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
-                      {items?.gender}
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => handleOpenPopup(items?._id)}
-                        className="text-[12px] px-2 py-1 rounded-sm border bg-[white] mr-3"
-                      >
-                        Preview
-                      </button>
-                    </td>
+                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
+                        {items?.contactNumber}
+                      </td>
+                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
+                        {items?.email}
+                      </td>
+                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
+                        {items?.gender}
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => handleOpenPopup(items?._id)}
+                          className="text-[13px] px-2 py-1 rounded-md border bg-[white]"
+                        >
+                          Preview
+                        </button>
+                      </td>
 
-                    <td>
-                      <select
-                        className="text-[13px] p-1 cursor-pointer border border-[gray] rounded"
-                        name="gender"
-                        disabled={items?.formStatus?.toLowerCase() !== "pending"}
-                        id="genderSelect"
-                        onChange={(e) => {
-                          setFormStatus((prevItems) => ({
-                            ...prevItems,
-                            formStatus: e.target.value,
-                          }));
-
-                          handleApprove(e, items?._id);
-                        }}
-                        value={formStatus?.formStatus ? formStatus?.formStatus :items?.formStatus}
-                        // defaultValue={items?.formStatus}
-                      >
-                        <option value="pending">Pending</option>
-
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                      </select>
-                    </td>
-                  </tr>
-                ))}
+                      <td className=" py-3 pl-4">
+                        {items.isMatched ? (
+                          
+                          <button className=" py-1 px-1  rounded text-[13px]">Matched</button>
+                        ) : (
+                          <button
+                            className="border-[green] border  py-1 px-2  rounded text-[13px]"
+                            onClick={() => {
+                              setMatchId(items._id);
+                              setDialogMatch(true);
+                            }}
+                          >
+                            Match
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -351,9 +361,57 @@ const AppForm = () => {
         </Dialog>
       </Transition>
 
-      
+      {/* ------------mathc Dialog box--------- */}
+      <Transition appear show={dialogMatch} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => setDialogMatch(false)}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white px-7  sm:px-12 py-4 text-left align-middle shadow-2xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="flex justify-center lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"
+                  >
+                    <p>Are you sure you want to match?</p>
+                  </Dialog.Title>
+                  <div className="mt-3 flex justify-center gap-14">
+                  <button className="px-5 py-1 rounded-lg border border-[green] text-[green]" onClick={()=> handleMatch(matchId, true)}>Yes</button>
+                  <button className="px-5 py-1 rounded-lg border border-[red] text-[red]" onClick={()=>{setMatchId("")
+                  setDialogMatch(false)
+                  }}>No</button>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
     </>
   );
 };
 
-export default AppForm;
+export default ProfileMatch;

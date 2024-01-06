@@ -12,6 +12,7 @@ import MatchFound from "./MatchFound";
 import Dashboard from "./Dashboard";
 
 import CloseIcon from "./Svg/CloseIcon";
+import Image from "next/image";
 
 const UserDashboadr = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const UserDashboadr = () => {
   const [isRefresh, setRefresh] = useState(false);
   const token = JSON.parse(localStorage.getItem("authToken" || ""));
   const userId = JSON.parse(localStorage.getItem("userID" || ""));
-  console.log(isFormStep);
+  console.log(previewFormData?.isMatched);
 
   const refreshData = () => {
     setRefresh(!isRefresh);
@@ -72,6 +73,7 @@ const UserDashboadr = () => {
     if (token) {
       verify();
     } else {
+      return
       router.push("/user/sign-in");
     }
   }, [isRefresh]);
@@ -79,7 +81,7 @@ const UserDashboadr = () => {
   const verify = async () => {
     try {
       const res = await axios.get(`/api/auth/verifyTokenUser/${token}`);
-      console.log("verify",res);
+      console.log("verify", res);
       if (res.status === 200) {
         setFormStep(res?.data?.data?.step);
         return; // Do whatever you need after successful verification
@@ -136,13 +138,11 @@ const UserDashboadr = () => {
       });
   };
 
-
-
   const menus = [
     {
       id: 0,
       label: "Dashboard",
-      component: <Dashboard  handleSignout = {handleSignout} />,
+      component: <Dashboard handleSignout={handleSignout} />,
       // icon: HomeIcon,
     },
     {
@@ -172,13 +172,13 @@ const UserDashboadr = () => {
     {
       id: 4,
       label: "Counseling Video",
-      component: <CounselingVideo  refreshData={refreshData} />,
+      component: <CounselingVideo refreshData={refreshData} />,
       // // icon: contactIcon,
     },
     {
       id: 5,
       label: "Match Found",
-      component: <MatchFound />,
+      component: <MatchFound   previewData={previewFormData} />,
       // // icon: contactIcon,
     },
   ];
@@ -188,7 +188,9 @@ const UserDashboadr = () => {
       <div className="flex min-h-screen relative lg:static">
         <div
           className=" py-2 px-3  absolute top-4 left-2 flex flex-col gap-[5px] cursor-pointer lg:hidden z-[1111]"
-          onClick={() => {setShowDrawer(true)}}
+          onClick={() => {
+            setShowDrawer(true);
+          }}
         >
           <div className="bg-black h-[2px] w-[20px] z-[1111]"></div>
           <div className="bg-black h-[2px] w-[20px] z-[1111]"></div>
@@ -206,7 +208,10 @@ const UserDashboadr = () => {
             className="relative text-white  flex flex-col gap-[5px] cursor-pointer lg:hidden  text-right mr-3 mt-2"
             onClick={() => setShowDrawer(false)}
           >
-            <div className=""> <CloseIcon /> </div>
+            <div className="">
+              {" "}
+              <CloseIcon />{" "}
+            </div>
           </div>
 
           <div className="flex flex-col justify-between min-h-screen  lg:py-[40px] py-[10px] ">
@@ -223,15 +228,29 @@ const UserDashboadr = () => {
               {menus.map((item, index) => (
                 <div
                   key={index}
-                  className={`px-4 py-3 mx-5 rounded-md  flex gap-x-3 items-center cursor-pointer  transition-colors font-semibold dash-menu  hover:transition-all ease-in delay-100 duration-300  text-[#f3f3f3] hover:bg-menu_secondary border border-[transparent] hover:border-[#f3f3f35e] hover:text-[white] 
-                                    ${
-                                      item.id === ComponentId
-                                        ? "bg-menu_secondary  border-[#f3f3f35e] text-[white]"
-                                        : ""
-                                    }  `}
+                  className={`px-4 py-3 mx-5 rounded-md  flex gap-x-3 items-center cursor-pointer  transition-colors font-semibold dash-menu  hover:transition-all ease-in delay-100 duration-300  text-[#f3f3f3] hover:bg-menu_secondary hover:text-[white] border  
+                                    
+                                      ${
+                                        item.id === 5 &&
+                                        previewFormData?.isMatched
+                                          ? " bg-menu_secondary  border-menu_secondary hover:border-[#f3f3f35e]  text-[white]"
+                                          :
+                                            item.id === ComponentId
+                                              ? "bg-menu_secondary border-[transparent]  text-[white]"
+                                              : "hover:border-[#f3f3f35e] border-[transparent] "
+                                      }  
+                                        `}
                   onClick={() => handleClick(item.id)}
                 >
-                  <p className=" capitalize whitespace-nowrap ">{item.label}</p>
+                  <p className=" capitalize whitespace-nowrap relative ">
+                    {item.label}
+                  </p>
+                  {item.id === 5 && previewFormData?.isMatched && (
+                    <span class="relative flex h-3 w-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ef8585] opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-[#e11818a6]"></span>
+                    </span>
+                  )}
                 </div>
               ))}
             </div>
@@ -239,7 +258,7 @@ const UserDashboadr = () => {
             <div className="">
               <div className="bg-[#f3f3f394] h-[1px] w-[70%] mx-auto my-[20px]"></div>
               <div
-                className={` pl-6 py-3 mx-5 rounded text-center cursor-pointer my-3 flex items-center transition-colors dash-menu gap-x-3  font-semibold hover:bg-menu_secondary text-[#f3f3f3] hover:text-white hover:rounded-md  hover:border-[#f3f3f35e]`}
+                className={` pl-6 py-3 mx-5 rounded text-center cursor-pointer my-3 flex items-center transition-colors dash-menu gap-x-3  font-semibold hover:bg-menu_secondary text-[#f3f3f3] hover:text-white hover:rounded-md  border border-[transparent] hover:border-[#f3f3f35e] `}
                 onClick={handleSignout}
               >
                 <div>
@@ -250,35 +269,46 @@ const UserDashboadr = () => {
           </div>
         </div>
 
-        <div className="bg-[#f3f3f3] w-full">
+        <div className="bg-[#fff] w-full">
           {menus.map((item, index) => (
             <Fragment key={index}>
               {ComponentId === item.id && (
                 <>
-                  {item.id  === 1 && isPreview ? (
+                  {item.id === 1 && isPreview ? (
                     <ViewApplicationDetails
                       previewData={previewFormData}
                       refreshData={refreshData}
                     />
                   ) : (
                     <>
-                      {isFormStep >= item.id ? (
+                    {console.log(isFormStep)}
+                      {isFormStep >= item.id || isFormStep == 4? (
                         item.component
                       ) : (
                         <>
                           {/* {item.component} */}
-                          <div className="text-center mt-14">
-                          <p className="text-gray-500 text-[20px] font-normal mb-6">
-                            Complete the previous steps to unlock <b className="">{item?.label}</b> step.
-                          </p>
-                          {
-                            (previewFormData.formStatus).toLowerCase() !== "approved" && 
-                            <p className="text-gray-500 text-[20px] font-normal mb-6">
-                            Wait for the admin to approve your application request
-                          </p>
-                          }
-                          
-                        </div>
+                          <div className="text-center flex flex-col justify-center items-center min-h-screen 2xl:gap-y-20 lg:gap-10 gap-5 px-[20px]">
+                            <p className="text-gray-500 2xl:text-[30px]  text-[20px] font-normal pt-[40px]">
+                              Complete the previous steps to unlock{" "}
+                              <b className="">{item?.label}</b> step.
+                            {previewFormData?.formStatus?.toLowerCase() ===
+                              "pending" && (
+                              <p className="text-gray-500 2xl:text-[20px]  text-[16px] font-normal pt-2">
+                                Wait for the admin to approve your application
+                                request
+                              </p>
+                            )}
+                            </p>
+                            <div className="mt-6 ">
+                              <Image
+                                src="/user/dashboard.svg"
+                                alt="lock"
+                                width={400}
+                                height={400}
+                                className="mx-auto"
+                              />
+                            </div>
+                          </div>
                         </>
                       )}
                     </>
