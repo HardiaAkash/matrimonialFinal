@@ -182,7 +182,7 @@ const AppForm = () => {
                 name="search"
               />
               <select
-                className="w-28 sm:w-32  lg:w-24 xl:w-32
+                className="w-28 sm:w-32  lg:w-[104px] xl:w-32 border border-[gray] rounded
               text-[12px]  sm:text-[14px] md:text-[16px] lg:text-[12px] xl:text-[14px] 2xl:text-[16px] cursor-pointer"
                 name="gender"
                 id="genderSelect"
@@ -234,7 +234,7 @@ const AppForm = () => {
                     </p>
                   </th>
 
-                  <th className="py-3 px-5 text-left bg-[white]">
+                  <th className="py-3 px- text-left bg-[white]">
                     <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
                       Status
                     </p>
@@ -264,7 +264,7 @@ const AppForm = () => {
                     <td>
                       <button
                         onClick={() => handleOpenPopup(items?._id)}
-                        className="text-[12px] px-2 py-1 rounded-sm border bg-[white]"
+                        className="text-[12px] px-2 py-1 rounded-sm border bg-[white] mr-3"
                       >
                         Preview
                       </button>
@@ -272,7 +272,7 @@ const AppForm = () => {
 
                     <td>
                       <select
-                        className="text-[14px] p-1 cursor-pointer"
+                        className="text-[13px] p-1 cursor-pointer border border-[gray] rounded"
                         name="gender"
                         disabled={items?.formStatus?.toLowerCase() !== "pending"}
                         id="genderSelect"
@@ -284,8 +284,8 @@ const AppForm = () => {
 
                           handleApprove(e, items?._id);
                         }}
-                        // value={formStatus?.formStatus}
-                        defaultValue={items?.formStatus}
+                        value={formStatus?.formStatus ? formStatus?.formStatus :items?.formStatus}
+                        // defaultValue={items?.formStatus}
                       >
                         <option value="pending">Pending</option>
 
@@ -350,6 +350,8 @@ const AppForm = () => {
           </div>
         </Dialog>
       </Transition>
+
+      
     </>
   );
 };
