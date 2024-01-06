@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect,Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import axios from "axios";
 import Pagination from "./pagination";
@@ -10,13 +10,14 @@ const AppForm = () => {
   const [allData, setAllData] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [genderText, setGenderText] = useState("");
-  const [isRefresh, setRefresh] = useState(false);
-  const [userId,setUserId]= useState("");
+  const [isRefresh, setIsRefresh] = useState(false);
+  const [userId, setUserId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [openAddPopup, setAddPopup] = useState(false);
-  const [openPopup,setOpenPopup]=useState(false);
+  const [openPopup, setOpenPopup] = useState(false);
   const [isLoader, setLoader] = useState(false);
-  const [selectedItem,setSelectedItem]=useState("");
+  const [selectedItem, setSelectedItem] = useState("");
+  const [formStatus, setFormStatus] = useState("");
   const visiblePageCount = 10;
   const token = JSON.parse(localStorage.getItem("token"));
 
@@ -24,7 +25,7 @@ const AppForm = () => {
 
   useEffect(() => {
     getAllData(currentPage, searchText, genderText);
-  }, []);
+  }, [isRefresh]);
 
   const getAllData = (pageNo, customSearch, genderSort) => {
     setLoader(true);
@@ -100,7 +101,9 @@ const AppForm = () => {
   };
 
   const refreshData = () => {
-    setRefresh(!isRefresh);
+    setIsRefresh(!isRefresh);
+    // getAllData(currentPage, searchText, genderText);
+    console.log(isRefresh);
   };
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -115,21 +118,46 @@ const AppForm = () => {
     setAddPopup(false);
   };
 
-  const closeAddPopupModel =()=>{
-    setOpenPopup(false);
-    
-  }
+  const closeAddPopupModel = () => {
+    // setOpenPopup(false);
+    setAddPopup(false);
+  };
 
-  
-
-  const handleOpenPopup=(id)=>{
-    const selectedItemData = allData.userForm.filter(item => item._id === id);
+  const handleOpenPopup = (id) => {
+    const selectedItemData = allData.userForm.filter((item) => item._id === id);
     setSelectedItem(selectedItemData);
-    // console.log("selected",selectedItemData);
-    setUserId(id)
+
+    setUserId(id);
     setAddPopup(true);
-  }
-  // console.log("aaaa",selectedItem);
+  };
+
+  // ---------approve api-----------
+  const handleApprove = async (e,id) => {
+    console.log(e.target.value);
+    console.log(id);
+  
+    setLoader(true);
+    try {
+      const response = await axios.put(`/api/auth/changeStatus/${id}`,{formStatus:e.target.value} ,{
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setLoader(false);
+
+        refreshData();
+        
+      } else {
+        setLoader(false);
+      }
+    } catch (error) {
+      setLoader(false);
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -154,29 +182,30 @@ const AppForm = () => {
                 name="search"
               />
               <select
-              className="w-28 sm:w-32  lg:w-24 xl:w-32
-              text-[12px]  sm:text-[14px] md:text-[16px] lg:text-[12px] xl:text-[14px] 2xl:text-[16px]"
+                className="w-28 sm:w-32  lg:w-24 xl:w-32
+              text-[12px]  sm:text-[14px] md:text-[16px] lg:text-[12px] xl:text-[14px] 2xl:text-[16px] cursor-pointer"
                 name="gender"
                 id="genderSelect"
                 onChange={genderHandler}
                 value={genderText}
               >
-                <option  value="" disabled>
+                <option value="" disabled>
                   Select Gender
                 </option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
+                <option value="other">Other</option>
               </select>
             </div>
             <table className="w-full min-w-[640px] table-auto mt-[20px] ">
               <thead>
                 <tr>
-                  <th className="py-3 px-5 text-left bg-[white]">
+                  <th className="py-3 px-2 text-left bg-[white]">
                     <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
                       First Name
                     </p>
                   </th>
-                  <th className="py-3 px-5 text-left bg-[white]">
+                  <th className="py-3 px-5 text-left bg-[white] ">
                     <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
                       Address
                     </p>
@@ -199,7 +228,7 @@ const AppForm = () => {
                     </p>
                   </th>
 
-                  <th className="py-3 px-2 text-left bg-[white]">
+                  <th className="py-3 px- text-left bg-[white]">
                     <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
                       Preview
                     </p>
@@ -216,10 +245,10 @@ const AppForm = () => {
               <tbody>
                 {allData?.userForm?.map((items, index) => (
                   <tr key={index}>
-                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5">
-                      {items.firstname}
+                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
+                      {items?.firstname}
                     </td>
-                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
+                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize ">
                       {items?.address}
                     </td>
 
@@ -229,27 +258,37 @@ const AppForm = () => {
                     <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
                       {items?.email}
                     </td>
-                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
+                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
                       {items?.gender}
                     </td>
-                   <td>
-                    <button onClick={()=>handleOpenPopup(items?._id)}
-                     className="text-[12px] px-2 py-1 rounded-sm bg-[gray]">
-                      Preview
-                    </button>
-                   </td>
+                    <td>
+                      <button
+                        onClick={() => handleOpenPopup(items?._id)}
+                        className="text-[12px] px-2 py-1 rounded-sm border bg-[white]"
+                      >
+                        Preview
+                      </button>
+                    </td>
 
                     <td>
                       <select
-                      className="text-[14px] p-1"
+                        className="text-[14px] p-1 cursor-pointer"
                         name="gender"
+                        disabled={items?.formStatus?.toLowerCase() !== "pending"}
                         id="genderSelect"
-                        // onChange={handleGenderChange}
+                        onChange={(e) => {
+                          setFormStatus((prevItems) => ({
+                            ...prevItems,
+                            formStatus: e.target.value,
+                          }));
+
+                          handleApprove(e, items?._id);
+                        }}
+                        // value={formStatus?.formStatus}
+                        defaultValue={items?.formStatus}
                       >
-                        <option value="pending">
-                          Pending
-                        </option>
-                        
+                        <option value="pending">Pending</option>
+
                         <option value="approved">Approved</option>
                         <option value="rejected">Rejected</option>
                       </select>
@@ -293,16 +332,15 @@ const AppForm = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white px-7  sm:px-12 text-left align-middle shadow-2xl transition-all">
+                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white px-7  sm:px-12 py-4 text-left align-middle shadow-2xl transition-all">
                   <Dialog.Title
                     as="h3"
                     className="flex justify-center lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"
                   >
-                   Applicant's full detail
+                    Applicant's full detail
                   </Dialog.Title>
                   <Preview
                     selectedItem={selectedItem}
-                    
                     closeModal={closeAddPopupModel}
                     refreshData={refreshData}
                   />
@@ -312,7 +350,6 @@ const AppForm = () => {
           </div>
         </Dialog>
       </Transition>
-
     </>
   );
 };

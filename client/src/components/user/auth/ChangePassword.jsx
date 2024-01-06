@@ -1,7 +1,7 @@
 "use client"
 import axios from "axios";
 import React, { useState } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -22,9 +22,10 @@ const ChangePassword = () => {
   const [showCnfmPassword, setShowCnfmPassword] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState("");
-  const token = JSON.parse(localStorage.getItem("authToken"));
+  const token = JSON.parse(localStorage.getItem("authToken" || ""));
 
   const InputHandler = (e) => {
+    setError("")
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -40,7 +41,7 @@ const ChangePassword = () => {
         setLoading(true);
 
         const response = await axios.post(
-          "/api/auth/changepasswordAdmin",
+          "/api/auth/changeUserPassword",
           formData,
           {
             headers: {
@@ -51,20 +52,19 @@ const ChangePassword = () => {
         );
 
         if (response.status === 200) {
-          toast.success("Password change successful!");
+          toast.success("Password change successfully!");
           setLoading(false);
-          setError("");
-          sessionStorage.removeItem("sessionToken");
-          router.push("/");
+          localStorage.removeItem("authToken");
+          router.push("/user/sign-in");
+          setError("")
         } else {
-          toast.error(response?.data || "Invalid credentials");
+          setError("")
           setLoading(false);
-          setError("");
+          return
         }
       } catch (error) {
-        console.error("Error during login:", error);
-        toast.error("Failed please try again!");
-        setError("");
+        setError("")
+        toast.error(error?.response?.data);
         setLoading(false);
       }
     }
@@ -72,6 +72,7 @@ const ChangePassword = () => {
 
   return (
     <>
+    <ToastContainer/>
       <>
         <div className="flex items-center justify-center lg:min-h-screen  ">
           <div className="md:px-[50px] w-full mx-auto">
@@ -118,7 +119,7 @@ const ChangePassword = () => {
                         name="newPassword"
                         placeholder="New password"
                         className="login-input placeholder:text-[gray] w-full mt-2 custom-input"
-                        onChange={InputHandler}
+                        onC hange={InputHandler}
                         minLength={8}
                         required
                       />
