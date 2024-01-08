@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const { generateToken, verifyToken } = require("../Utils/jwt");
 const sendEmail = require("../Utils/SendEmail");
 const Admin = require("../Model/Admin");
+const DeleteUser = require("../Model/DeleteRequest");
 const HttpStatus = {
   OK: 200,
   INVALID: 201,
@@ -474,3 +475,85 @@ exports.changeUserPwd = async (req, res) => {
   }
 }
 
+exports.deleteUserReq = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    if (!userId) {
+      return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.MISSING_DATA);
+    }
+
+    // Check if a delete request already exists for this userId
+    const existingRequest = await DeleteUser.findOne({ userId });
+    if (existingRequest) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Deletion request for this user already exists.' });
+    }
+
+    // If no existing request, proceed to save new request
+    const newDeleteReq = new DeleteUser({ userId });
+    const result = await newDeleteReq.save();
+    console.log(result); // For debugging
+
+    // Return success response
+    return res.status(HttpStatus.OK).json(result);
+  } catch (error) {
+    console.error(error); // For debugging
+    // General server error
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(StatusMessage.SERVER_ERROR);
+  }
+};
+
+
+exports.getDeleteUserRequests = async (req, res) => {
+  try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const startIndex = (page - 1) * limit;
+
+      // Aggregation pipeline
+      const deleteUserRequests = await DeleteUser.aggregate([
+          {
+              $lookup: {
+                  from: User.collection.name,
+                  let: { userId: '$userId' }, // Use userId from DeleteUser
+                  pipeline: [
+                      {
+                          $match: {
+                              $expr: {
+                                  $eq: ['$_id', '$$userId'] // Match _id from User with userId from DeleteUser
+                              }
+                          }
+                      },
+                      {
+                          $project: {
+                              password: 0, // Exclude the password field
+                              activeToken: 0, // Exclude the activeToken field
+                              step:0,
+                              role:0,
+                              // Exclude any other fields as needed
+                          }
+                      }
+                  ],
+                  as: 'userDetails'
+              }
+          },
+          { $unwind: '$userDetails' },
+          { $skip: startIndex },
+          { $limit: limit }
+      ]);
+
+      // Count total delete user requests
+      const totalRequests = await DeleteUser.countDocuments();
+  
+      // Pagination details
+      const pagination = {
+          currentPage: page,
+          totalPages: Math.ceil(totalRequests / limit),
+          totalRequests
+      };
+
+      return res.status(200).json({ deleteUserRequests, pagination });
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Error fetching delete user requests' });
+  }
+};

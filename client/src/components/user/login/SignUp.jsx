@@ -87,7 +87,7 @@ const SignUp = () => {
                       type="text"
                       name="name"
                       placeholder="User name"
-                      className=" w-full mt-2 custom-input"
+                      className=" w-full mt-2 custom-input capitalize"
                       onChange={InputHandler}
                       required
                     />

@@ -1,11 +1,12 @@
 "use client";
 import React, { Fragment, useState, useEffect } from "react";
-import { Dialog, Menu, Transition } from "@headlessui/react";
-import ProfileIcon from "./Svg/ProfileIcon";
 import Link from "next/link";
+import { Dialog, Menu, Transition } from "@headlessui/react";
 import DeleteProfile from "./modal/DeleteProfile";
+import Loader from "./WebsiiteLoader/Index";
+import ProfileIcon from "./Svg/ProfileIcon";
 
-const Dashboard = ({ handleSignout }) => {
+const Dashboard = ({ handleSignout,isLoader }) => {
   let [isOpen, setIsOpen] = useState(false);
 
   const closeModal = () => {
@@ -14,6 +15,10 @@ const Dashboard = ({ handleSignout }) => {
 
   return (
     <>
+
+    {
+      isLoader && <Loader />
+    }
       <section>
         <div className="flex flex-col h-[100vh] justify-center gap-20 items-center bg-white relative">
           <div className="absolute right-[35px] top-[15px] cursor-pointer ">
@@ -63,7 +68,7 @@ const Dashboard = ({ handleSignout }) => {
               </Transition>
             </Menu>
           </div>
-          <div className="text-center">
+          <div className="text-center pt-4">
             <h3 className="text-[28px] font-bold">Welcome</h3>
             <h5 className="pt-2 text-[25px] font-semibold ">
               Matrimonial Website
@@ -105,7 +110,7 @@ const Dashboard = ({ handleSignout }) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white py-10 px-2 md:px-12 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-[550px] transform overflow-hidden rounded-2xl bg-white py-10 px-2 md:px-12 text-left align-middle shadow-xl transition-all">
                   <Dialog.Title
                     as="h3"
                     className="xl:text-[20px] text-[18px] font-medium leading-6 text-gray-900 text-center md:text-left "
