@@ -1,6 +1,7 @@
 "use client";
 import React, { Fragment, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import axios from "axios";
 
 import ViewApplicationDetails from "./PreviewForm";
@@ -8,11 +9,11 @@ import ApplicationForm from "./ApplicationForm";
 import BackgroundCheck from "./BackgroundCheck";
 import VideoSubmission from "./VideoSubmission";
 import CounselingVideo from "./CounselingVideo";
+import Loader from "./WebsiiteLoader/Index";
 import MatchFound from "./MatchFound";
 import Dashboard from "./Dashboard";
 
 import CloseIcon from "./Svg/CloseIcon";
-import Image from "next/image";
 
 const UserDashboadr = () => {
   const router = useRouter();
@@ -25,7 +26,7 @@ const UserDashboadr = () => {
   const [isRefresh, setRefresh] = useState(false);
   const token = JSON.parse(localStorage.getItem("authToken" || ""));
   const userId = JSON.parse(localStorage.getItem("userID" || ""));
-  console.log(previewFormData?.isMatched);
+  // console.log(previewFormData?.isMatched);
 
   const refreshData = () => {
     setRefresh(!isRefresh);
@@ -72,10 +73,9 @@ const UserDashboadr = () => {
   useEffect(() => {
     if (token) {
       verify();
-    } else {
-      return
-      router.push("/user/sign-in");
-    }
+    } 
+    getAllData();
+
   }, [isRefresh]);
 
   const verify = async () => {
@@ -84,6 +84,8 @@ const UserDashboadr = () => {
       console.log("verify", res);
       if (res.status === 200) {
         setFormStep(res?.data?.data?.step);
+        localStorage.setItem("user_mail", JSON.stringify(res?.data?.data?.email));
+        localStorage.setItem("user_contact", JSON.stringify(res?.data?.data?.contact));
         return; // Do whatever you need after successful verification
       } else {
         router.push("/user/sign-in");
@@ -96,10 +98,6 @@ const UserDashboadr = () => {
   };
 
   // ------ update user -------
-
-  useEffect(() => {
-    getAllData();
-  }, [isRefresh]);
 
   const getAllData = () => {
     setLoader(true);
@@ -121,7 +119,7 @@ const UserDashboadr = () => {
         if (response.status === 200) {
           setLoader(false);
           if (response?.data?.length > 0) {
-            console.log("okkk");
+            // console.log("okkk");
             setPreviewFormData(response?.data[0]);
             setPreview(true);
           } else {
@@ -142,7 +140,7 @@ const UserDashboadr = () => {
     {
       id: 0,
       label: "Dashboard",
-      component: <Dashboard handleSignout={handleSignout} />,
+      component: <Dashboard handleSignout={handleSignout}  isLoader={isLoader}/>,
       // icon: HomeIcon,
     },
     {
@@ -184,17 +182,19 @@ const UserDashboadr = () => {
   ];
 
   return (
+    <>
+  {isLoader && <Loader/>}  
     <section className="">
       <div className="flex min-h-screen relative lg:static">
         <div
-          className=" py-2 px-3  absolute top-4 left-2 flex flex-col gap-[5px] cursor-pointer lg:hidden z-[1111]"
+          className=" py-2 px-3  absolute top-4 left-2 flex flex-col gap-[5px] cursor-pointer lg:hidden z-[11]"
           onClick={() => {
             setShowDrawer(true);
           }}
         >
-          <div className="bg-black h-[2px] w-[20px] z-[1111]"></div>
-          <div className="bg-black h-[2px] w-[20px] z-[1111]"></div>
-          <div className="bg-black h-[2px] w-[20px] z-[1111]"></div>
+          <div className="bg-black h-[2px] w-[20px] z-[11]"></div>
+          <div className="bg-black h-[2px] w-[20px] z-[11]"></div>
+          <div className="bg-black h-[2px] w-[20px] z-[11]"></div>
         </div>
         <div
           className={`w-[320px] bg-menu_primary text-white lg:px-[20px] px-[10px]  drawer z-[111]
@@ -246,9 +246,9 @@ const UserDashboadr = () => {
                     {item.label}
                   </p>
                   {item.id === 5 && previewFormData?.isMatched && (
-                    <span class="relative flex h-3 w-3">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ef8585] opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-[#e11818a6]"></span>
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ef8585] opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-[#e11818a6]"></span>
                     </span>
                   )}
                 </div>
@@ -281,7 +281,7 @@ const UserDashboadr = () => {
                     />
                   ) : (
                     <>
-                    {console.log(isFormStep)}
+                    {/* {console.log(isFormStep)} */}
                       {isFormStep >= item.id || isFormStep == 4? (
                         item.component
                       ) : (
@@ -320,6 +320,7 @@ const UserDashboadr = () => {
         </div>
       </div>
     </section>
+    </>
   );
 };
 
