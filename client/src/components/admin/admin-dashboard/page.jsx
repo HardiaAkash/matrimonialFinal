@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation'
 import AppForm from '../appForm';
 import ConsultVideo from '../consultVideo';
 import ProfileMatch from '../profileMatch';
+import ProfileDelete from '../profileDelete';
 
 
 
@@ -56,6 +57,12 @@ const SideMenu = () => {
             id: 5,
             label: "Profile Match",
             component:<ProfileMatch/>,
+            icon: Users,
+          },
+          {
+            id: 6,
+            label: "Profile Delete",
+            component:<ProfileDelete/>,
             icon: Users,
           },
 
