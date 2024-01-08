@@ -26,6 +26,7 @@ const ProfileMatch = () => {
   const visiblePageCount = 10;
   const token = JSON.parse(localStorage.getItem("token"));
   const [checkedItems, setCheckedItems] = useState({});
+  const [totalPages,setTotalPages]=useState(0);
 
   // -------form api--------
 
@@ -50,6 +51,7 @@ const ProfileMatch = () => {
         if (response.status === 200) {
           setLoader(false);
           setAllData(response?.data);
+          setTotalPages(response?.data?.totalPages)
         } else {
           setLoader(false);
           return;
@@ -309,11 +311,12 @@ const ProfileMatch = () => {
             </table>
           </div>
         </div>
+        {totalPages>1 && (
         <Pagination
           currentPage={allData?.pagination?.currentPage}
           totalPages={allData?.pagination?.totalPages}
           onPageChange={handlePageChange}
-        />
+        />)}
       </section>
 
       {/* ------------preview dialog box--------- */}

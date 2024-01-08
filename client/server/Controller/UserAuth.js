@@ -5,6 +5,8 @@ const { generateToken, verifyToken } = require("../Utils/jwt");
 const sendEmail = require("../Utils/SendEmail");
 const Admin = require("../Model/Admin");
 const DeleteUser = require("../Model/DeleteRequest");
+const UserForm = require("../Model/UserForm");
+const deleteFileByURL = require("../Utils/deleteS3");
 const HttpStatus = {
   OK: 200,
   INVALID: 201,
@@ -196,9 +198,24 @@ exports.deleteUser = async (req, res) => {
 
     // Token is valid, proceed with user deletion
     const deletedUser = await User.findByIdAndDelete(userId);
-
     if (!deletedUser) {
       return res.status(HttpStatus.BAD_REQUEST).json("User not found.");
+    }
+    const deletedReq = await DeleteUser.findOneAndDelete({userId})
+    const deleteForm = await UserForm.findOneAndDelete({userID:userId})
+    
+    if (deleteForm && deleteForm.image ) {
+      // Delete images from S3
+      
+        await deleteFileByURL(deleteForm.image);
+      
+    }
+
+    if (deleteForm && deleteForm.video && Array.isArray(deleteForm.video) && deleteForm.video.length>0) {
+      // Delete videos from S3
+      for (const videoUrl of deleteForm.video) {
+        await deleteFileByURL(videoUrl);
+      }
     }
 
     return res.status(HttpStatus.OK).json(StatusMessage.USER_DELETED);
