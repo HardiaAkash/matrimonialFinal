@@ -17,7 +17,8 @@ const Pages = () => {
   const [openDeletePopup, setDeletePopup] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchText, setSearchText] = useState("");
-  const [openDelete,setOpenDelete]=useState(false)
+  const [openDelete,setOpenDelete]=useState(false);
+  const [totalPages,setTotalPages]=useState(0);
   
   
   const visiblePageCount = 10;
@@ -94,6 +95,7 @@ const searchDataFunc = (search_cate) => {
       console.log(response?.data);
       if (response.status === 200) {
         setAllData(response?.data);
+        setTotalPages(response?.data?.totalPages);
         setLoader(false);
       } else {
         return;
@@ -222,11 +224,11 @@ function openModal(id)
           )}
         </div>
 
-        <Pagination
+        {totalPages>1 && (<Pagination
           currentPage={allData?.pagination?.currentPage}
           totalPages={allData?.pagination?.totalPages}
           onPageChange={handlePageChange}
-        />
+        />)}
       </section>
 
       {/* --------delete popup--------- */}

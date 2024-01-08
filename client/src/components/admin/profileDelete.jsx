@@ -12,12 +12,15 @@ const ProfileDelete = () => {
   const [categoryID, setCategoryId] = useState("");
   const [isLoader, setLoader] = useState(false);
   const [isRefresh, setRefresh] = useState(false);
-  const [openAddPopup, setAddPopup] = useState(false);
-  const [openEditPopup, setEditPopup] = useState(false);
-  const [openDeletePopup, setDeletePopup] = useState(false);
+//   const [openAddPopup, setAddPopup] = useState(false);
+//   const [openEditPopup, setEditPopup] = useState(false);
+//   const [openDeletePopup, setDeletePopup] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchText, setSearchText] = useState("");
   const [openDelete, setOpenDelete] = useState(false);
+  const [dialogMatch, setDialogMatch] = useState(false);
+  const [deleteId,setDeleteId]=useState("");
+  const [totalPages, setTotalPages] = useState(0);
 
   const visiblePageCount = 10;
   const token = JSON.parse(localStorage.getItem("token"));
@@ -44,6 +47,7 @@ const ProfileDelete = () => {
           setLoader(false);
           console.log("delete", response?.data?.deleteUserRequests);
           setAllData(response?.data?.deleteUserRequests);
+          setTotalPages(response?.data?.totalPages);
         } else {
           setLoader(false);
           return;
@@ -92,7 +96,7 @@ const ProfileDelete = () => {
         console.log(response?.data);
         if (response.status === 200) {
           setAllData(response?.data);
-        //   setLoader(false);
+          //   setLoader(false);
         } else {
           return;
         }
@@ -136,7 +140,10 @@ const ProfileDelete = () => {
   const handleDelete = (userID) => {
     console.log(userID);
     // ;
-// return
+    // alert("deleted successfully");
+    // setDialogMatch(false);
+    // return;
+    
     const options = {
       method: "DELETE",
       url: `/api/auth/deleteUser/${userID}`,
@@ -152,12 +159,13 @@ const ProfileDelete = () => {
         console.log(response);
         if (response.status === 200) {
           //   ;
-            toast.success("Deleted successfully !");
+          toast.success("Deleted successfully !");
           //   handleClose();
+          setDialogMatch(false);
           refreshData();
         } else {
-            // ;
-            toast.error("Failed. something went wrong!");
+          // ;
+          toast.error("Failed. something went wrong!");
           return;
         }
       })
@@ -221,7 +229,7 @@ const ProfileDelete = () => {
 
               <tbody>
                 {allData?.map((items, index) => {
-                    console.log(items.userId)
+                  console.log(items.userId);
                   return (
                     <>
                       <tr key={index}>
@@ -239,9 +247,8 @@ const ProfileDelete = () => {
                           <div className="flex flex-col md:flex-row items-center gap-x-3 gap-y-3">
                             <button
                               className="px-1 md:px-4 text-[13px] border rounded h-[25px] text-[red] hover:bg-[#efb3b38a] md:w-auto w-full"
-                              onClick={() =>
-                                handleDelete(items?.userId)
-                              }
+                              onClick={() =>  {setDialogMatch(true);
+                              setDeleteId(items?.userId)}} 
                             >
                               Delete
                             </button>
@@ -261,18 +268,18 @@ const ProfileDelete = () => {
             </div>
           )}
         </div>
-
+   {totalPages >1 && (
         <Pagination
           currentPage={allData?.pagination?.currentPage}
           totalPages={allData?.pagination?.totalPages}
           onPageChange={handlePageChange}
-        />
+        />)}
       </section>
 
       {/* --------delete popup--------- */}
 
-      <Transition appear show={openDeletePopup} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+      <Transition appear show={dialogMatch} as={Fragment}>
+        <Dialog as="div" className="relative z-10"  onClose={() => setDialogMatch(false)}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -303,11 +310,24 @@ const ProfileDelete = () => {
                   >
                     Are You Sure! Want to Delete?
                   </Dialog.Title>
-                  <Delete
-                    categoryID={categoryID}
-                    closeModal={closeDeleteModal}
-                    refreshData={refreshData}
-                  />
+                  <div className="mt-3 flex justify-center gap-14">
+                    <button
+                      className="px-5 py-1 rounded-lg border border-[green] text-[green]"
+                      onClick={() => handleDelete(deleteId)}
+                    >
+                      Yes
+                    </button>
+                    <button
+                      className="px-5 py-1 rounded-lg border border-[red] text-[red]"
+                      onClick={() => {
+                        setDialogMatch(false);
+                      }}
+                    >
+                      No
+                    </button>
+                  </div>
+
+              
                 </Dialog.Panel>
               </Transition.Child>
             </div>
