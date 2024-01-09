@@ -25,7 +25,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
   const [imageUpload, setImageUpload] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
-  console.log(isUpdated);
+  // console.log(isUpdated);
 
   useEffect(() => {
     if ( (previewData?.formStatus)?.toLowerCase() === "rejected") {
@@ -98,7 +98,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
     }
   };
 
-  console.log(formData);
+  // console.log(formData);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if ((formData.formStatus)?.toLowerCase() !== "pending") {

@@ -43,7 +43,7 @@ const SignIn = ({ refreshData }) => {
       });
       // console.log(response);
       if (response.status === 200) {
-        toast.success("Login successful!");
+        toast.success("Login successfully!");
         setLoading(false);
         localStorage.setItem(
           "authToken",
