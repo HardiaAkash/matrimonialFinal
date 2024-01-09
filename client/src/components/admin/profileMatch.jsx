@@ -25,7 +25,7 @@ const ProfileMatch = () => {
   const [dialogMatch, setDialogMatch] = useState(false);
   const [matchId, setMatchId] = useState("");
   const visiblePageCount = 10;
-  const token = JSON.parse(localStorage.getItem("token"));
+  const token = JSON.parse(localStorage.getItem("token" || ""));
   const [checkedItems, setCheckedItems] = useState({});
   const [totalPages,setTotalPages]=useState(0);
 

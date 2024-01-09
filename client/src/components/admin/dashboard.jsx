@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from "next/image";
-import dashboard from "../../../public/user/dashboard.svg"
+import dashboard from "../../../public/user/dashboard.svg";
 
 const Dashboard = () => {
   return (
