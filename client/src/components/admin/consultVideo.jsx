@@ -14,7 +14,8 @@ const ConsultVideo = () => {
   const [videoDisable, setVideoDisable] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const token = JSON.parse(localStorage.getItem("token"));
+  const token = JSON.parse(localStorage.getItem("token" || ""));
+ 
 
   //   ------------get video api-----------
   const getVideoApi = () => {

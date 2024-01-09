@@ -23,7 +23,7 @@ const ProfileDelete = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const visiblePageCount = 10;
-  const token = JSON.parse(localStorage.getItem("token"));
+  const token = JSON.parse(localStorage.getItem("token" || ""));
 
   useEffect(() => {
     getAllData(1);
