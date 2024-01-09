@@ -55,7 +55,7 @@ const ForgotPassword = () => {
                       Forgot your password
                     </p>
                     <p className=" md:text-[16px] text-[15px] font-[400] leading-[26px] text-gray-400 mt-2 mb-4 text-[#494949]">
-                      Please enter the email you used to login-in.
+                      Please enter the email you used to login.
                     </p>
                   </div>
                   <div className="md:py-2">

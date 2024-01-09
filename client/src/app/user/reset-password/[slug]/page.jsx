@@ -17,7 +17,7 @@ const ResetPassword = ({params}) => {
   const [isLoading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const resetToken = params?.slug || "";
-  const token = JSON.parse(localStorage.getItem("authToken" || ""));
+  // const token = JSON.parse(localStorage.getItem("authToken" || ""));
 
   console.log(params.slug)
   const handleSubmit = async (e) => {
@@ -38,7 +38,13 @@ const ResetPassword = ({params}) => {
       if (response.status === 200) {
         toast.success("Password change successful!");
         setLoading(false);
-        router.push("/user/sign-in");
+        console.log(response.data?.role)
+        if (response.data?.role === "Admin") {
+          router.push("/admin");
+        } else {
+           router.push("/user/sign-in");
+        }
+        // router.push("/user/sign-in");
       } else {
         toast.error("Invalid password!");
         setLoading(false);
