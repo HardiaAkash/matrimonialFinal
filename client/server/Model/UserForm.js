@@ -81,6 +81,8 @@ const userSchema = new mongoose.Schema({
         default: false
     }
 
+}, {
+    timestamps: true, // Add createdAt and updatedAt fields
 })
 const UserForm = mongoose.model("UserForm", userSchema)
 module.exports = UserForm;

@@ -20,7 +20,12 @@ const adminSchema = new mongoose.Schema({
     },
     "resetToken":{
         type:String
-    }
+    },
+    
+
+
+}, {
+    timestamps: true, // Add createdAt and updatedAt fields
 })
 const Admin = mongoose.model("Admin", adminSchema)
 module.exports = Admin;

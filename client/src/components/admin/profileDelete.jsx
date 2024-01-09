@@ -200,7 +200,7 @@ const ProfileDelete = () => {
                 name="search"
               /> */}
             </div>
-            {allData?.userDetails?.length > 0 ? (
+            {allData?.length > 0 ? (
             <table className="w-full min-w-[640px] table-auto mt-[20px] ">
               <thead>
                 <tr>

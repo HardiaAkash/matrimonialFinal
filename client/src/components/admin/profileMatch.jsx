@@ -52,6 +52,7 @@ const ProfileMatch = () => {
         if (response.status === 200) {
           setLoader(false);
           setAllData(response?.data);
+          // console.log(response?.data);
           setTotalPages(response?.data?.totalPages)
         } else {
           setLoader(false);

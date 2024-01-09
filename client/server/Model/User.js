@@ -31,6 +31,8 @@ const userSchema = new mongoose.Schema({
     "resetToken":{
         type:String
     }
+}, {
+    timestamps: true, // Add createdAt and updatedAt fields
 })
 const User = mongoose.model("User", userSchema)
 module.exports = User;
