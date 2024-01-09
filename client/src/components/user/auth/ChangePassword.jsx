@@ -18,6 +18,7 @@ const ChangePassword = () => {
     newPassword: "",
   });
   const [cnfmPassword, setCnfmPassword] = useState("");
+  const [showCnfmPassword2, setCnfmPassword2] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showCnfmPassword, setShowCnfmPassword] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -31,10 +32,11 @@ const ChangePassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (formData.oldPassword === formData.newPassword) {
+console.log(cnfmPassword)
+console.log(formData)
+    if (formData?.oldPassword === formData?.newPassword) {
       setError("Old password and new password can't be same ");
-    } else if (formData.newPassword !== cnfmPassword) {
+    } else if (formData?.newPassword !== cnfmPassword) {
       setError("New password and confirm password should match");
     } else {
       try {
@@ -55,6 +57,7 @@ const ChangePassword = () => {
           toast.success("Password change successfully!");
           setLoading(false);
           localStorage.removeItem("authToken");
+          localStorage.removeItem("userID");
           router.push("/user/sign-in");
           setError("")
         } else {
@@ -119,7 +122,7 @@ const ChangePassword = () => {
                         name="newPassword"
                         placeholder="New password"
                         className="login-input placeholder:text-[gray] w-full mt-2 custom-input"
-                        onC hange={InputHandler}
+                        onChange={InputHandler}
                         minLength={8}
                         required
                       />
@@ -132,20 +135,20 @@ const ChangePassword = () => {
                     </div>
                     <div className="relative flex justify-center items-center">
                       <input
-                        type={"password"}
-                        name="cnfmPassword"
+                        type={showCnfmPassword2 ? "text" : "password"}
+                        // name="cnfmPassword"
                         placeholder="Confirm new password "
-                        className="login-input placeholder:text-[gray] w-full mt-2 custom-input"
+                        className="login-input placeholder:text-[gray] w-full mt-2 custom-input" 
                         onChange={(e) => setCnfmPassword(e.target.value)}
                         minLength={8}
                         required
                       />
-                      {/* <div
-                        className="absolute dash-menu right-[10px] cursor-pointer"
-                        onClick={() => setShowPassword(!showPassword)}
+                      <div
+                        className="absolute  right-[10px] cursor-pointer"
+                        onClick={() => setCnfmPassword2(!showCnfmPassword2)}
                       >
-                        {showPassword ? <OpenEye /> : <CloseEye />}
-                      </div> */}
+                        {showCnfmPassword2 ? <OpenEye /> : <CloseEye />}
+                      </div>
                     </div>
 
                     {isError && (

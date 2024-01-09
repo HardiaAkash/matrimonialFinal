@@ -1,6 +1,7 @@
 "use client";
 import React, { Fragment, useState, useEffect } from "react";
 import Link from "next/link";
+import { ToastContainer } from "react-toastify";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import DeleteProfile from "./modal/DeleteProfile";
 import Loader from "./WebsiiteLoader/Index";
@@ -15,7 +16,7 @@ const Dashboard = ({ handleSignout,isLoader }) => {
 
   return (
     <>
-
+ <ToastContainer/>
     {
       isLoader && <Loader />
     }

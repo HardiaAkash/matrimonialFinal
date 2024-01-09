@@ -92,11 +92,11 @@ const ResetPassword = ({params}) => {
                     {isLoading ? "Loading.." : "Reset password"}
                   </button>
 
-                  <Link href="/user/sign-in">
+                  {/* <Link href="/user/sign-in">
                     <div className="text-[16px] font-medium underline text-center py-3 cursor-password">
                       Login
                     </div>
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             </form>

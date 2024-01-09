@@ -3,6 +3,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 import ViewApplicationDetails from "./PreviewForm";
 import ApplicationForm from "./ApplicationForm";
@@ -56,6 +57,7 @@ const UserDashboadr = () => {
           setLoader(false);
           localStorage.removeItem("authToken");
           localStorage.removeItem("userID");
+          toast.success("Logout successfully")
           router.push("/user/sign-in");
         } else {
           setLoader(false);
@@ -65,6 +67,7 @@ const UserDashboadr = () => {
       .catch((error) => {
         setLoader(false);
         console.error("Error:", error);
+        toast.error(error?.response?.data);
       });
   };
 
@@ -183,6 +186,7 @@ const UserDashboadr = () => {
 
   return (
     <>
+    <ToastContainer/>
   {isLoader && <Loader/>}  
     <section className="">
       <div className="flex min-h-screen relative lg:static">
