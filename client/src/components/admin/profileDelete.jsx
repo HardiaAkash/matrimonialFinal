@@ -200,6 +200,7 @@ const ProfileDelete = () => {
                 name="search"
               /> */}
             </div>
+            {allData?.userDetails?.length > 0 ? (
             <table className="w-full min-w-[640px] table-auto mt-[20px] ">
               <thead>
                 <tr>
@@ -259,7 +260,9 @@ const ProfileDelete = () => {
                   );
                 })}
               </tbody>
-            </table>
+            </table>) : (  <div className="py-4 px-4 w-full flex flex-col items-center justify-center border border-[#f3f3f3] bg-white rounded-[20px] mt-[10px]">
+      <p className="text-[18px] font-semibold">No data found</p>
+    </div>)}
           </div>
 
           {Array.isArray(allData?.pages) && allData?.pages?.length === 0 && (
