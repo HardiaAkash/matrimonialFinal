@@ -17,6 +17,9 @@ const adminSchema = new mongoose.Schema({
     },
     "activeToken":{
         type:String
+    },
+    "resetToken":{
+        type:String
     }
 })
 const Admin = mongoose.model("Admin", adminSchema)

@@ -72,7 +72,7 @@ const Login = () => {
                       Login
                     </p>
                     <p className="2xl:text-[16px] text-[14px] font-[400] leading-[26px mb-4 text-[#494949] mt-3">
-                      Welcome! Kindly fill the details to login
+                      Welcome! Kindly fill the details to login.
                     </p>
                   </div>
                   <div className="md:py-2">

@@ -27,6 +27,9 @@ const userSchema = new mongoose.Schema({
     },
     "activeToken":{
         type:String,
+    },
+    "resetToken":{
+        type:String
     }
 })
 const User = mongoose.model("User", userSchema)
