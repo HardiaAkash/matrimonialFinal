@@ -207,7 +207,7 @@ const ProfileMatch = () => {
                 value={genderText}
               >
                 <option value="">
-                  Select Gender
+                  All
                 </option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
