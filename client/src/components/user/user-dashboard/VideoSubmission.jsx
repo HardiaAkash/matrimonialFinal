@@ -70,7 +70,7 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
               Video Submission
             </h5>
           </div>
-          <div className="flex flex-col justify-center gap-20 items-center  relative pt-[80px]">
+          <div className="flex flex-col justify-center gap-20 items-center  relative pt-[40px]">
             <div className="absolute right-[35px] top-[15px] cursor-pointer ">
             </div>
             {Array.isArray(previewData?.video) &&
@@ -86,7 +86,7 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
                 ))}
               </div>
             ) : (
-              <div className="md:w-[30%] mx-auto flex flex-col items-center justify-center">
+              <div className="lg:w-[30%] mx-auto flex flex-col items-center justify-center">
                 <img
                   src="/user/bg_check.svg"
                   alt="welcome dashboard"
