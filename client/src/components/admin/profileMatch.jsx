@@ -7,6 +7,7 @@ import Loader from "./loader";
 import Preview from "./preview";
 import MatchPopup from "./matchPopup";
 import { toast } from "react-toastify";
+import CloseIcon from "../svg/CloseIcon";
 
 const ProfileMatch = () => {
   const [allData, setAllData] = useState([]);
@@ -26,6 +27,7 @@ const ProfileMatch = () => {
   const visiblePageCount = 10;
   const token = JSON.parse(localStorage.getItem("token"));
   const [checkedItems, setCheckedItems] = useState({});
+  const [totalPages,setTotalPages]=useState(0);
 
   // -------form api--------
 
@@ -50,6 +52,7 @@ const ProfileMatch = () => {
         if (response.status === 200) {
           setLoader(false);
           setAllData(response?.data);
+          setTotalPages(response?.data?.totalPages)
         } else {
           setLoader(false);
           return;
@@ -180,7 +183,7 @@ const ProfileMatch = () => {
         <div className="py-[30px] px-[20px] mx-auto mt-[20px] bg-[#f3f3f3] lg:mt-0 ">
           <div className="rounded-[10px] bg-[white] py-[15px] flex justify-center md:justify-between gap-x-20 items-center flex-wrap md:flex-auto gap-y-5 px-[20px]">
             <p className="text-[18px]  md:text-[24px] font-semibold text-left ">
-              Application Forms
+              Profile Match
             </p>
           </div>
 
@@ -203,7 +206,7 @@ const ProfileMatch = () => {
                 onChange={genderHandler}
                 value={genderText}
               >
-                <option value="" disabled>
+                <option value="">
                   Select Gender
                 </option>
                 <option value="male">Male</option>
@@ -280,7 +283,7 @@ const ProfileMatch = () => {
                       <td>
                         <button
                           onClick={() => handleOpenPopup(items?._id)}
-                          className="text-[13px] px-2 py-1 rounded-md border bg-[white]"
+                          className="text-[13px] px-2 py-1 rounded-sm border bg-[white]"
                         >
                           Preview
                         </button>
@@ -309,11 +312,12 @@ const ProfileMatch = () => {
             </table>
           </div>
         </div>
+        {totalPages>1 && (
         <Pagination
           currentPage={allData?.pagination?.currentPage}
           totalPages={allData?.pagination?.totalPages}
           onPageChange={handlePageChange}
-        />
+        />)}
       </section>
 
       {/* ------------preview dialog box--------- */}
@@ -342,7 +346,15 @@ const ProfileMatch = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white px-7  sm:px-12 py-4 text-left align-middle shadow-2xl transition-all">
+                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white px-5  sm:pl-12 py-4 text-left align-middle shadow-2xl transition-all">
+                <div className="flex justify-end items-end ">
+                    <button
+                      className=" cursor-pointer"
+                      onClick={closeAddPopupModel}
+                    >
+                      <CloseIcon />
+                    </button>
+                  </div>
                   <Dialog.Title
                     as="h3"
                     className="flex justify-center lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"

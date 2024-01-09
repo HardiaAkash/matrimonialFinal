@@ -207,7 +207,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="firstname"
                     placeholder="First name"
-                    className="login-input w-full mt-2 custom-input capitalize"
+                    className={`login-input w-full mt-2 custom-input capitalize ${isStatus ? "disable_input" : ""}`}
                     value={formData?.firstname}
                     onChange={InputHandler}
                     pattern="[A-Za-z]+"
@@ -224,7 +224,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="lastname"
                     placeholder="Last name"
-                    className="login-input w-full mt-2 custom-input capitalize"
+                   className={`login-input w-full mt-2 custom-input capitalize ${isStatus ? "disable_input" : ""}`}
                     value={formData?.lastname}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -241,7 +241,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="dateOfBirth"
                     placeholder="DOB"
-                    className="login-input w-full mt-2 custom-input "
+                    className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
                     value={formData?.dateOfBirth}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -258,7 +258,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="height"
                     placeholder="Height (cm)"
-                    className="login-input w-full mt-2 custom-input"
+                      className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
                     value={formData?.height}
                     onChange={InputHandler}
                     pattern="[0-9]*"
@@ -359,7 +359,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     value={formData?.maritalStatus}
                     onChange={InputHandler}
                     disabled={isStatus}
-                    className="login-input w-full mt-2 custom-input capitalize bg-white "
+                    className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}
                   >
                     <option className="text-gray-100 " value="">
                       Choose marital status
@@ -379,7 +379,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="religion"
                     placeholder="Religion"
-                    className="login-input w-full mt-2 custom-input capitalize"
+                   className={`login-input w-full mt-2 custom-input capitalize ${isStatus ? "disable_input" : ""}`}
                     value={formData?.religion}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -399,7 +399,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="education"
                     placeholder="Highest education"
-                    className="login-input w-full mt-2 custom-input capitalize"
+                   className={`login-input w-full mt-2 custom-input capitalize ${isStatus ? "disable_input" : ""}`}
                     value={formData?.education}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -415,7 +415,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="occupation"
                     placeholder="Occupation"
-                    className="login-input w-full mt-2 custom-input capitalize"
+                   className={`login-input w-full mt-2 custom-input capitalize ${isStatus ? "disable_input" : ""}`}
                     value={formData?.occupation}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -430,7 +430,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="income"
                     placeholder="Income"
-                    className="login-input w-full mt-2 custom-input"
+                      className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
                     value={formData?.income}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -448,7 +448,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                           type="text"
                           name="hobby"
                           placeholder="Hobbies"
-                          className="login-input w-full mt-2 custom-input"
+                            className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
                           value={hobby}
                           onChange={InputHandler}
                           disabled={isStatus}
@@ -495,7 +495,8 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     {formData?.hobbies?.length > 0 && (
                       <>
                         <span className="login-input-label "> Hobbies :</span>
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3  flex-col  custom-input">
+                        <div className={`grid md:grid-cols-2 lg:grid-cols-3 flex-col custom-input  
+                        ${isStatus ? "disable_input" : "bg-white"}`}>
                           {formData?.hobbies?.map((hob, inx) => (
                             <p className="flex gap-x-2 text-[12px]" key={inx}>
                               <span className="max-w-[100px] text-ellipsis overflow-hidden flex whitespace-nowrap capitalize">
@@ -532,7 +533,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="address"
                     placeholder="Address"
-                    className="login-input w-full mt-2 custom-input h-[80px]"
+                    className={`login-input w-full mt-2 custom-input  h-[80px] ${isStatus ? "disable_input" : ""}`}
                     value={formData?.address}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -547,7 +548,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="contactNumber"
                     placeholder="Mobile no."
-                    className="login-input w-full mt-2 custom-input"
+                      className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
                     value={formData?.contactNumber}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -565,7 +566,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     name="email"
                     placeholder="Email"
                     disabled={isStatus}
-                    className="login-input w-full mt-2 custom-input"
+                      className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
                     value={formData?.email}
                     onChange={InputHandler}
                     required
@@ -664,7 +665,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     <button
                       type="submit"
                       disabled={isLoading || isUpdated}
-                      className={`w-full max-w-[120px] bg-[#1f2432] font-medium  p-2 rounded-lg hover:border hover:bg-[white] hover:border-[gray] hover:text-[black] text-[white] transition-all delay-75 
+                      className={`w-full px-3 max-w-[130px] bg-[#1f2432] text-[15px] font-medium  py-2 rounded-lg hover:border hover:bg-[white] hover:border-[gray] hover:text-[black] text-[white] transition-all delay-75 
                     ${isUpdated ? "bg-[gray]" : ""}`}
                     >
                       {isLoading

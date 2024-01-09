@@ -13,8 +13,10 @@ export const marital_status = [
 ];
 
 const ApplicationForm = ({ refreshData }) => {
-  const token = JSON.parse(localStorage.getItem("authToken"));
-  const userId = JSON.parse(localStorage.getItem("userID"));
+  const token = JSON.parse(localStorage.getItem("authToken" || ""));
+  const userId = JSON.parse(localStorage.getItem("userID" || ""));
+  const userMail = JSON.parse(localStorage.getItem("user_mail" || ""));
+  const userContact = JSON.parse(localStorage.getItem("user_contact" || ""));
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -30,8 +32,8 @@ const ApplicationForm = ({ refreshData }) => {
     hobbies: [],
     familyDetails: "",
     address: "",
-    contactNumber: "",
-    email: "",
+    contactNumber: userContact,
+    email: userMail,
     image: "",
     userID: userId,
   });
@@ -216,7 +218,7 @@ const ApplicationForm = ({ refreshData }) => {
                   <input
                     type="text"
                     name="dateOfBirth"
-                    placeholder="DOB"
+                    placeholder="DOB (DD/MM/YYYY)"
                     className="login-input w-full mt-2 custom-input"
                     onChange={InputHandler}
                     pattern="^(0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/\d{4}$"
@@ -339,6 +341,7 @@ const ApplicationForm = ({ refreshData }) => {
                     placeholder="Occupation"
                     className="login-input w-full mt-2 custom-input capitalize"
                     onChange={InputHandler}
+                    maxLength={100}
                     required
                   />
                 </div>
@@ -348,7 +351,7 @@ const ApplicationForm = ({ refreshData }) => {
                   <input
                     type="text"
                     name="income"
-                    placeholder="income"
+                    placeholder="income (CTC)"
                     className="login-input w-full mt-2 custom-input"
                     onChange={InputHandler}
                     required
@@ -365,6 +368,7 @@ const ApplicationForm = ({ refreshData }) => {
                       className="login-input w-full mt-2 custom-input capitalize"
                       value={hobby}
                       onChange={InputHandler}
+                      maxLength={100}
                     />
                     <button
                       type="button"
@@ -401,6 +405,7 @@ const ApplicationForm = ({ refreshData }) => {
                     placeholder="Family Details"
                     className="login-input w-full mt-2 custom-input h-[80px]"
                     onChange={InputHandler}
+                    maxLength={250}
                     required
                   ></textarea>
                 </div>
@@ -413,6 +418,7 @@ const ApplicationForm = ({ refreshData }) => {
                     placeholder="Address"
                     className="login-input w-full mt-2 custom-input h-[80px]"
                     onChange={InputHandler}
+                    maxLength={300}
                     required
                   ></textarea>
                 </div>
@@ -423,9 +429,11 @@ const ApplicationForm = ({ refreshData }) => {
                     type="text"
                     name="contactNumber"
                     placeholder="Mobile no."
-                    className="login-input w-full mt-2 custom-input"
+                    className="login-input w-full mt-2 custom-input disable_input"
                     pattern="[0-9]*"
                     title="Please enter only numbers"
+                    disabled={true}
+                    value={formData?.contactNumber}
                     onChange={InputHandler}
                     required
                   />
@@ -437,9 +445,9 @@ const ApplicationForm = ({ refreshData }) => {
                     type="email"
                     name="email"
                     placeholder="Email"
-                    // disabled={true}
-                    // value={formData.email}
-                    className="login-input w-full mt-2 custom-input"
+                    disabled={true}
+                    value={formData?.email}
+                    className="login-input w-full mt-2 custom-input disable_input"
                     onChange={InputHandler}
                     required
                   />
