@@ -31,7 +31,7 @@ const DeleteProfile = ({ closeModal }) => {
     axios
       .request(options)
       .then(function (response) {
-        console.log(response);
+        // console.log(response);
         if (response.status === 200) {
           setLoading(false);
           toast.success("Request submitted !");
@@ -43,8 +43,8 @@ const DeleteProfile = ({ closeModal }) => {
       })
       .catch(function (error) {
         setLoading(false);
-        console.error(error);
-        toast.error(error?.response?.data || "server error");
+        console.error(error?.response?.data?.message);
+        toast.error(error?.response?.data?.message || "server error");
       });
   };
 

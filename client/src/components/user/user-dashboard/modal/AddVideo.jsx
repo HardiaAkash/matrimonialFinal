@@ -99,7 +99,7 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId,getUserUpdate }) => {
         }
       } catch (error) {
         console.error("Error during category:", error);
-        toast.error(error?.response?.data);
+        toast.error(error?.response?.data || "server error");
         setLoading(false);
       }
     }
