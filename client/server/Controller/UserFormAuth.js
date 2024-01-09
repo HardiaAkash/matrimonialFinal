@@ -417,7 +417,6 @@ exports.approvedForm = async (req, res) => {
         const limit = parseInt(req.query.limit) || 1000;
         const search = req.query.search || "";
         const gender = req.query.gender;
-        // Check if isMatched query param exists and convert it to boolean
         const isMatched = req.query.isMatched !== undefined ? req.query.isMatched === 'true' : undefined;
           
         if (!page || !limit) {
@@ -452,7 +451,7 @@ exports.approvedForm = async (req, res) => {
 
         console.log('Final Query:', query); // For debugging purposes
 
-        const userForm = await UserForm.find(query).skip(startIndex).limit(limit);
+        const userForm = await UserForm.find(query).sort({ createdAt: -1 }).skip(startIndex).limit(limit);
         const totalUsers = await UserForm.countDocuments(query);
 
         const pagination = {

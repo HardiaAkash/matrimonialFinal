@@ -8,6 +8,8 @@ const VideoSchema = new mongoose.Schema({
         type:String,
         required:[true, "Please provide user email."],
     }
+}, {
+    timestamps: true, // Add createdAt and updatedAt fields
 })
 const CounVideo = mongoose.model("CounVideo", VideoSchema)
 module.exports = CounVideo;
