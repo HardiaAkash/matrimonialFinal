@@ -7,6 +7,7 @@ import Loader from "./loader";
 import Preview from "./preview";
 import MatchPopup from "./matchPopup";
 import { toast } from "react-toastify";
+import CloseIcon from "../svg/CloseIcon";
 
 const ProfileMatch = () => {
   const [allData, setAllData] = useState([]);
@@ -205,7 +206,7 @@ const ProfileMatch = () => {
                 onChange={genderHandler}
                 value={genderText}
               >
-                <option value="" disabled>
+                <option value="">
                   Select Gender
                 </option>
                 <option value="male">Male</option>
@@ -282,7 +283,7 @@ const ProfileMatch = () => {
                       <td>
                         <button
                           onClick={() => handleOpenPopup(items?._id)}
-                          className="text-[13px] px-2 py-1 rounded-md border bg-[white]"
+                          className="text-[13px] px-2 py-1 rounded-sm border bg-[white]"
                         >
                           Preview
                         </button>
@@ -345,7 +346,15 @@ const ProfileMatch = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white px-7  sm:px-12 py-4 text-left align-middle shadow-2xl transition-all">
+                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white px-5  sm:pl-12 py-4 text-left align-middle shadow-2xl transition-all">
+                <div className="flex justify-end items-end ">
+                    <button
+                      className=" cursor-pointer"
+                      onClick={closeAddPopupModel}
+                    >
+                      <CloseIcon />
+                    </button>
+                  </div>
                   <Dialog.Title
                     as="h3"
                     className="flex justify-center lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"

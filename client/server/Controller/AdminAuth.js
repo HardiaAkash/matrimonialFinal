@@ -3,6 +3,7 @@ const Admin = require("../Model/Admin")
 const bcrypt = require('bcrypt');
 const { generateToken, verifyToken } = require("../Utils/jwt");
 const User = require("../Model/User");
+const jwt = require("jsonwebtoken");
 const HttpStatus = {
     OK: 200,
     INVALID: 201,
@@ -103,3 +104,44 @@ exports.adminLogin = async (req, res) => {
         return res.status(HttpStatus.SERVER_ERROR).json(StatusMessage.SERVER_ERROR);
     }
 };
+exports.adminLogout = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.slice(7);
+    } else {
+      token = authHeader;
+    }
+
+    if (!token) {
+      return res.status(401).json({ message: "Please login to access this resource" });
+    }
+    const decodedData = jwt.verify(token, process.env.jwtKey);
+    const userData = await Admin.findOne({ email: decodedData?.email });
+    if (userData.activeToken && userData.activeToken === token) {
+      const user = await Admin.findOneAndUpdate(
+        { email: decodedData.email, activeToken: token },
+        { $unset: { activeToken: "" } }, // Unset the token
+        { new: true }
+      );
+      if (!user) {
+        return res.status(401).json({ message: 'Invalid session or token, please login again' });
+      }
+      return res.status(HttpStatus.OK).json({
+        message: `${userData.email} is Logout Successfully`
+      });
+    } else {
+      return res.status(401).json({ message: 'Token expired, please login again' });
+    }
+
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Token expired, please login again' });
+    } else if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ message: 'Invalid token' });
+    } else {
+      console.error('Other error:', error);
+      return res.status(500).json({ message: 'Server error' });
+    }
+  }
+}

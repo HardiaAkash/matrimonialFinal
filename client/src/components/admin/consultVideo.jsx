@@ -1,11 +1,12 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Loader from "./loader";
+import { ToastContainer, toast } from "react-toastify";
 
 const ConsultVideo = () => {
   const [formData, setFormData] = useState({
-    name:"Counselling",
-    video:"",
+    name: "Counselling",
+    video: "",
   });
   const [allData, setAllData] = useState([]);
   const [video, setVideo] = useState("");
@@ -51,6 +52,13 @@ const ConsultVideo = () => {
 
   // ----------upload video api---------
   const uploadVideo = async (e) => {
+    if (!video) {
+      // setVideoUploading(false);
+      toast.error("Choose video Please!");
+      return;
+    }
+    console.log("videos", video);
+    // return;
     setVideoUploading(true);
     setIsLoader(true);
     try {
@@ -64,12 +72,11 @@ const ConsultVideo = () => {
         // setVideoUrl(response?.data?.url);
         console.log(response?.data?.url);
         // const videoUrl = response?.data?.url;
-        setFormData({ ...formData, video: response?.data?.url});
+        setFormData({ ...formData, video: response?.data?.url });
         // setVideoDisable(true);
-      
-        getVideoAws({e, videoA: response?.data?.url})
+
+        getVideoAws({ e, videoA: response?.data?.url });
         // closePopup();
-        
       } else {
         setVideoDisable(false);
         setVideoUploading(false);
@@ -90,45 +97,52 @@ const ConsultVideo = () => {
     console.log(e.videoA);
     // console.log(videoA);
     console.log("Form Dta", formData);
-    
+
     try {
-       
-
-        const response = await axios.post("/api/auth/counselVideo", {
-          name:"Counselling",
-          video: e?.videoA
-        }, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (response.status === 200) {
-            console.log(response.data);
-            closePopup();
-            setVideoUploading(false);
-            setIsLoader(false);
-            getVideoApi();
-        } else {
-            console.error("Failed to upload video");
-          
+      const response = await axios.post(
+        "/api/auth/counselVideo",
+        {
+          name: "Counselling",
+          video: e?.videoA,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
+      );
+
+      if (response.status === 200) {
+        console.log(response.data);
+        closePopup();
+        setVideoUploading(false);
+        setIsLoader(false);
+        getVideoApi();
+      } else {
+        console.error("Failed to upload video");
+      }
     } catch (error) {
-        console.error("Error uploading video:", error.message);
-        
+      console.error("Error uploading video:", error.message);
     }
+  };
+
+  const inputHandler = (e) => {
+  const file = e.target.files[0];
+
+  if (file) {
+    const allowedTypes = ['video/mp4', 'video/x-m4v', 'video/*'];
+    if (allowedTypes.includes(file.type)) {
+      setVideo({ file });
+    } else {
+      toast.error("Please choose a video file.");
+      e.target.value = null;
+     
+    }
+  }
 };
 
 
-  const inputHandler = (e) => {
-    const file = e.target.files[0];
-  
-    if (file) {
-      setVideo({file : e.target.files[0]});
-    }
-  };
-  
 
   const openPopup = () => {
     setShowPopup(true);
@@ -141,6 +155,7 @@ const ConsultVideo = () => {
   return (
     <>
       {isLoader && <Loader />}
+      <ToastContainer autoClose={1000} />
       <section>
         <div className="py-[30px] px-[20px] mx-auto mt-[20px] bg-[#f3f3f3] lg:mt-0 ">
           <div className="rounded-[10px] bg-[white] py-[15px] flex justify-center md:justify-between gap-x-20 items-center flex-wrap md:flex-auto gap-y-5 px-[20px]">
@@ -159,14 +174,21 @@ const ConsultVideo = () => {
           {showPopup && (
             <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-75 z-10">
               <div className="w-[200px] sm:w-[300px] md:w-[350px] bg-white p-6 rounded-md ">
-                <h2 className="text-xl flex justify-center font-semibold mb-4">Upload Video</h2>
+                <h2 className="text-xl flex justify-center font-semibold mb-4">
+                  Upload Video
+                </h2>
                 <div className="flex sm:ml-7 ml-2">
-                <input type="file" onChange={inputHandler} className="mb-4 cursor-pointer " accept="video/mp4,video/x-m4v,video/*"/>
-</div>
+                  <input
+                    type="file"
+                    onChange={inputHandler}
+                    className="mb-4 cursor-pointer "
+                    accept="video/mp4,video/x-m4v,video/*"
+                  />
+                </div>
                 <div className="flex sm:flex-row flex-col justify-around">
                   <button
                     onClick={uploadVideo}
-                    disabled={ videoUploading}
+                    disabled={videoUploading}
                     className="mb-3 sm:mb-0 text-[green] text-[14px] hover:shadow-sm cursor-pointer rounded-md border-[green] border px-3 py-1 transition duration-300 ease-in-out transform hover:scale-105"
                   >
                     {videoUploading ? "Uploading..." : "Upload Video"}
@@ -181,31 +203,21 @@ const ConsultVideo = () => {
               </div>
             </div>
           )}
-
-          {/* Render uploaded videos */}
-          {/* <div className="mt-7 flex justify-center">
-            {formData.video.map((videoUrl, index) => (
-              <div key={index} className="mx-auto">
-                <video width={700} height={350} controls>
-                  <source src={videoUrl} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            ))}
-          </div> */}
         </div>
 
-
         <div className="mt-7 flex justify-center  px-5 md:px-0  ">
-        {allData.map((videoUrl, index) => (
-          <div key={new Date().getTime()} className="mx-auto">
-            <video width={700} height={350} controls>
-              <source src={videoUrl.video+ '?v=' + new Date().getTime()} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        ))}
-      </div>
+          {allData.map((videoUrl, index) => (
+            <div key={new Date().getTime()} className="mx-auto">
+              <video width={700} height={350} controls>
+                <source
+                  src={videoUrl.video + "?v=" + new Date().getTime()}
+                  type="video/mp4"
+                />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          ))}
+        </div>
       </section>
     </>
   );
