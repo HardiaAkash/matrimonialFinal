@@ -52,6 +52,7 @@ const ProfileMatch = () => {
         if (response.status === 200) {
           setLoader(false);
           setAllData(response?.data);
+          // console.log(response?.data);
           setTotalPages(response?.data?.totalPages)
         } else {
           setLoader(false);
@@ -207,7 +208,7 @@ const ProfileMatch = () => {
                 value={genderText}
               >
                 <option value="">
-                  Select Gender
+                  All
                 </option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
