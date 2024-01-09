@@ -21,9 +21,9 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
   return (
     <>
       <div className="mt-3 py-3">
-        <div className="flex justify-end cursor-pointer" onClick={handleClose}>
+        {/* <div className="flex justify-end cursor-pointer" onClick={handleClose}>
           <CloseIcon />
-        </div>
+        </div> */}
         {selectedItem.map((item, index) => (
           <div
             key={index}

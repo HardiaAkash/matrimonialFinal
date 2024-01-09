@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router()
 const multer = require('multer');
 const { authorizeRoles, isAuthJWT } = require("../Utils/jwt");
-const { addAdmin, adminLogin } = require("../Controller/AdminAuth");
+const { addAdmin, adminLogin, adminLogout } = require("../Controller/AdminAuth");
 const { addUser, userLogin, deleteUser, updateUser, logoutUser, getUserByID, viewUser, forgotPwd, resetPassword, changeUserPwd, verifyUser, deleteUserReq, getDeleteUserRequests } = require("../Controller/UserAuth");
 const { addForm, editFormById, changeStatusForm, uploadImage, viewForm, deleteFormById, getFormByUserID, changeMatchStatus, approvedForm } = require("../Controller/UserFormAuth");
 const { addCounVideo, getAllCounsVideo } = require("../Controller/VideoAuth");
@@ -11,6 +11,8 @@ const upload = multer({ storage: storage });
 
 router.route("/addAdmin").post(addAdmin)
 router.route("/adminlogin").post(adminLogin)
+router.route("/logoutAdmin").get(isAuthJWT, authorizeRoles("Admin"),adminLogout)
+
 ///////////////user/////////////
 router.route("/adduser").post(addUser)
 router.route("/userlogin").post(userLogin)

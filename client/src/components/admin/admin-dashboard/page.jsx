@@ -1,7 +1,7 @@
 'use client';
-import React from 'react';
-import { useState,Fragment } from 'react';
-// import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState, Fragment } from "react";
+import axios from "axios";
+
 import HomeIcon from "../../../../public/admin/home.svg";
 import PageIcon from "../../../../public/admin/page.svg";
 import webIcon from "../../../../public/admin/web-site.svg";
@@ -19,6 +19,9 @@ import AppForm from '../appForm';
 import ConsultVideo from '../consultVideo';
 import ProfileMatch from '../profileMatch';
 import ProfileDelete from '../profileDelete';
+import Dashboard from '../dashboard';
+import Loader from "../loader";
+import { toast } from "react-toastify";
 
 
 
@@ -26,13 +29,17 @@ const SideMenu = () => {
 
     const [ComponentId, setComponentId] = useState(1);
     const [showDrawer, setShowDrawer] = useState(false);
-    const router = useRouter()
+    const [authenticated, setAuthenticated] = useState(false);
+    const [isRefresh, setRefresh] = useState(false);
+    const router = useRouter();
+    const token = JSON.parse(localStorage.getItem("token" || ""));
+    const [isLoading,setIsLoading]=useState(false);
 
     const menu=[
         {
             id: 1,
             label: "Dashboard",
-            component:"",
+            component:<Dashboard/>,
             icon: HomeIcon,
           },
           {
@@ -75,10 +82,76 @@ const SideMenu = () => {
       };
 
       const handleSignout = () => {
-        localStorage.removeItem("token");
-        router.push("/admin");
+        // alert("siggned out")
+       
+        setIsLoading(true);
+       
+        
+    
+        const options = {
+          method: "GET",
+          url: `/api/auth/logoutAdmin`,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        };
+        axios
+          .request(options)
+          .then((response) => {
+            console.log(response?.data);
+            if (response.status === 200) {
+              setIsLoading(false);
+              localStorage.removeItem("token");
+              
+              // localStorage.removeItem("userID");
+              router.push("/admin");
+            } else {
+              setIsLoading(false);
+              toast.warn("Something went wrong!")
+              return;
+            }
+          })
+          .catch((error) => {
+            setIsLoading(false);
+            console.error("Error:", error);
+          });
+      };
+
+      useEffect(() => {
+        const storedToken = localStorage.getItem("token" || "");
+    
+        if (storedToken) {
+          verify();
+        } else {
+          setAuthenticated(false);
+          router.push("/admin");
+        }
+      }, []);
+    
+      const verify = async () => {
+          setIsLoading(true);
+        try {
+          const res = await axios.get(`/api/auth/verifyTokenUser/${token}`);
+          if (res.status === 200) {
+            setAuthenticated(true);
+            setIsLoading(false);
+            return;
+          } else {
+            setAuthenticated(false);
+            router.push("/admin");
+            setIsLoading(false);
+          }
+        } catch (error) {
+          setAuthenticated(false);
+          console.error("Error occurred:", error);
+          router.push("/admin");
+          setIsLoading(false);
+        }
       };
   return (
+    <>
+    { isLoading && <Loader/>}
     <section className="">
       <div className="flex min-h-screen relative lg:static">
         <div
@@ -168,6 +241,7 @@ const SideMenu = () => {
         </div>
       </div>
     </section>
+    </>
   )
 }
 

@@ -5,6 +5,7 @@ import axios from "axios";
 import Pagination from "./pagination";
 import Loader from "./loader";
 import Preview from "./preview";
+import CloseIcon from "../svg/CloseIcon";
 
 const AppForm = () => {
   const [allData, setAllData] = useState([]);
@@ -132,24 +133,27 @@ const AppForm = () => {
   };
 
   // ---------approve api-----------
-  const handleApprove = async (e,id) => {
+  const handleApprove = async (e, id) => {
     console.log(e.target.value);
     console.log(id);
-  
+
     setLoader(true);
     try {
-      const response = await axios.put(`/api/auth/changeStatus/${id}`,{formStatus:e.target.value} ,{
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.put(
+        `/api/auth/changeStatus/${id}`,
+        { formStatus: e.target.value },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         setLoader(false);
 
         refreshData();
-        
       } else {
         setLoader(false);
       }
@@ -189,9 +193,7 @@ const AppForm = () => {
                 onChange={genderHandler}
                 value={genderText}
               >
-                <option value="" disabled>
-                  Select Gender
-                </option>
+                <option value="">Select Gender</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="other">Other</option>
@@ -274,7 +276,9 @@ const AppForm = () => {
                       <select
                         className="text-[13px] p-1 cursor-pointer border border-[gray] rounded"
                         name="gender"
-                        disabled={items?.formStatus?.toLowerCase() !== "pending"}
+                        disabled={
+                          items?.formStatus?.toLowerCase() !== "pending"
+                        }
                         id="genderSelect"
                         onChange={(e) => {
                           setFormStatus((prevItems) => ({
@@ -284,7 +288,11 @@ const AppForm = () => {
 
                           handleApprove(e, items?._id);
                         }}
-                        value={formStatus?.formStatus ? formStatus?.formStatus :items?.formStatus}
+                        value={
+                          formStatus?.formStatus
+                            ? formStatus?.formStatus
+                            : items?.formStatus
+                        }
                         // defaultValue={items?.formStatus}
                       >
                         <option value="pending">Pending</option>
@@ -332,13 +340,22 @@ const AppForm = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white px-7  sm:px-12 py-4 text-left align-middle shadow-2xl transition-all">
+                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white px-5  sm:pl-12 py-4 text-left align-middle shadow-2xl transition-all">
+                  <div className="flex justify-end items-end ">
+                    <button
+                      className=" cursor-pointer"
+                      onClick={closeAddPopupModel}
+                    >
+                      <CloseIcon />
+                    </button>
+                  </div>
                   <Dialog.Title
                     as="h3"
-                    className="flex justify-center lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"
+                    className=" flex justify-center lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"
                   >
                     Applicant's full detail
                   </Dialog.Title>
+
                   <Preview
                     selectedItem={selectedItem}
                     closeModal={closeAddPopupModel}
@@ -350,8 +367,6 @@ const AppForm = () => {
           </div>
         </Dialog>
       </Transition>
-
-      
     </>
   );
 };

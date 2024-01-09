@@ -8,6 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
 import Loader from './loader';
+import Link from 'next/link';
 
 const Login = () => {
     const [loginDetails,setLoginDetails]=useState({
@@ -29,20 +30,19 @@ const Login = () => {
             // console.log(response);
             if (response.status === 200) {
                 console.log("response",response?.data?.token);
-                toast.success("Login successful!");
-                setLoading(false);
                 localStorage.setItem("token", JSON.stringify(response?.data?.token));
                 router.push("/admin/admin-dashboard");
+                setLoading(false);
+                toast.success("Login successful!");
           } else {
             toast.error("Invalid credentails");
-            sessionStorage.removeItem("sessionToken");
+        
             setLoading(false);
           }
         } catch(error) {
           console.error("Error during login:", error);
           toast.error("Login failed please try again!");
-          sessionStorage.removeItem("sessionToken");
-          sessionStorage.removeItem("adminId");
+         
           setLoading(false);
         }
     };
@@ -114,11 +114,12 @@ const Login = () => {
                     >
                       {isLoading ? "Loading.." : "Login"}
                     </button>
-                    {/* <Link to="/forgot-password"> */}
+                    
+                    <Link href="/admin/forgot-password">
                       <div className="text-[16px] font-medium underline text-center py-3 cursor-password">
                       Forgot password
                       </div>
-                    {/* </Link> */}
+                    </Link>
                   </div>
                 </div>
               </form>
