@@ -186,8 +186,8 @@ const UserDashboadr = () => {
 
   return (
     <>
-    <ToastContainer/>
   {isLoader && <Loader/>}  
+    <ToastContainer/>
     <section className="">
       <div className="flex min-h-screen relative lg:static">
         <div
