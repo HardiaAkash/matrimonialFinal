@@ -50,8 +50,8 @@ const ApplicationForm = ({ refreshData }) => {
   const year = today.getFullYear();
   const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
   const day = today.getDate().toString().padStart(2, '0');
-  const formattedToday = `${year}-${month}-${day}T00:00`;
-
+  // const formattedToday = `${year}-${month}-${day}T00:00`;
+  const formattedToday = new Date().toISOString().split('T')[0];
 
   const InputHandler = (e) => {
     if (e.target.name === "image") {
@@ -126,6 +126,7 @@ console.log(currentDate)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+   
 
     if (
       formData?.image == "" ||
@@ -205,7 +206,7 @@ console.log(currentDate)
         <div className="container mx-auto">
           <div className="py-[40px] lg:py-[70px] flex flex-col justify-center">
             <h4 className="capitalize md:text-[40px] text-[30px] font-semibold text-center mb-4">
-              applicaton form
+              application form
             </h4>
             <form className="" onSubmit={handleSubmit}>
               <div className="py-[20px] lg:max-w-[80%]  mx-auto flex flex-col md:grid md:grid-cols-2 gap-3 gap-x-10 items-start justify-center lg:px-0 px-[20px]">
@@ -238,43 +239,23 @@ console.log(currentDate)
                 </div>
 
                 {/*----------- dob -----------*/}
-                <div className="">
-                  <input
-                    type="text"
-                    name="dateOfBirth"
-                    placeholder="DOB (DD/MM/YYYY)"
-                    className="login-input w-full mt-2 custom-input"
-                    onChange={InputHandler}
-                    pattern="^(0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/\d{4}$"
-                    title=" DD/MM/YYYY "
-                    required
-                  />
+                <div>
+      <input
+        type="date"
+        name="dateOfBirth"
+        placeholder="DOB (YYYY-MM-DD)"
+        className="login-input w-full mt-2 custom-input"
+        onChange={InputHandler}
+        max={formattedToday}
+        required
+      />
 
-                  <input
-                    onChange={InputHandler}
-                    type="datetime-local"
-                    name="dateOfBirth"
-                    placeholder="DOB"
-                    className="login-input w-full mt-2 custom-input"
-                    required
-                    min={formattedToday}
-                  />
-                 {/* </div> */}
-                 <input
-                    onChange={InputHandler}
-                    type="datetime-local"
-                    name="dateOfBirth"
-                    placeholder="DOB"
-                    className="login-input w-full mt-2 custom-input"
-                    required
-                    min={formattedToday}
-                  />
-                  {errorDate && (
-                    <p className="text-[red] bg-[#f8d4d4e1] py-2 px-2 text-[14px] font-medium">
-                      {errorDate}
-                    </p>
-                  )}
-                </div>
+      {errorDate && (
+        <p className="text-[red] bg-[#f8d4d4e1] py-2 px-2 text-[14px] font-medium">
+          {errorDate}
+        </p>
+      )}
+    </div>
 
                 {/*----------- height -----------*/}
                 <div className="">
