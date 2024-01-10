@@ -32,8 +32,7 @@ const ChangePassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-console.log(cnfmPassword)
-console.log(formData)
+      // toast.success("Password change successfully!");
     if (formData?.oldPassword === formData?.newPassword) {
       setError("Old password and new password can't be same ");
     } else if (formData?.newPassword !== cnfmPassword) {
@@ -56,10 +55,10 @@ console.log(formData)
         if (response.status === 200) {
           toast.success("Password change successfully!");
           setLoading(false);
+          setError("")
           localStorage.removeItem("authToken");
           localStorage.removeItem("userID");
           router.push("/user/sign-in");
-          setError("")
         } else {
           setError("")
           setLoading(false);
