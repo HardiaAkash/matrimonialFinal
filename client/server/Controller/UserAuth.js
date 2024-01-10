@@ -175,7 +175,7 @@ exports.userLogin = async (req, res) => {
     } else {
       return res
         .status(HttpStatus.UNAUTHORIZED)
-        .json(StatusMessage.INVALID_CREDENTIALS);
+        .json("Old password does not match.");
     }
   } catch (error) {
     console.log(error);
