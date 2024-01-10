@@ -44,12 +44,32 @@ const ApplicationForm = ({ refreshData }) => {
   const [isLoading, setLoading] = useState(false);
   const [isSubmited, setSubmited] = useState(false);
   const [isLoader, setLoader] = useState(false);
+  const [errorDate, setErrorDate] = useState("");
+
+    const today = new Date();
+  const year = today.getFullYear();
+  const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+  const day = today.getDate().toString().padStart(2, '0');
+  const formattedToday = `${year}-${month}-${day}T00:00`;
+
 
   const InputHandler = (e) => {
     if (e.target.name === "image") {
       setPhotograph({ file: e.target.files[0] });
     } else if (e.target.name === "hobby") {
       setHobby(e.target.value);
+    } else if (e.target.name === "dateOfBirth") {
+      const enteredDate = new Date(e.target.value);
+      const currentDate = new Date();
+console.log(currentDate)
+      if (enteredDate > currentDate) {
+        // Date is in the future, set an error message
+        setErrorDate("Invalid date of birth. Please enter a date in the past.");
+      } else {
+        // Date is valid, update the state and clear the error message
+        setFormData({ ...formData, ["dateOfBirth"]: e.target.value });
+        setErrorDate("");
+      }
     } else {
       setFormData({ ...formData, [e.target.name]: e.target.value });
     }
@@ -107,7 +127,11 @@ const ApplicationForm = ({ refreshData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData?.image == "" || formData?.hobbies?.length < 1 || formData?.maritalStatus === "")  {
+    if (
+      formData?.image == "" ||
+      formData?.hobbies?.length < 1 ||
+      formData?.maritalStatus === ""
+    ) {
       toast.error("Please fill all feilds");
     } else {
       setLoading(true);
@@ -225,6 +249,31 @@ const ApplicationForm = ({ refreshData }) => {
                     title=" DD/MM/YYYY "
                     required
                   />
+
+                  <input
+                    onChange={InputHandler}
+                    type="datetime-local"
+                    name="dateOfBirth"
+                    placeholder="DOB"
+                    className="login-input w-full mt-2 custom-input"
+                    required
+                    min={formattedToday}
+                  />
+                 {/* </div> */}
+                 <input
+                    onChange={InputHandler}
+                    type="datetime-local"
+                    name="dateOfBirth"
+                    placeholder="DOB"
+                    className="login-input w-full mt-2 custom-input"
+                    required
+                    min={formattedToday}
+                  />
+                  {errorDate && (
+                    <p className="text-[red] bg-[#f8d4d4e1] py-2 px-2 text-[14px] font-medium">
+                      {errorDate}
+                    </p>
+                  )}
                 </div>
 
                 {/*----------- height -----------*/}
@@ -257,7 +306,10 @@ const ApplicationForm = ({ refreshData }) => {
                         checked={formData.gender === "male"}
                         onChange={InputHandler}
                       />
-                      <label htmlFor="male" className="custom-radio"> male </label>
+                      <label htmlFor="male" className="custom-radio">
+                        {" "}
+                        male{" "}
+                      </label>
                     </div>
                     <div>
                       <input
@@ -269,7 +321,9 @@ const ApplicationForm = ({ refreshData }) => {
                         checked={formData.gender === "female"}
                         onChange={InputHandler}
                       />
-                      <label htmlFor="female" className="custom-radio" >female </label>
+                      <label htmlFor="female" className="custom-radio">
+                        female{" "}
+                      </label>
                     </div>
                     <div>
                       <input
@@ -279,9 +333,11 @@ const ApplicationForm = ({ refreshData }) => {
                         value="other"
                         className="peer hidden"
                         checked={formData.gender === "other"}
-                         onChange={InputHandler}
+                        onChange={InputHandler}
                       />
-                      <label htmlFor="other" className="custom-radio" >other </label>
+                      <label htmlFor="other" className="custom-radio">
+                        other{" "}
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -378,7 +434,9 @@ const ApplicationForm = ({ refreshData }) => {
                       +
                     </button>
                   </div>
-                  <div className="text-[13px] text-left w-full px-2 font-[400]">Note* : Click on add button to add a hobby</div>
+                  <div className="text-[13px] text-left w-full px-2 font-[400]">
+                    Note* : Click on add button to add a hobby
+                  </div>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3  flex-col gap-3 justify-between w-full px-2">
                     {formData?.hobbies?.length > 0 &&
                       formData?.hobbies?.map((hob, inx) => (
