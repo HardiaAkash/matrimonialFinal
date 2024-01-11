@@ -90,12 +90,12 @@ exports.addUser = async (req, res) => {
         .status(HttpStatus.BAD_REQUEST)
         .json(StatusMessage.DUPLICATE_EMAIL);
     }
-    const existingAdminByContact = await Admin.findOne({ contact });
-    if (existingAdminByContact) {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json(StatusMessage.DUPLICATE_CONTACT);
-    }
+    // const existingAdminByContact = await Admin.findOne({ contact });
+    // if (existingAdminByContact) {
+    //   return res
+    //     .status(HttpStatus.BAD_REQUEST)
+    //     .json(StatusMessage.DUPLICATE_CONTACT);
+    // }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -175,7 +175,7 @@ exports.userLogin = async (req, res) => {
     } else {
       return res
         .status(HttpStatus.UNAUTHORIZED)
-        .json("Old password does not match.");
+        .json(StatusMessage.INVALID_CREDENTIALS);
     }
   } catch (error) {
     console.log(error);
@@ -584,7 +584,7 @@ exports.changeUserPwd = async (req, res) => {
     } else {
       return res
         .status(HttpStatus.UNAUTHORIZED)
-        .json(StatusMessage.INVALID_CREDENTIALS);
+        .json("Old password does not match.");
     }
   } catch (error) {
     console.log(error);
