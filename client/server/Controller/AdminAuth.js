@@ -39,19 +39,19 @@ exports.addAdmin = async (req, res) => {
           return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_EMAIL);
         }
     
-        const existingUserByContact = await User.findOne({ contact });
-        if (existingUserByContact) {
-          return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_CONTACT);
-        }
+        // const existingUserByContact = await User.findOne({ contact });
+        // if (existingUserByContact) {
+        //   return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_CONTACT);
+        // }
         //////admin check
         const existingAdminByEmail = await Admin.findOne({ email });
         if (existingAdminByEmail) {
           return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_EMAIL);
         }
-        const existingAdminByContact = await Admin.findOne({ contact });
-        if (existingAdminByContact) {
-          return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_CONTACT);
-        }
+        // const existingAdminByContact = await Admin.findOne({ contact });
+        // if (existingAdminByContact) {
+        //   return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_CONTACT);
+        // }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
