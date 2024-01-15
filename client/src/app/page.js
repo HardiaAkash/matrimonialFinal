@@ -24,6 +24,7 @@ const  Home = () =>{
   useEffect(() => {
     
     if (token) {
+      
       verify();
     } else {
       setAuthenticated(false);
@@ -42,7 +43,7 @@ const  Home = () =>{
     setLoading(true)
     try {
       const res = await axios.get(`/api/auth/verifyTokenUser/${token}`);
-      console.log("verify", res);
+      console.log("verify", res.data?.data);
       if (res.status === 200) {
       setAuthenticated(true);
       setLoading(false)
