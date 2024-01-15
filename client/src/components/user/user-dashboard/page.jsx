@@ -73,7 +73,7 @@ const UserDashboadr = () => {
         console.error("Error:", error);
         toast.error(error?.response?.data);
         localStorage.removeItem("authToken");
-        localStorage.removeItem("userID"); \
+        localStorage.removeItem("userID"); 
         router.push("/user/sign-in");
       });
   };
