@@ -15,10 +15,14 @@ const  Home = () =>{
   const [isRefresh, setRefresh] = useState(false);
   const [isLoading, setLoading] = useState(false);
   // const token = JSON.parse(localStorage.getItem("authToken" || ""));
-  const [token , setToken] = useState(JSON.parse(localStorage.getItem("authToken" || "")))
+  // const [token , setToken] = useState(JSON?.parse(localStorage?.getItem("authToken" || "")))
+  const [token, setToken] = useState(
+    typeof window !== "undefined" ? JSON?.parse(localStorage.getItem("authToken")) : null
+  );
 
   // console.log(authenticated)
   useEffect(() => {
+    
     if (token) {
       verify();
     } else {
