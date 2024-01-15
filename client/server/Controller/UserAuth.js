@@ -45,10 +45,29 @@ exports.verifyUser = async (req, res) => {
       const LoggedUser = await User.findOne({
         email: decodedData?.email,
       }).select("-password -activeToken");
-      return res.status(HttpStatus.OK).json({
-        data: LoggedUser,
-        message: "Verification successful",
-      });
+      if (LoggedUser) {
+        return res.status(HttpStatus.OK).json({
+          data: LoggedUser,
+          message: "Verification successful",
+        });
+        
+      }
+      const LoggedAdmin = await Admin.findOne({
+        email: decodedData?.email,
+      }).select("-password -activeToken");
+        if (LoggedAdmin) {
+        return res.status(HttpStatus.OK).json({
+          data: LoggedAdmin,
+          message: "Verification successful",
+        });
+        
+      }else{
+        return res.status(HttpStatus.UNAUTHORIZED).json({
+          data: null,
+          message: "Invalid Token",
+        });
+      }
+
     }
     // If verification succeeds, proceed with other actions or return success
     // For example:
