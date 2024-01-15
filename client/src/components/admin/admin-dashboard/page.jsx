@@ -133,18 +133,24 @@ const SideMenu = () => {
           setIsLoading(true);
         try {
           const res = await axios.get(`/api/auth/verifyTokenUser/${token}`);
+          if(res?.data?.data === null){
+            router.push("/admin")
+            localStorage.removeItem("token")
+          }
           if (res.status === 200) {
             setAuthenticated(true);
             setIsLoading(false);
             return;
           } else {
             setAuthenticated(false);
+            localStorage.removeItem("token")
             router.push("/admin");
             setIsLoading(false);
           }
         } catch (error) {
           setAuthenticated(false);
           console.error("Error occurred:", error);
+          localStorage.removeItem("token")
           router.push("/admin");
           setIsLoading(false);
         }
