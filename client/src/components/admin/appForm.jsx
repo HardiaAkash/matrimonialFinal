@@ -20,7 +20,7 @@ const AppForm = () => {
   const [selectedItem, setSelectedItem] = useState("");
   const [formStatus, setFormStatus] = useState("");
   const visiblePageCount = 10;
-  const token = JSON.parse(localStorage.getItem("token" || ""));
+  const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("token" || "")):"";
 
   // -------form api--------
 
