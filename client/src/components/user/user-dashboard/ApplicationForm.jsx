@@ -13,7 +13,7 @@ export const marital_status = [
 ];
 
 const ApplicationForm = ({ refreshData }) => {
-  const token = JSON.parse(localStorage.getItem("authToken" || ""));
+  const token =  JSON.parse(localStorage.getItem("authToken" || ""));
   const userId = JSON.parse(localStorage.getItem("userID" || ""));
   const userMail = JSON.parse(localStorage.getItem("user_mail" || ""));
   const userContact = JSON.parse(localStorage.getItem("user_contact" || ""));

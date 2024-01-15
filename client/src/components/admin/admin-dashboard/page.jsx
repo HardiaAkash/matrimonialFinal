@@ -32,7 +32,7 @@ const SideMenu = () => {
     const [authenticated, setAuthenticated] = useState(false);
     const [isRefresh, setRefresh] = useState(false);
     const router = useRouter();
-    const token = JSON.parse(localStorage.getItem("token" || ""));
+    const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("token" || "")) : "";
     const [isLoading,setIsLoading]=useState(false);
 
     const menu=[

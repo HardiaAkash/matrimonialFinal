@@ -75,13 +75,13 @@ exports.addAdmin = async (req, res) => {
 exports.adminLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
-
+        console.log(email);
         if (!email || !password) {
             return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.MISSING_EMAIL_PASSWORD);
         }
 
         const admin = await Admin.findOne({ email });
-
+        console.log(admin);
         if (!admin) {
             return res.status(HttpStatus.UNAUTHORIZED).json(StatusMessage.USER_NOT_FOUND);
         }

@@ -7,9 +7,9 @@ import Link from "next/link";
 const BackgroundCheck = ({refreshData}) => {
   const router = useRouter();
   const [isLoader, setLoader] = useState(false);
-  const token = JSON.parse(localStorage.getItem("authToken" || ""));
+  const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("authToken" || "")):null;
 
-  const userId = JSON.parse(localStorage.getItem("userID" || ""));
+  const userId =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("userID" || "")):null;
 
   const getUserUpdate = ( step ) => {
     // router.push("https://www.google.com/","_blank"); 
