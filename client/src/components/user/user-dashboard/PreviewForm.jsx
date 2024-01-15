@@ -14,9 +14,9 @@ export const marital_status = [
 ];
 
 const ViewApplicationDetails = ({ previewData, refreshData }) => {
-  const token = JSON.parse(localStorage.getItem("authToken"));
+  const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("authToken")):null;
   // const isUpdated = JSON.parse(localStorage.getItem("isFromUpdated"));
-  const [isUpdated, setIsUpdated] = useState(JSON.parse(localStorage.getItem("isFromUpdated")));
+  const [isUpdated, setIsUpdated] = useState(false);
   const [formData, setFormData] = useState(previewData);
   const [photograph, setPhotograph] = useState("");
   const [hobby, setHobby] = useState("");
@@ -24,13 +24,17 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
   const [imageDisable, setImageDisable] = useState(false);
   const [imageUpload, setImageUpload] = useState(false);
   const [isLoading, setLoading] = useState(false);
-
+  const formattedToday = new Date().toISOString().split('T')[0];
   // console.log(isUpdated);
 
   useEffect(() => {
     if ( (previewData?.formStatus)?.toLowerCase() === "rejected") {
-      localStorage.setItem("isFromUpdated", JSON.stringify(false));
+      // localStorage.setItem("isFromUpdated", JSON.stringify(false));
       setIsUpdated(false)
+    }
+    if ( (previewData?.formStatus)?.toLowerCase() === "approved") {
+      // localStorage.setItem("isFromUpdated", JSON.stringify(false));
+      setIsUpdated(true)
     }
   }, []);
 
@@ -238,14 +242,15 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                 <div className="">
                   <span className="login-input-label ">DOB :</span>
                   <input
-                    type="text"
+                    type="date"
                     name="dateOfBirth"
                     placeholder="DOB"
                     className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
                     value={formData?.dateOfBirth}
                     onChange={InputHandler}
                     disabled={isStatus}
-                    pattern="^(0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/\d{4}$"
+                    max={formattedToday}
+                    // pattern="^(0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/\d{4}$"
                     title=" DD/MM/YYYY "
                     required
                   />

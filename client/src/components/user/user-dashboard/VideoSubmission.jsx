@@ -9,8 +9,8 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
   let [isOpen, setIsOpen] = useState(false);
   let [isVideo, setVideo] = useState(false);
   const [isLoader, setLoader] = useState(false);
-  const userId = JSON.parse(localStorage.getItem("userID" || ""));
-  const token = JSON.parse(localStorage.getItem("authToken" || ""));
+  const userId =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("userID" || "")):null;
+  const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("authToken" || "")):null;
   // const isVideoUplod = JSON.parse(localStorage.getItem("isVideoUploded" || ""));
   const [isVideoUplod, setIsVideoUplod] = useState(false);
 

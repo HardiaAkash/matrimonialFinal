@@ -25,8 +25,8 @@ const UserDashboadr = () => {
   const [isPreview, setPreview] = useState(false);
   const [isFormStep, setFormStep] = useState(2);
   const [isRefresh, setRefresh] = useState(false);
-  const token = JSON.parse(localStorage.getItem("authToken" || ""));
-  const userId = JSON.parse(localStorage.getItem("userID" || ""));
+  const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("authToken" || "")) : null;
+  const userId =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("userID" || "")):null;
   // console.log(previewFormData?.isMatched);
 
   const refreshData = () => {
@@ -78,7 +78,7 @@ const UserDashboadr = () => {
       });
   };
 
-  
+
   // ------ verify token -------
 
   useEffect(() => {
