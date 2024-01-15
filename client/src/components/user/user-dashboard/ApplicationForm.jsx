@@ -76,13 +76,26 @@ console.log(currentDate)
   };
 
   const handleAddHobbies = () => {
-    if (hobby) {
-      setFormData({
-        ...formData,
-        hobbies: [...(formData.hobbies || []), hobby],
-      });
-      setHobby("");
+    if (!hobby) {
+      // Handle case where hobby is empty
+      toast.error("Please enter a valid hobby.");
+      return;
     }
+  
+    if (/^\s|[^\w\s]/.test(hobby)) {
+      // Handle case where hobby starts with whitespace
+      toast.error("Hobbies should not start with whitespace and also special character not allowed");
+      return;
+    }
+  
+    // Add the hobby to the formData
+    setFormData({
+      ...formData,
+      hobbies: [...(formData.hobbies || []), hobby.trim()], // Remove leading/trailing whitespaces
+    });
+  
+    // Clear the input
+    setHobby("");
   };
   const removeHobbies = (id) => {
     let newHobbies = formData.hobbies.filter((items, index) => {
@@ -126,7 +139,14 @@ console.log(currentDate)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-   
+    if (/^\s/.test(formData.familyDetails)) {
+      toast.error("Family details should not start with whitespace.");
+      return
+    }
+    if (/^\s/.test(formData.address)) {
+      toast.error("Address should not start with whitespace.");
+      return
+    }
 
     if (
       formData?.image == "" ||
@@ -219,7 +239,7 @@ console.log(currentDate)
                     className="login-input w-full mt-2 custom-input capitalize"
                     onChange={InputHandler}
                     pattern="[A-Za-z]+"
-                    maxLength={84}
+                    maxLength={64}
                     required
                   />
                 </div>
@@ -233,7 +253,7 @@ console.log(currentDate)
                     className="login-input w-full mt-2 custom-input capitalize"
                     onChange={InputHandler}
                     pattern="[A-Za-z]+"
-                    maxLength={84}
+                    maxLength={64}
                     required
                   />
                 </div>
@@ -265,8 +285,8 @@ console.log(currentDate)
                     placeholder="Height (cm)"
                     className="login-input w-full mt-2 custom-input"
                     onChange={InputHandler}
-                    pattern="[0-9]*"
-                    title="Please enter only numbers"
+                    pattern="^[1-9][0-9]{0,2}$"
+                    title="Please enter only numbers upto three digit without leading zero and no space is allowed"
                     required
                   />
                 </div>
@@ -352,7 +372,7 @@ console.log(currentDate)
                     onChange={InputHandler}
                     pattern="[A-Za-z]+"
                     title="Enter only alphabets"
-                    maxLength={84}
+                    maxLength={64}
                     required
                   />
                 </div>
@@ -365,6 +385,9 @@ console.log(currentDate)
                     placeholder="Highest education"
                     className="login-input w-full mt-2 custom-input capitalize"
                     onChange={InputHandler}
+                    pattern="^[^\s][A-Za-z0-9\s]*$"
+                    title="Please enter a valid education without leading white space or special characters"
+                    maxLength={64}
                     required
                   />
                 </div>
@@ -378,7 +401,9 @@ console.log(currentDate)
                     placeholder="Occupation"
                     className="login-input w-full mt-2 custom-input capitalize"
                     onChange={InputHandler}
-                    maxLength={100}
+                    pattern="^[^\s][A-Za-z0-9\s]*$"
+                    title="Please enter a valid occuption without leading white space or special characters"
+                    maxLength={64}
                     required
                   />
                 </div>
@@ -388,9 +413,12 @@ console.log(currentDate)
                   <input
                     type="text"
                     name="income"
-                    placeholder="income (CTC)"
+                    placeholder="Income (CTC)"
                     className="login-input w-full mt-2 custom-input"
                     onChange={InputHandler}
+                    pattern="^[^\s][A-Za-z0-9\s]*$"
+                    title="Please enter a valid Income without leading white space or special characters"
+                    maxLength={30}
                     required
                   />
                 </div>
@@ -405,7 +433,10 @@ console.log(currentDate)
                       className="login-input w-full mt-2 custom-input capitalize"
                       value={hobby}
                       onChange={InputHandler}
-                      maxLength={100}
+                      pattern="^[^\s][A-Za-z0-9\s]*$"
+                      title="Please enter a valid hobbies without leading white space or special characters"
+                      maxLength={64}
+                      // maxLength={100}
                     />
                     <button
                       type="button"
@@ -444,6 +475,8 @@ console.log(currentDate)
                     placeholder="Family Details"
                     className="login-input w-full mt-2 custom-input h-[80px]"
                     onChange={InputHandler}
+                    pattern="^\S.*$"
+                    title="Please enter family details without leading white space"
                     maxLength={250}
                     required
                   ></textarea>
@@ -457,6 +490,8 @@ console.log(currentDate)
                     placeholder="Address"
                     className="login-input w-full mt-2 custom-input h-[80px]"
                     onChange={InputHandler}
+                    pattern="^\S.*$"
+                    title="Please enter address without leading white space"
                     maxLength={300}
                     required
                   ></textarea>
