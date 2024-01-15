@@ -109,11 +109,15 @@ const SideMenu = () => {
             } else {
               setIsLoading(false);
               toast.warn("Something went wrong!")
+              router.push("/admin")
+            localStorage.removeItem("token")
               return;
             }
           })
           .catch((error) => {
             setIsLoading(false);
+            router.push("/admin")
+            localStorage.removeItem("token")
             console.error("Error:", error);
           });
       };
@@ -150,7 +154,7 @@ const SideMenu = () => {
         } catch (error) {
           setAuthenticated(false);
           console.error("Error occurred:", error);
-          localStorage.removeItem("token")
+          localStorage.removeItem("token")  
           router.push("/admin");
           setIsLoading(false);
         }
