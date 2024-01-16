@@ -188,7 +188,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     </p>
                   ) : (
                     <p
-                      className="text-right cursor-pointer font-medium max-w-[200px]"
+                      className="text-right cursor-pointer font-medium max-w-[200px] ml-auto"
                       onClick={() => setStatus(false)}
                     >
                       Edit
@@ -205,7 +205,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
             <form className="" onSubmit={handleSubmit}>
               <div className="py-[20px] lg:max-w-[80%] lg:px-0 px-[20px] mx-auto  flex flex-col md:grid md:grid-cols-2 gap-3 gap-x-10 items-start justify-center">
                 {/*-----------first name -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <span className="login-input-label "> First Name:</span>
                   <input
                     type="text"
@@ -222,7 +222,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                 </div>
 
                 {/*-----------last name -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <span className="login-input-label "> Last Name:</span>
                   <input
                     type="text"
@@ -239,7 +239,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                 </div>
 
                 {/*----------- dob -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <span className="login-input-label ">DOB :</span>
                   <input
                     type="date"
@@ -257,7 +257,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                 </div>
 
                 {/*----------- height -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <span className="login-input-label "> Height :</span>
                   <input
                     type="text"
@@ -357,14 +357,14 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                 </div>
 
                 {/*----------- marital Status -----------*/}
-                <div className="py-2">
+                <div className="py-2 inputDiv">
                   <span className="login-input-label "> Marital Status:</span>
                   <select
                     name="maritalStatus"
                     value={formData?.maritalStatus}
                     onChange={InputHandler}
                     disabled={isStatus}
-                    className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}
+                    className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}
                   >
                     <option className="text-gray-100 " value="">
                       Choose marital status
@@ -378,7 +378,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                 </div>
 
                 {/*----------- religion -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <span className="login-input-label ">Religion :</span>
                   <input
                     type="text"
@@ -396,7 +396,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                 </div>
 
                 {/*----------- education -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <span className="login-input-label ">
                     Highest Education :
                   </span>
@@ -414,7 +414,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
 
                 {/*----------- occupation -----------*/}
 
-                <div className="">
+                <div className="inputDiv">
                   <span className="login-input-label ">Occupation :</span>
                   <input
                     type="text"
@@ -429,7 +429,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                 </div>
 
                 {/*----------- income -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <span className="login-input-label ">Income :</span>
                   <input
                     type="text"
@@ -446,9 +446,9 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                 {/*----------- hobbies -----------*/}
                 {!isStatus ? (
                   <>
-                    <div className="py-2">
+                    <div className="py-2 ">
                       <span className="login-input-label mb-1">Hobbies:</span>
-                      <div className="flex items-center gap-5 py-2">
+                      <div className="flex items-center gap-5 py-2 ">
                         <input
                           type="text"
                           name="hobby"
@@ -472,7 +472,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                             {/* <span className="login-input-label mb-1">
                             Hobbies:
                           </span> */}
-                            <div className="grid md:grid-cols-2 lg:grid-cols-3 flex-col gap-1 px-2 py-3 rounded-[10px] w-full mt-2  bg-white">
+                            <div className=" grid md:grid-cols-2 lg:grid-cols-3 flex-col gap-1 px-2 py-3 rounded-[10px] w-full mt-2  bg-white">
                               {formData?.hobbies?.map((hob, inx) => (
                                 <p
                                   className="flex gap-x-2 text-[14px]"
@@ -496,11 +496,11 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     </div>
                   </>
                 ) : (
-                  <div className="">
+                  <div className="inputDiv">
                     {formData?.hobbies?.length > 0 && (
                       <>
                         <span className="login-input-label "> Hobbies :</span>
-                        <div className={`grid md:grid-cols-2 lg:grid-cols-3 flex-col custom-input  
+                        <div className={`grid md:grid-cols-2 lg:grid-cols-3 flex-col inputDiv custom-input  
                         ${isStatus ? "disable_input" : "bg-white"}`}>
                           {formData?.hobbies?.map((hob, inx) => (
                             <p className="flex gap-x-2 text-[12px]" key={inx}>
@@ -517,7 +517,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                 )}
 
                 {/*----------- familyDetails -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <span className="login-input-label ">Family Details :</span>
                   <textarea
                     type="text"
@@ -532,7 +532,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                 </div>
 
                 {/*----------- address -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <span className="login-input-label ">Address :</span>
                   <textarea
                     type="text"
@@ -547,7 +547,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                 </div>
 
                 {/*----------- number -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <span className="login-input-label ">Mobile No. :</span>
                   <input
                     type="text"
@@ -564,7 +564,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                 </div>
 
                 {/*----------- email -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <span className="login-input-label ">Email :</span>
                   <input
                     type="email"
