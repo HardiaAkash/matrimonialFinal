@@ -425,7 +425,7 @@ exports.forgotPwd = async (req, res) => {
     to: user.email,
     subject: "Reset Password Link",
     text: `<h2>Hello! ${user.name ? user.name : ""} </h2>
-      <h3>Please follow the link to reset your password: http://52.5.254.27/:5000/user/reset-password/${token}</h3>
+      <h3>Please follow the link to reset your password: http://52.5.254.27:5000/user/reset-password/${token}</h3>
       <h3>Thanks and regards</h3>
       `,
   };
