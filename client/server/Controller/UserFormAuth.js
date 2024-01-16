@@ -32,7 +32,7 @@ const StatusMessage = {
 const mailSend = async(reciever, status) =>{
     console.log(reciever, status);
     const mailOptions = {
-        from: "akash.hardia@gmail.com",
+        from: "enotify@sacredspouse.com",
         to: reciever,
         subject: "Marriage Application Status",
         text: `  <p>Dear Applicant,</p>
@@ -384,7 +384,7 @@ exports.changeMatchStatus = async (req, res) => {
         // Return success response with updated form
         if (isMatched && userData?.email ) {
             const mailOptions = {
-                from: "akash.hardia@gmail.com",
+                from: "enotify@sacredspouse.com",
                 to: userData?.email,
                 subject: `Congratulation ${userData?.name}!`,
                 text: ` <p>Dear ${userData?.name},</p>

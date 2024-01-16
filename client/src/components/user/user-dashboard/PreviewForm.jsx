@@ -188,7 +188,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     </p>
                   ) : (
                     <p
-                      className="text-right cursor-pointer font-medium"
+                      className="text-right cursor-pointer font-medium max-w-[200px]"
                       onClick={() => setStatus(false)}
                     >
                       Edit
