@@ -173,7 +173,7 @@ const SideMenu = () => {
           <div className="bg-[black] h-[2px] w-[20px]"></div>
         </div>
         <div
-          className={`w-[250px] sm:w-[300px] bg-[#313A46]  text-[white] lg:px-[20px] px-[10px]  drawer
+          className={`w-[250px] sm:w-[300px] bg-[#313A46]  text-[white] lg:px-[20px] px-[10px] z-[11] drawer
                  ${
                    showDrawer
                      ? "block  absolute top-0 left-0 min-h-screen is-show"

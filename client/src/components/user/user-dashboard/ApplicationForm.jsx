@@ -231,7 +231,7 @@ console.log(currentDate)
             <form className="" onSubmit={handleSubmit}>
               <div className="py-[20px] lg:max-w-[80%]  mx-auto flex flex-col md:grid md:grid-cols-2 gap-3 gap-x-10 items-start justify-center lg:px-0 px-[20px]">
                 {/*-----------first name -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <input
                     type="text"
                     name="firstname"
@@ -245,7 +245,7 @@ console.log(currentDate)
                 </div>
 
                 {/*-----------last name -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <input
                     type="text"
                     name="lastname"
@@ -259,7 +259,7 @@ console.log(currentDate)
                 </div>
 
                 {/*----------- dob -----------*/}
-                <div>
+                <div className="inputDiv">
       <input
         type="date"
         name="dateOfBirth"
@@ -278,7 +278,7 @@ console.log(currentDate)
     </div>
 
                 {/*----------- height -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <input
                     type="text"
                     name="height"
@@ -344,7 +344,7 @@ console.log(currentDate)
                 </div>
 
                 {/*----------- marital Status -----------*/}
-                <div className="py-2">
+                <div className="py-2 inputDiv">
                   <span className="login-input-label "> Marital status:</span>
                   <select
                     name="maritalStatus"
@@ -363,7 +363,7 @@ console.log(currentDate)
                 </div>
 
                 {/*----------- religion -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <input
                     type="text"
                     name="religion"
@@ -378,7 +378,7 @@ console.log(currentDate)
                 </div>
 
                 {/*----------- education -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <input
                     type="text"
                     name="education"
@@ -394,7 +394,7 @@ console.log(currentDate)
 
                 {/*----------- occupation -----------*/}
 
-                <div className="">
+                <div className="inputDiv">
                   <input
                     type="text"
                     name="occupation"
@@ -409,7 +409,7 @@ console.log(currentDate)
                 </div>
 
                 {/*----------- income -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <input
                     type="text"
                     name="income"
@@ -424,8 +424,8 @@ console.log(currentDate)
                 </div>
 
                 {/*----------- hobbies -----------*/}
-                <div className="flex flex-col items-center gap-5">
-                  <div className="flex w-full gap-6">
+                <div className="flex flex-col items-center gap-5 inputDiv">
+                  <div className="flex w-full gap-6 inputDiv">
                     <input
                       type="text"
                       name="hobby"
@@ -468,7 +468,7 @@ console.log(currentDate)
                 </div>
 
                 {/*----------- familyDetails -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <textarea
                     type="text"
                     name="familyDetails"
@@ -483,7 +483,7 @@ console.log(currentDate)
                 </div>
 
                 {/*----------- address -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <textarea
                     type="text"
                     name="address"
@@ -498,7 +498,7 @@ console.log(currentDate)
                 </div>
 
                 {/*----------- number -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <input
                     type="text"
                     name="contactNumber"
@@ -514,7 +514,7 @@ console.log(currentDate)
                 </div>
 
                 {/*----------- email -----------*/}
-                <div className="">
+                <div className="inputDiv">
                   <input
                     type="email"
                     name="email"
