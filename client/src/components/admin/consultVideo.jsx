@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Loader from "./loader";
 import { ToastContainer, toast } from "react-toastify";
+import { useAuth } from "../Utils/AuthContext";
 
 const ConsultVideo = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +16,7 @@ const ConsultVideo = () => {
   const [isLoader, setIsLoader] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const token = JSON.parse(localStorage.getItem("token" || ""));
- 
+  const { adminAuthToken } = useAuth()
 
   //   ------------get video api-----------
   const getVideoApi = () => {
@@ -25,7 +26,7 @@ const ConsultVideo = () => {
       method: "GET",
       url: `/api/auth/getCounselVideo`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${adminAuthToken}`,
         "Content-Type": "multipart/form-data",
       },
     };
@@ -65,7 +66,7 @@ const ConsultVideo = () => {
     try {
       const response = await axios.post("/api/auth/uploadImage", video, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${adminAuthToken}`,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -108,7 +109,7 @@ const ConsultVideo = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${adminAuthToken}`,
             "Content-Type": "application/json",
           },
         }

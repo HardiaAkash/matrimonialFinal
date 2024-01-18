@@ -6,6 +6,7 @@ import Pagination from "./pagination";
 import Loader from "./loader";
 import Preview from "./preview";
 import CloseIcon from "../svg/CloseIcon";
+import { useAuth } from "../Utils/AuthContext";
 
 const AppForm = () => {
   const [allData, setAllData] = useState([]);
@@ -20,7 +21,8 @@ const AppForm = () => {
   const [selectedItem, setSelectedItem] = useState("");
   const [formStatus, setFormStatus] = useState("");
   const visiblePageCount = 10;
-  const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("token" || "")):"";
+  // const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("token" || "")):"";
+  const { adminAuthToken } = useAuth()
 
   // -------form api--------
 
@@ -35,7 +37,7 @@ const AppForm = () => {
       url: `/api/auth/viewForm?page=${pageNo}&limit=${visiblePageCount}&search=${customSearch}&gender=${genderSort}`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${adminAuthToken}`,
       },
     };
     axios
@@ -65,7 +67,7 @@ const AppForm = () => {
       method: "GET",
       url: `/api/auth/viewForm?search=${search_cate}`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${adminAuthToken}`,
         "Content-Type": "multipart/form-data",
       },
     };
@@ -145,7 +147,7 @@ const AppForm = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${adminAuthToken}`,
           },
         }
       );
@@ -289,12 +291,12 @@ const AppForm = () => {
 
                           handleApprove(e, items?._id);
                         }}
-                        value={
-                          formStatus?.formStatus
-                            ? formStatus?.formStatus
-                            : items?.formStatus
-                        }
-                        // defaultValue={items?.formStatus}
+                        // value={
+                        //   formStatus?.formStatus
+                        //     ? formStatus?.formStatus
+                        //     : items?.formStatus
+                        // }
+                        defaultValue={items?.formStatus}
                       >
                         <option value="pending">Pending</option>
 

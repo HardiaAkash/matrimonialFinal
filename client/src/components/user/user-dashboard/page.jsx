@@ -15,6 +15,8 @@ import MatchFound from "./MatchFound";
 import Dashboard from "./Dashboard";
 
 import CloseIcon from "./Svg/CloseIcon";
+import { useAuth } from "@/components/Utils/AuthContext";
+import { destroyCookie } from "nookies";
 
 const UserDashboadr = () => {
   const router = useRouter();
@@ -25,8 +27,11 @@ const UserDashboadr = () => {
   const [isPreview, setPreview] = useState(false);
   const [isFormStep, setFormStep] = useState(2);
   const [isRefresh, setRefresh] = useState(false);
-  const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("authToken" || "")) : null;
-  const userId =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("userID" || "")):null;
+  const {userToken,userData} = useAuth()
+
+  const token =  userToken;
+  const userId =  userData;
+  console.log(userData);
   // console.log(previewFormData?.isMatched);
 
   const refreshData = () => {
@@ -45,7 +50,7 @@ const UserDashboadr = () => {
       method: "GET",
       url: `/api/auth/logoutUser`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userToken}`,
         "Content-Type": "application/json",
       },
     };
@@ -55,15 +60,18 @@ const UserDashboadr = () => {
         console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("userID");
+          // localStorage.removeItem("authToken");
+          // localStorage.removeItem("userID");
           toast.success("Logout successfully")
+          destroyCookie(null, "us_Auth", { path: "/" });
+      destroyCookie(null, "us_Data", { path: "/" });
           router.push("/user/sign-in");
         } else {
           setLoader(false);
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("userID");
+         
           toast.success("Logout successfully")
+          destroyCookie(null, "us_Auth", { path: "/" });
+          destroyCookie(null, "us_Data", { path: "/" });
           router.push("/user/sign-in");
           return;
         }
@@ -72,8 +80,9 @@ const UserDashboadr = () => {
         setLoader(false);
         console.error("Error:", error);
         toast.error(error?.response?.data);
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("userID"); 
+        destroyCookie(null, "us_Auth", { path: "/" });
+        destroyCookie(null, "us_Data", { path: "/" });
+       
         router.push("/user/sign-in");
       });
   };
@@ -82,7 +91,7 @@ const UserDashboadr = () => {
   // ------ verify token -------
 
   useEffect(() => {
-    if (token) {
+    if (userToken) {
       verify();
     }
     getAllData();
@@ -91,7 +100,7 @@ const UserDashboadr = () => {
 
   const verify = async () => {
     try {
-      const res = await axios.get(`/api/auth/verifyTokenUser/${token}`);
+      const res = await axios.get(`/api/auth/verifyTokenUser/${userToken}`);
       console.log("verify", res);
       if (res.status === 200) {
         setFormStep(res?.data?.data?.step);
@@ -100,10 +109,14 @@ const UserDashboadr = () => {
         return; // Do whatever you need after successful verification
       } else {
         router.push("/user/sign-in");
+        destroyCookie(null, "us_Auth", { path: "/" });
+        destroyCookie(null, "us_Data", { path: "/" });
       }
     } catch (error) {
       console.error("Error occurred:", error);
       router.push("/user/sign-in");
+      destroyCookie(null, "us_Auth", { path: "/" });
+        destroyCookie(null, "us_Data", { path: "/" });
       // Handle the error, maybe navigate somewhere or show an error message
     }
   };
@@ -116,11 +129,11 @@ const UserDashboadr = () => {
       method: "POST",
       url: `/api/auth/getFormByUser`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userToken}`,
         "Content-Type": "application/json",
       },
       data: {
-        userID: userId,
+        userID: userData,
       },
     };
     axios

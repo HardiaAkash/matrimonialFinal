@@ -6,8 +6,10 @@ import Loader from "./WebsiiteLoader/Index";
 const CounselingVideo = ({refreshData}) => {
   const [isLoader, setLoader] = useState(false);
   const [counselingData, setCounselingData] = useState([]);
-  const userId = JSON.parse(localStorage.getItem("userID" || ""));
-  const token = JSON.parse(localStorage.getItem("authToken" || ""));
+  const {userToken,userData} = useAuth()
+
+  const userId =userData;
+  const token = userToken;
 
   useEffect(() => {
     getAllData();
@@ -19,7 +21,7 @@ const CounselingVideo = ({refreshData}) => {
       method: "GET",
       url: `/api/auth/getCounselVideo`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userToken}`,
         "Content-Type": "application/json",
       },
     };
@@ -52,7 +54,7 @@ const CounselingVideo = ({refreshData}) => {
         "Content-Type": "application/json",
       },
       data: {
-        id: userId,
+        id: userData,
         updatedDetails:{
           step : step
         }

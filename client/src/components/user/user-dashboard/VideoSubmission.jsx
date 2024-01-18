@@ -9,8 +9,9 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
   let [isOpen, setIsOpen] = useState(false);
   let [isVideo, setVideo] = useState(false);
   const [isLoader, setLoader] = useState(false);
-  const userId =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("userID" || "")):null;
-  const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("authToken" || "")):null;
+  const {userToken,userData} = useAuth()
+  const userId =  userData;
+  const token =  userToken;
   // const isVideoUplod = JSON.parse(localStorage.getItem("isVideoUploded" || ""));
   const [isVideoUplod, setIsVideoUplod] = useState(false);
 
@@ -24,11 +25,11 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
       method: "PUT",
       url: `/api/auth/updateUser`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userToken}`,
         "Content-Type": "application/json",
       },
       data: {
-        id: userId,
+        id: userData,
         updatedDetails: {
           step: step,
         },

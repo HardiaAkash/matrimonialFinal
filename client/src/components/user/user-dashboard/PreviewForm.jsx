@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import Loader from "../user-dashboard/WebsiiteLoader/Index";
 import Image from "next/image";
+import { useAuth } from "@/components/Utils/AuthContext";
 
 export const marital_status = [
   "single",
@@ -14,7 +15,8 @@ export const marital_status = [
 ];
 
 const ViewApplicationDetails = ({ previewData, refreshData }) => {
-  const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("authToken")):null;
+  const {userToken,userData} = useAuth()
+  const token = userToken;
   // const isUpdated = JSON.parse(localStorage.getItem("isFromUpdated"));
   const [isUpdated, setIsUpdated] = useState(false);
   const [formData, setFormData] = useState(previewData);
@@ -28,11 +30,11 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
   // console.log(isUpdated);
 
   useEffect(() => {
-    if ( (previewData?.formStatus)?.toLowerCase() === "rejected") {
+    if ((previewData?.formStatus)?.toLowerCase() === "rejected") {
       // localStorage.setItem("isFromUpdated", JSON.stringify(false));
       setIsUpdated(false)
     }
-    if ( (previewData?.formStatus)?.toLowerCase() === "approved") {
+    if ((previewData?.formStatus)?.toLowerCase() === "approved") {
       // localStorage.setItem("isFromUpdated", JSON.stringify(false));
       setIsUpdated(true)
     }
@@ -81,7 +83,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
     try {
       const response = await axios.post("/api/auth/uploadImage", photograph, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userToken}`,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -120,7 +122,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
             formData,
             {
               headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${userToken}`,
                 "Content-Type": "application/json",
               },
             }
@@ -179,7 +181,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
               //   </p>
               // )} */}
 
-              {!((previewData?.formStatus )?.toLowerCase() === "approved") ? (
+              {!((previewData?.formStatus)?.toLowerCase() === "approved") ? (
                 <>
                   {isUpdated ? (
                     <p className="text-center  cursor-pointer font-medium text-[16px] ">
@@ -196,11 +198,11 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   )}
                 </>
               )
-            :
-            <p className="text-center  cursor-pointer font-medium text-[16px] text-[green] px-2 py-2">
-            Your application form has been approved, Please proceed further.
-          </p>
-            }
+                :
+                <p className="text-center  cursor-pointer font-medium text-[16px] text-[green] px-2 py-2">
+                  Your application form has been approved, Please proceed further.
+                </p>
+              }
             </div>
             <form className="" onSubmit={handleSubmit}>
               <div className="py-[20px] lg:max-w-[80%] lg:px-0 px-[20px] mx-auto  flex flex-col md:grid md:grid-cols-2 gap-3 gap-x-10 items-start justify-center">
@@ -228,7 +230,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="lastname"
                     placeholder="Last name"
-                   className={`login-input w-full mt-2 custom-input capitalize ${isStatus ? "disable_input" : ""}`}
+                    className={`login-input w-full mt-2 custom-input capitalize ${isStatus ? "disable_input" : ""}`}
                     value={formData?.lastname}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -263,7 +265,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="height"
                     placeholder="Height (cm)"
-                      className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
+                    className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
                     value={formData?.height}
                     onChange={InputHandler}
                     pattern="[0-9]*"
@@ -324,6 +326,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                         checked={formData.gender === "male"}
                         defaultChecked={formData?.gender}
                         onChange={InputHandler}
+                        disabled={isStatus}
                       />
                       <label htmlFor="male" className="custom-radio"> male </label>
                     </div>
@@ -337,6 +340,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                         checked={formData.gender === "female"}
                         defaultChecked={formData?.gender}
                         onChange={InputHandler}
+                        disabled={isStatus}
                       />
                       <label htmlFor="female" className="custom-radio" >female </label>
                     </div>
@@ -349,7 +353,8 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                         className="peer hidden"
                         checked={formData.gender === "other"}
                         defaultChecked={formData?.gender}
-                         onChange={InputHandler}
+                        onChange={InputHandler}
+                        disabled={isStatus}
                       />
                       <label htmlFor="other" className="custom-radio" >other </label>
                     </div>
@@ -384,7 +389,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="religion"
                     placeholder="Religion"
-                   className={`login-input w-full mt-2 custom-input capitalize ${isStatus ? "disable_input" : ""}`}
+                    className={`login-input w-full mt-2 custom-input capitalize ${isStatus ? "disable_input" : ""}`}
                     value={formData?.religion}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -404,7 +409,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="education"
                     placeholder="Highest education"
-                   className={`login-input w-full mt-2 custom-input capitalize ${isStatus ? "disable_input" : ""}`}
+                    className={`login-input w-full mt-2 custom-input capitalize ${isStatus ? "disable_input" : ""}`}
                     value={formData?.education}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -420,7 +425,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="occupation"
                     placeholder="Occupation"
-                   className={`login-input w-full mt-2 custom-input capitalize ${isStatus ? "disable_input" : ""}`}
+                    className={`login-input w-full mt-2 custom-input capitalize ${isStatus ? "disable_input" : ""}`}
                     value={formData?.occupation}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -435,7 +440,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="income"
                     placeholder="Income"
-                      className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
+                    className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
                     value={formData?.income}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -453,7 +458,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                           type="text"
                           name="hobby"
                           placeholder="Hobbies"
-                            className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
+                          className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
                           value={hobby}
                           onChange={InputHandler}
                           disabled={isStatus}
@@ -553,7 +558,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     type="text"
                     name="contactNumber"
                     placeholder="Mobile no."
-                      className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
+                    className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
                     value={formData?.contactNumber}
                     onChange={InputHandler}
                     disabled={isStatus}
@@ -571,7 +576,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     name="email"
                     placeholder="Email"
                     disabled={isStatus}
-                      className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
+                    className={`login-input w-full mt-2 custom-input  ${isStatus ? "disable_input" : ""}`}
                     value={formData?.email}
                     onChange={InputHandler}
                     required
@@ -638,13 +643,12 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                             <div className="">
                               <button
                                 className={`focus-visible:outline-none text-[13px] px-4 py-1 rounded
-                                ${
-                                  imageDisable
+                                ${imageDisable
                                     ? " bg-[green]"
                                     : imageUpload
-                                    ? "bg-[gray]"
-                                    : "bg-[#070708bd] text-[white]"
-                                }`}
+                                      ? "bg-[gray]"
+                                      : "bg-[#070708bd] text-[white]"
+                                  }`}
                                 type="button"
                                 onClick={uploadImage}
                                 disabled={imageDisable || imageUpload}
@@ -652,8 +656,8 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                                 {imageDisable
                                   ? "Uploaded"
                                   : imageUpload
-                                  ? "Loading.."
-                                  : "Upload"}
+                                    ? "Loading.."
+                                    : "Upload"}
                               </button>
                             </div>
                           </div>
@@ -676,8 +680,8 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       {isLoading
                         ? "Loading.."
                         : isUpdated
-                        ? "Updated"
-                        : "Update"}
+                          ? "Updated"
+                          : "Update"}
                     </button>
                   </div>
                 )}

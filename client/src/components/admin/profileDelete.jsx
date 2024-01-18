@@ -6,6 +6,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import Delete from "./delete";
 import Loader from "./loader";
 import { ToastContainer, toast } from "react-toastify";
+import { useAuth } from "../Utils/AuthContext";
 
 const ProfileDelete = () => {
   const [allData, setAllData] = useState([]);
@@ -24,7 +25,7 @@ const ProfileDelete = () => {
 
   const visiblePageCount = 10;
   const token = JSON.parse(localStorage.getItem("token" || ""));
-
+  const { adminAuthToken } = useAuth()
   useEffect(() => {
     getAllData(1);
   }, [isRefresh]);
@@ -36,7 +37,7 @@ const ProfileDelete = () => {
       url: `/api/auth/getDeleteReq?page=${pageNo}&limit=${visiblePageCount}`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${adminAuthToken}`,
       },
     };
     axios
@@ -86,7 +87,7 @@ const ProfileDelete = () => {
       method: "GET",
       url: `/api/auth/viewUser?search=${search_cate}`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${adminAuthToken}`,
         "Content-Type": "multipart/form-data",
       },
     };
@@ -149,7 +150,7 @@ const ProfileDelete = () => {
       url: `/api/auth/deleteUser/${userID}`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${adminAuthToken}`,
       },
     };
 

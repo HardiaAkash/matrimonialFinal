@@ -8,6 +8,7 @@ import Preview from "./preview";
 import MatchPopup from "./matchPopup";
 import { toast } from "react-toastify";
 import CloseIcon from "../svg/CloseIcon";
+import { useAuth } from "../Utils/AuthContext";
 
 const ProfileMatch = () => {
   const [allData, setAllData] = useState([]);
@@ -25,7 +26,8 @@ const ProfileMatch = () => {
   const [dialogMatch, setDialogMatch] = useState(false);
   const [matchId, setMatchId] = useState("");
   const visiblePageCount = 10;
-  const token = JSON.parse(localStorage.getItem("token" || ""));
+  const { adminAuthToken } = useAuth()
+  // const token = JSON.parse(localStorage.getItem("token" || ""));
   const [checkedItems, setCheckedItems] = useState({});
   const [totalPages,setTotalPages]=useState(0);
 
@@ -42,7 +44,7 @@ const ProfileMatch = () => {
       url: `/api/auth/approvedForm?page=${pageNo}&limit=${visiblePageCount}&search=${customSearch}&gender=${genderSort}`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${adminAuthToken}`,
       },
     };
     axios
@@ -143,7 +145,7 @@ const ProfileMatch = () => {
         url: `/api/auth/isMatched/${id}`,
         headers: {
           "Content-Type": "application/json",
-          authorization: token,
+          Authorization: `Bearer ${adminAuthToken}`,
         },
         data: {
           isMatched: isMatched,

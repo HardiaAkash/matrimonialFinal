@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
+import { useAuth } from "../Utils/AuthContext";
 
 
 const Delete = ({ categoryID, closeModal, refreshData }) => {
   const [isLoading, setLoading] = useState(false);
-  const token = JSON.parse(localStorage.getItem("token" || ""));
-
+  // const token = JSON.parse(localStorage.getItem("token" || ""));
+  const { adminAuthToken } = useAuth()
   const handleClose = () => {
     closeModal();
-    refreshData();
+    // refreshData();
   };
 
   const handleDelete = (e) => {
@@ -24,7 +25,7 @@ const Delete = ({ categoryID, closeModal, refreshData }) => {
       },
       headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${adminAuthToken}`,
       },
     };
 

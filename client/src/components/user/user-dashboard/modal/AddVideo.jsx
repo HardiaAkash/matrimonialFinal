@@ -2,10 +2,11 @@ import axios from "axios";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import Loader from "../WebsiiteLoader/Index";
+import { useAuth } from "@/components/Utils/AuthContext";
 
 const AddVideo = ({ closeModal, isVideoUpload, updateId,getUserUpdate }) => {
-  const token = JSON.parse(localStorage.getItem("authToken"));
-
+  // const token = JSON.parse(localStorage.getItem("authToken"));
+  const {userToken} = useAuth()
   const [formData, setFormData] = useState({
     video: [],
   });
@@ -41,7 +42,7 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId,getUserUpdate }) => {
 
       const response = await axios.post("api/auth/uploadImage", video, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userToken}`,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -79,7 +80,7 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId,getUserUpdate }) => {
           formData,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${userToken}`,
               "Content-Type": "application/json",
             },
           }

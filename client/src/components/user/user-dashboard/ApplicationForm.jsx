@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import Loader from "./WebsiiteLoader/Index";
+import { useAuth } from "@/components/Utils/AuthContext";
 
 export const marital_status = [
   "single",
@@ -13,10 +14,11 @@ export const marital_status = [
 ];
 
 const ApplicationForm = ({ refreshData }) => {
-  const token =  JSON.parse(localStorage.getItem("authToken" || ""));
-  const userId = JSON.parse(localStorage.getItem("userID" || ""));
-  const userMail = JSON.parse(localStorage.getItem("user_mail" || ""));
-  const userContact = JSON.parse(localStorage.getItem("user_contact" || ""));
+  const {userToken,userData} = useAuth()
+  const token =  userToken;
+  const userId = userData;
+  const userMail = typeof window !== undefined ? JSON.parse(localStorage.getItem("user_mail" || "")):"";
+  const userContact = typeof window !== undefined ? JSON.parse(localStorage.getItem("user_contact" || "")):"";
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -35,7 +37,7 @@ const ApplicationForm = ({ refreshData }) => {
     contactNumber: userContact,
     email: userMail,
     image: "",
-    userID: userId,
+    userID: userData,
   });
   const [photograph, setPhotograph] = useState("");
   const [hobby, setHobby] = useState("");
@@ -115,7 +117,7 @@ console.log(currentDate)
     try {
       const response = await axios.post("/api/auth/uploadImage", photograph, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userToken}`,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -159,7 +161,7 @@ console.log(currentDate)
       try {
         const response = await axios.post("/api/auth/addForm", formData, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${userToken}`,
             "Content-Type": "application/json",
           },
         });
@@ -190,11 +192,11 @@ console.log(currentDate)
       method: "PUT",
       url: `/api/auth/updateUser`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userToken}`,
         "Content-Type": "application/json",
       },
       data: {
-        id: userId,
+        id: userData,
         updatedDetails: {
           step: step,
         },
