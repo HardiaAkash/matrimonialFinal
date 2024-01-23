@@ -139,6 +139,7 @@ const ProfileMatch = () => {
 
   //   -------Match checkbox----------
   const handleMatch = async (id, isMatched) => {
+    setLoader(true);
     try {
       const options = {
         method: "POST",
@@ -156,6 +157,7 @@ const ProfileMatch = () => {
 
       if (response.status === 200) {
         console.log(response);
+        setLoader(false);
         refreshData();
         // toast.success("Match successful!");
         setDialogMatch(false)
@@ -164,8 +166,10 @@ const ProfileMatch = () => {
         // setMatchId(response?.data)
       } else {
         throw new Error("Failed to handle match");
+        setLoader(false);
       }
     } catch (error) {
+      setLoader(false);
       console.error(error);
     }
   };
@@ -214,7 +218,7 @@ const ProfileMatch = () => {
                 </option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
-                <option value="other">Other</option>
+                {/* <option value="other">Other</option> */}
               </select>
             </div>
             {allData?.userForm?.length>0 ? (
@@ -294,7 +298,7 @@ const ProfileMatch = () => {
                       </td>
 
                       <td className=" py-3 pl-4">
-                        {items.isMatched ? (
+                        {items.isMatched ==="true" ? (
                           
                           <button className=" py-1 px-1  rounded text-[13px]">Matched</button>
                         ) : (
@@ -343,8 +347,8 @@ const ProfileMatch = () => {
             <div className="fixed inset-0 bg-black bg-opacity-25" />
           </Transition.Child>
 
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+          <div className="fixed inset-0 overflow-y-auto" >
+            <div className="flex min-h-full items-center justify-center p-4 text-center" >
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -354,7 +358,7 @@ const ProfileMatch = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white px-5  sm:pl-12 py-4 text-left align-middle shadow-2xl transition-all">
+                <Dialog.Panel className=" w-full max-w-[800px] transform overflow-hidden rounded-2xl bg-white px-5  sm:pl-12 py-4 text-left align-middle shadow-2xl transition-all" >
                 <div className="flex justify-end items-end ">
                     <button
                       className=" cursor-pointer"
@@ -367,7 +371,7 @@ const ProfileMatch = () => {
                     as="h3"
                     className="flex justify-center lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"
                   >
-                    Applicant's full detail
+                    Applicant&apos;s full detail
                   </Dialog.Title>
                   <Preview
                     selectedItem={selectedItem}

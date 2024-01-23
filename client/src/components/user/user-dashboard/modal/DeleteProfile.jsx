@@ -53,7 +53,7 @@ const DeleteProfile = ({ closeModal }) => {
 
       <div className="mt-2">
         <p className=" text-[16px] font-normal leading-[30px] text-gray-500 mt-4">
-          Click 'Yes' to submit the request to delete your profile.
+          Click &apos;Yes&apos; to submit the request to delete your profile.
         </p>
       </div>
 

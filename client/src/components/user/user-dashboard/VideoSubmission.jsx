@@ -4,6 +4,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import Link from "next/link";
 import axios from "axios";
 import AddVideo from "./modal/AddVideo";
+import { useAuth } from "@/components/Utils/AuthContext";
 
 const VideoSubmission = ({ formId, refreshData, previewData }) => {
   let [isOpen, setIsOpen] = useState(false);
@@ -78,7 +79,7 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
             previewData?.video?.length > 0 ? (
               <div className="flex md:flex-row flex-col gap-5  justify-center max-w-[80%] ">
                 {previewData?.video?.map((items, inx) => (
-                  <div className="lg:max-w-[50%] md:max-w-[70%] max-w-[80%] mx-auto">
+                  <div className="lg:max-w-[50%] md:max-w-[70%] max-w-[80%] mx-auto" key={inx}>
                     <video controls className="">
                       <source src={items} type="video/mp4" />
                       Your browser does not support the video tag.

@@ -23,7 +23,7 @@ const Pages = () => {
   
   
   const visiblePageCount = 10;
-  const token = JSON.parse(localStorage.getItem("token" || ""));
+  // const token = JSON.parse(localStorage.getItem("token" || ""));
   const { adminAuthToken } = useAuth()
 
 

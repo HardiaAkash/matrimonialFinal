@@ -9,6 +9,8 @@ import Image from "next/image";
 import OpenEye from "@/components/svg/Openeye";
 import CloseEye from "@/components/svg/Closeeye";
 import Backarrow from "../user-dashboard/Svg/Backarrow";
+import { destroyCookie } from "nookies";
+import { useAuth } from "@/components/Utils/AuthContext";
 
 
 const ChangePassword = () => {
@@ -23,8 +25,8 @@ const ChangePassword = () => {
   const [showCnfmPassword, setShowCnfmPassword] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState("");
-  const token = JSON.parse(localStorage.getItem("authToken" || ""));
-
+  // const token = JSON.parse(localStorage.getItem("authToken" || ""));
+  const {userToken,userData} = useAuth()
   const InputHandler = (e) => {
     setError("")
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -47,7 +49,7 @@ const ChangePassword = () => {
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${userToken}`,
             },
           }
         );
@@ -56,8 +58,9 @@ const ChangePassword = () => {
           toast.success("Password change successfully!");
           setLoading(false);
           setError("")
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("userID");
+          destroyCookie(null, "us_Auth", { path: "/" });
+          destroyCookie(null, "us_Data", { path: "/" });
+          
           router.push("/user/sign-in");
         } else {
           setError("")

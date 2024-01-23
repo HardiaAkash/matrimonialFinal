@@ -10,6 +10,7 @@ import Image from "next/image";
 import Closeeye from "@/components/svg/Closeeye";
 import Openeye from "@/components/svg/Openeye";
 import { useAuth } from "@/components/Utils/AuthContext";
+import { destroyCookie } from "nookies";
 
 const SignIn = ({ refreshData }) => {
   const router = useRouter();
@@ -47,23 +48,26 @@ const SignIn = ({ refreshData }) => {
         toast.success("Login successfully!");
         setLoading(false);
         setUserAuthToken(response?.data?.token,response?.data?.userID)
-        localStorage.setItem(
-          "authToken",
-          JSON.stringify(response?.data?.token)
-        );
-        localStorage.setItem("userID", JSON.stringify(response?.data?.userID));
-        // navigate("/admin-dashboard");
         router.push("/");
+        // localStorage.setItem(
+        //   "authToken",
+        //   JSON.stringify(response?.data?.token)
+        // );
+        // localStorage.setItem("userID", JSON.stringify(response?.data?.userID));
+        // navigate("/admin-dashboard");
         refreshData();
       } else {
         setError("Invalid credentails");
-        localStorage.removeItem("authToken");
+        // localStorage.removeItem("authToken");
+        destroyCookie(null, "us_Auth", { path: "/" });
+        destroyCookie(null, "us_Data", { path: "/" });
+        
         setLoading(false);
       }
     } catch (error) {
       console.error("Error during login:", error);
       toast.error(error?.response?.data);
-      localStorage.removeItem("authToken");
+      // localStorage.removeItem("authToken");
       setLoading(false);
     }
   };

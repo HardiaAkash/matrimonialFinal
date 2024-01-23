@@ -346,7 +346,7 @@ const AppForm = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white px-5  sm:pl-12 py-4 text-left align-middle shadow-2xl transition-all">
+                <Dialog.Panel className=" w-full max-w-[800px] transform overflow-hidden rounded-2xl bg-white px-5  sm:pl-12 py-4 text-left align-middle shadow-2xl transition-all" >
                   <div className="flex justify-end items-end ">
                     <button
                       className=" cursor-pointer"
@@ -359,7 +359,7 @@ const AppForm = () => {
                     as="h3"
                     className=" flex justify-center lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"
                   >
-                    Applicant's full detail
+                    Applicant&apos;s full detail
                   </Dialog.Title>
 
                   <Preview

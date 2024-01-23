@@ -2,6 +2,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import axios from "axios";
 import Loader from "./WebsiiteLoader/Index";
+import { useAuth } from "@/components/Utils/AuthContext";
 
 const CounselingVideo = ({refreshData}) => {
   const [isLoader, setLoader] = useState(false);
@@ -50,7 +51,7 @@ const CounselingVideo = ({refreshData}) => {
       method: "PUT",
       url: `/api/auth/updateUser`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userToken}`,
         "Content-Type": "application/json",
       },
       data: {

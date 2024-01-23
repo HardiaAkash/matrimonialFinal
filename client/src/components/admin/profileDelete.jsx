@@ -24,7 +24,7 @@ const ProfileDelete = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const visiblePageCount = 10;
-  const token = JSON.parse(localStorage.getItem("token" || ""));
+  // const token = JSON.parse(localStorage.getItem("token" || ""));
   const { adminAuthToken } = useAuth()
   useEffect(() => {
     getAllData(1);
@@ -144,7 +144,7 @@ const ProfileDelete = () => {
     // alert("deleted successfully");
     // setDialogMatch(false);
     // return;
-    
+    setLoader(true);
     const options = {
       method: "DELETE",
       url: `/api/auth/deleteUser/${userID}`,
@@ -163,15 +163,18 @@ const ProfileDelete = () => {
           toast.success("Deleted successfully !");
           //   handleClose();
           setDialogMatch(false);
+          setLoader(false);
           refreshData();
         } else {
           // ;
+          setLoader(false);
           toast.error("Failed. something went wrong!");
           return;
         }
       })
       .catch(function (error) {
         // ;
+        setLoader(false);
         console.error(error);
         // toast.error("Failed. something went wrong!");
       });

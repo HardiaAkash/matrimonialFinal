@@ -105,7 +105,7 @@ const SideMenu = () => {
         console.log(response?.data);
         if (response.status === 200) {
           setIsLoading(false);
-          localStorage.removeItem("token");
+          // localStorage.removeItem("token");
           destroyCookie(null, "ad_Auth", { path: "/" });
           // localStorage.removeItem("userID");
           router.push("/admin");
@@ -115,14 +115,14 @@ const SideMenu = () => {
           destroyCookie(null, "ad_Auth", { path: "/" });
           router.push("/admin")
 
-          localStorage.removeItem("token")
+          // localStorage.removeItem("token")
           return;
         }
       })
       .catch((error) => {
         setIsLoading(false);
         router.push("/admin")
-        localStorage.removeItem("token")
+        // localStorage.removeItem("token")
         destroyCookie(null, "ad_Auth", { path: "/" });
         console.error("Error:", error);
       });
