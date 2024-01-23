@@ -311,7 +311,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     className={`login-input w-full mt-2 custom-input capitalize ${isStatus ? "disable_input" : ""}`}
                     value={formData?.firstname}
                     onChange={InputHandler}
-                    pattern="[A-Za-z]+"
+                    pattern="^[A-Za-z][A-Za-z\s]*$"
                     maxLength={84}
                     disabled={isStatus}
                     required
@@ -329,7 +329,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     value={formData?.lastname}
                     onChange={InputHandler}
                     disabled={isStatus}
-                    pattern="[A-Za-z]+"
+                    pattern="^[A-Za-z][A-Za-z\s]*$"
                     maxLength={84}
                     required
                   />
@@ -449,7 +449,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                     value={formData?.religion}
                     onChange={InputHandler}
                     disabled={isStatus}
-                    pattern="[A-Za-z]+"
+                    pattern="^[A-Za-z][A-Za-z\s]*$"
                     title="Enter only alphabets"
                     maxLength={84}
                     required
@@ -782,7 +782,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       placeholder="First name"
                       className="login-input w-full mt-2 custom-input capitalize"
                       onChange={InputHandler}
-                      pattern="[A-Za-z]+"
+                      pattern="^[A-Za-z][A-Za-z\s]*$"
                       title="Enter only alphabet"
                       maxLength={64}
                       value={formData.firstname}
@@ -801,7 +801,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       placeholder="Middle name"
                       className="login-input w-full mt-2 custom-input capitalize"
                       onChange={InputHandler}
-                      pattern="[A-Za-z]+"
+                      pattern="^[A-Za-z][A-Za-z\s]*$"
                       title="Enter only alphabet"
                       value={formData.middlename}
                       disabled={isStatus}
@@ -819,7 +819,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       placeholder="Last name"
                       className="login-input w-full mt-2 custom-input capitalize"
                       onChange={InputHandler}
-                      pattern="[A-Za-z]+"
+                      pattern="^[A-Za-z][A-Za-z\s]*$"
                       title="Enter only alphabet"
                       maxLength={64}
                       value={formData.lastname}
@@ -837,7 +837,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       placeholder="Age"
                       className="login-input w-full mt-2 custom-input capitalize"
                       onChange={InputHandler}
-                      // pattern="[A-Za-z]+"
+                      // pattern="^[A-Za-z][A-Za-z\s]*$"
                       min={18}
                       max={100}
                       value={formData.age}
@@ -972,7 +972,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       placeholder="City"
                       className="login-input w-full mt-2 custom-input"
                       pattern="^\S.*$"
-                      maxLength={`64`}
+                      maxLength={`100`}
                       title="Please enter address without leading white space"
                       onChange={InputHandler}
                       value={formData.city}
@@ -1034,7 +1034,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                           placeholder="Other Ethnicity"
                           className="login-input w-full mt-2 custom-input"
                           onChange={otherOptionHandler}
-                          pattern="[A-Za-z]+"
+                          pattern="^[A-Za-z][A-Za-z\s]*$"
                           title="Enter only alphabet"
                           maxLength={64}
                           disabled={isStatus}
@@ -1076,7 +1076,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                           className="login-input w-full mt-2 custom-input"
                           onChange={otherOptionHandler}
                           disabled={isStatus}
-                          pattern="[A-Za-z]+"
+                          pattern="^[A-Za-z][A-Za-z\s]*$"
                           title="Enter only alphabet"
                           maxLength={64}
                           required
@@ -1178,7 +1178,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                           className="login-input w-full mt-2 custom-input"
                           onChange={otherOptionHandler}
                           disabled={isStatus}
-                          pattern="[A-Za-z]+"
+                          pattern="^[A-Za-z][A-Za-z\s]*$"
                           title="Enter only alphabet"
                           maxLength={64}
                           required
@@ -1733,7 +1733,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                           className="login-input w-full mt-2 custom-input"
                           onChange={otherOptionHandler}
                           disabled={isStatus}
-                          pattern="[A-Za-z]+"
+                          pattern="^[A-Za-z][A-Za-z\s]*$"
                           title="Enter only alphabet"
                           maxLength={64}
                           required
@@ -1779,7 +1779,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                           className="login-input w-full mt-2 custom-input"
                           onChange={otherOptionHandler}
                           disabled={isStatus}
-                          pattern="[A-Za-z]+"
+                          pattern="^[A-Za-z][A-Za-z\s]*$"
                           title="Enter only alphabet"
                           maxLength={64}
                           required
@@ -1820,8 +1820,8 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       id="partnerCity"
                       placeholder="City"
                       className="login-input w-full mt-2 custom-input"
-                      pattern="^\S.*$"
-                      maxLength={`64`}
+                      pattern="^[A-Za-z][A-Za-z\s]*$"
+                      maxLength={`100`}
                       disabled={isStatus}
                       title="Please enter address without leading white space"
                       onChange={InputHandler}
@@ -1840,8 +1840,8 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       className="login-input w-full mt-2 custom-input"
                       onChange={InputHandler}
                       disabled={isStatus}
-                      pattern="^\S.*$"
-                      maxLength={`64`}
+                      pattern="^[A-Za-z][A-Za-z\s]*$"
+                      maxLength={`100`}
                       value={formData.partnerState}
                       title="Please enter address without leading white space"
                       
@@ -1859,8 +1859,8 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       className="login-input w-full mt-2 custom-input"
                       onChange={InputHandler}
                       disabled={isStatus}
-                      pattern="^\S.*$"
-                      maxLength={`64`}
+                      pattern="^[A-Za-z][A-Za-z\s]*$"
+                      maxLength={`100`}
                       value={formData.partnerCountry}
                       title="Please enter address without leading white space"
                       
@@ -2061,10 +2061,10 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                           placeholder="Other Native Language"
                           className="login-input w-full mt-2 custom-input"
                           onChange={otherOptionHandler}
-                          pattern="[A-Za-z]+"
+                          pattern="^[A-Za-z][A-Za-z\s]*$"
                           disabled={isStatus}
                           title="Enter only alphabet"
-                          maxLength={64}
+                          maxLength={100}
                           required
                         />
                       </div>
@@ -2086,7 +2086,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       pattern="[^\s,].*"
                       disabled={isStatus}
                       title="Enter only letters and optional commas, but no white space at the beginning"
-                      maxLength={64}
+                      maxLength={100}
                       value={formData.partnerLanguageSpeak}
                       
                     />
@@ -2104,7 +2104,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       pattern="^\S.*$"
                       disabled={isStatus}
                       title="Please enter partner details without leading white space"
-                      maxLength={300}
+                      maxLength={1000}
                       value={formData.partnerDetail}
                     ></textarea>
                   </div>
