@@ -345,7 +345,7 @@ const ApplicationForm = ({ refreshData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
-    
+
     if (/^\s/.test(formData.familyDetails)) {
       toast.error("Family details should not start with whitespace.");
       return
@@ -354,40 +354,32 @@ const ApplicationForm = ({ refreshData }) => {
       toast.error("Address should not start with whitespace.");
       return
     }
-
-    if (
-      formData?.image == "" ||
-      formData?.hobbies?.length < 1 ||
-      formData?.maritalStatus === ""
-    ) {
-      toast.error("Please fill all feilds");
-    } else {
-      setLoading(true);
-      try {
-        const response = await axios.post("/api/auth/addForm", formData, {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-            "Content-Type": "application/json",
-          },
-        });
-        // console.log(formData)
-        // console.log(response)
-        if (response.status === 200) {
-          toast.success("Details submit successfully.");
-          setLoading(false);
-          setSubmited(true);
-          getUserUpdate(1);
-          refreshData();
-        } else {
-          toast.error(response?.data);
-          setLoading(false);
-          return;
-        }
-      } catch (error) {
-        console.error("Error during category:", error);
-        toast.error(error?.response?.data || "server error");
+    setLoading(true);
+    try {
+      const response = await axios.post("/api/auth/addForm", formData, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      // console.log(formData)
+      // console.log(response)
+      if (response.status === 200) {
+        toast.success("Details submit successfully.");
         setLoading(false);
+        setSubmited(true);
+        getUserUpdate(1);
+        refreshData();
+      } else {
+        toast.error(response?.data);
+        setLoading(false);
+        return;
       }
+    } catch (error) {
+      console.error("Error during category:", error);
+      toast.error(error?.response?.data || "server error");
+      setLoading(false);
+
     }
   };
 
@@ -449,7 +441,7 @@ const ApplicationForm = ({ refreshData }) => {
                       placeholder="First name"
                       className="login-input w-full mt-2 custom-input capitalize"
                       onChange={InputHandler}
-                      pattern="[A-Za-z]+"
+                      pattern="^[A-Za-z][A-Za-z\s]*$"
                       title="Enter only alphabet"
                       maxLength={64}
                       value={formData.firstname}
@@ -467,7 +459,7 @@ const ApplicationForm = ({ refreshData }) => {
                       placeholder="Middle name"
                       className="login-input w-full mt-2 custom-input capitalize"
                       onChange={InputHandler}
-                      pattern="[A-Za-z]+"
+                      pattern="^[A-Za-z][A-Za-z\s]*$"
                       title="Enter only alphabet"
                       value={formData.middlename}
                       maxLength={64}
@@ -484,7 +476,7 @@ const ApplicationForm = ({ refreshData }) => {
                       placeholder="Last name"
                       className="login-input w-full mt-2 custom-input capitalize"
                       onChange={InputHandler}
-                      pattern="[A-Za-z]+"
+                      pattern="^[A-Za-z][A-Za-z\s]*$"
                       title="Enter only alphabet"
                       maxLength={64}
                       value={formData.lastname}
@@ -501,7 +493,7 @@ const ApplicationForm = ({ refreshData }) => {
                       placeholder="Age"
                       className="login-input w-full mt-2 custom-input capitalize"
                       onChange={InputHandler}
-                      // pattern="[A-Za-z]+"
+                      // pattern="^[A-Za-z][A-Za-z\s]*$"
                       min={18}
                       max={100}
                       value={formData.age}
@@ -646,7 +638,7 @@ const ApplicationForm = ({ refreshData }) => {
                       placeholder="City"
                       className="login-input w-full mt-2 custom-input"
                       pattern="^\S.*$"
-                      maxLength={`64`}
+                      maxLength={`100`}
                       title="Please enter address without leading white space"
                       onChange={InputHandler}
                       value={formData.city}
@@ -704,7 +696,7 @@ const ApplicationForm = ({ refreshData }) => {
                           placeholder="Other Ethnicity"
                           className="login-input w-full mt-2 custom-input"
                           onChange={otherOptionHandler}
-                          pattern="[A-Za-z]+"
+                          pattern="^[A-Za-z][A-Za-z\s]*$"
                           title="Enter only alphabet"
                           maxLength={64}
                           required
@@ -743,7 +735,7 @@ const ApplicationForm = ({ refreshData }) => {
                           placeholder="Other Native Language"
                           className="login-input w-full mt-2 custom-input"
                           onChange={otherOptionHandler}
-                          pattern="[A-Za-z]+"
+                          pattern="^[A-Za-z][A-Za-z\s]*$"
                           title="Enter only alphabet"
                           maxLength={64}
                           required
@@ -842,7 +834,7 @@ const ApplicationForm = ({ refreshData }) => {
                           placeholder="Other Muslim"
                           className="login-input w-full mt-2 custom-input"
                           onChange={otherOptionHandler}
-                          pattern="[A-Za-z]+"
+                          pattern="^[A-Za-z][A-Za-z\s]*$"
                           title="Enter only alphabet"
                           maxLength={64}
                           required
@@ -887,7 +879,7 @@ const ApplicationForm = ({ refreshData }) => {
                       title="Please enter a valid occuption without leading white space or special characters"
                       maxLength={64}
                       value={formData.occupation}
-                      
+
                     />
                   </div>
 
@@ -922,7 +914,7 @@ const ApplicationForm = ({ refreshData }) => {
                           id="hijabStatus"
                           name="hijabStatus"
                           onChange={InputHandler}
-                          
+
                           value={formData.hijabStatus}
                           className="login-input w-full mt-2 custom-input bg-white capitalize"
                         >
@@ -1008,7 +1000,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="wantRelocate"
                       name="wantRelocate"
                       onChange={InputHandler}
-                      
+
                       value={formData.wantRelocate}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1032,7 +1024,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="isKid"
                       name="isKid"
                       onChange={InputHandler}
-                      
+
                       value={formData.isKid}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1061,7 +1053,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="wantKid"
                       name="wantKid"
                       onChange={InputHandler}
-                      
+
                       value={formData.wantKid}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1084,7 +1076,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="isSmoke"
                       name="isSmoke"
                       onChange={InputHandler}
-                      
+
                       value={formData.isSmoke}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1128,7 +1120,7 @@ const ApplicationForm = ({ refreshData }) => {
                     <input
                       type="text"
                       name="socialMedia"
-                      style={{textTransform:"lowercase"}}
+                      style={{ textTransform: "lowercase" }}
                       placeholder="FB/ Instagram/ X/ Tiktok/ LinkedIn/ Other"
                       className="login-input w-full mt-2 custom-input capitalize"
                       onChange={InputHandler}
@@ -1136,7 +1128,7 @@ const ApplicationForm = ({ refreshData }) => {
                       title="Please enter a valid occuption without leading white space or special characters"
                       maxLength={200}
                       value={formData.socialMedia}
-                      
+
                     />
                   </div>
                   {/*----------- photo -----------*/}
@@ -1195,7 +1187,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerAge"
                       name="partnerAge"
                       onChange={InputHandler}
-                      
+
                       value={formData.partnerAge}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1270,7 +1262,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerMaritalStatus"
                       name="partnerMaritalStatus"
                       onChange={InputHandler}
-                      
+
                       value={formData.partnerMaritalStatus}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1291,7 +1283,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerReligion"
                       name="partnerReligion"
                       onChange={InputHandler}
-                      
+
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
                       <option className="text-gray-100 " value="">
@@ -1316,7 +1308,7 @@ const ApplicationForm = ({ refreshData }) => {
                           placeholder="Other Muslim"
                           className="login-input w-full mt-2 custom-input"
                           onChange={otherOptionHandler}
-                          pattern="[A-Za-z]+"
+                          pattern="^[A-Za-z][A-Za-z\s]*$"
                           title="Enter only alphabet"
                           maxLength={64}
                           required
@@ -1334,7 +1326,7 @@ const ApplicationForm = ({ refreshData }) => {
                       name="partnerBackground"
                       // value={nativeLanguage}
                       onChange={InputHandler}
-                      
+
                     >
                       <option value="">Select Ethnicity</option>
                       {
@@ -1360,7 +1352,7 @@ const ApplicationForm = ({ refreshData }) => {
                           placeholder="Other Ethnicity"
                           className="login-input w-full mt-2 custom-input"
                           onChange={otherOptionHandler}
-                          pattern="[A-Za-z]+"
+                          pattern="^[A-Za-z][A-Za-z\s]*$"
                           title="Enter only alphabet"
                           maxLength={64}
                           required
@@ -1376,7 +1368,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerIncome"
                       name="partnerIncome"
                       onChange={InputHandler}
-                      
+
                       value={formData.partnerIncome}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1401,12 +1393,13 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerCity"
                       placeholder="City"
                       className="login-input w-full mt-2 custom-input"
-                      pattern="^\S.*$"
-                      maxLength={`64`}
-                      title="Please enter address without leading white space"
+                      pattern="^[A-Za-z][A-Za-z\s]*$"
+                     
+                      maxLength={`100`}
+                      title="Please enter an address without leading white space and only using alphabets"
                       onChange={InputHandler}
                       value={formData.partnerCity}
-                      
+
                     />
                   </div>
                   {/*----------- state -----------*/}
@@ -1419,10 +1412,10 @@ const ApplicationForm = ({ refreshData }) => {
                       placeholder="State"
                       className="login-input w-full mt-2 custom-input"
                       onChange={InputHandler}
-                      pattern="^\S.*$"
-                      maxLength={`64`}
-                      title="Please enter address without leading white space"
-                      
+                      pattern="^[A-Za-z][A-Za-z\s]*$"
+                      maxLength={`100`}
+                      title="Please enter a state without leading white space and only using alphabets"
+
                     />
                   </div>
 
@@ -1436,10 +1429,10 @@ const ApplicationForm = ({ refreshData }) => {
                       placeholder="Country"
                       className="login-input w-full mt-2 custom-input"
                       onChange={InputHandler}
-                      pattern="^\S.*$"
-                      maxLength={`64`}
-                      title="Please enter address without leading white space"
-                      
+                      pattern="^[A-Za-z][A-Za-z\s]*$"
+                      maxLength={`100`}
+                      title="Please enter a country without leading white space and only using alphabets"
+
                     />
                   </div>
                   {/*----------- Relocate -----------*/}
@@ -1449,7 +1442,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerRelocate"
                       name="partnerRelocate"
                       onChange={InputHandler}
-                      
+
                       value={formData.partnerRelocate}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1474,7 +1467,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerEducation"
                       name="partnerEducation"
                       onChange={InputHandler}
-                      
+
                       value={formData.partnerEducation}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1501,7 +1494,7 @@ const ApplicationForm = ({ refreshData }) => {
                       value={formData.partnerHeight}
                       pattern="^[1-9][0-9]{0,2}$"
                       title="Please enter only numbers upto three digit without leading zero and no space is allowed"
-                      
+
                     />
                   </div>
                   {/*----------- weigth/bodytype -----------*/}
@@ -1512,7 +1505,7 @@ const ApplicationForm = ({ refreshData }) => {
                       name="partnerWeight"
                       value={formData.partnerWeight}
                       onChange={InputHandler}
-                      
+
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
                       <option className="text-gray-100 " value="">
@@ -1535,7 +1528,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerIsKid"
                       name="partnerIsKid"
                       onChange={InputHandler}
-                      
+
                       value={formData.partnerIsKid}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1563,7 +1556,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerWantKid"
                       name="partnerWantKid"
                       onChange={InputHandler}
-                      
+
                       value={formData.partnerWantKid}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1589,7 +1582,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerImmigrationStatus"
                       name="partnerImmigrationStatus"
                       onChange={InputHandler}
-                      
+
                       value={formData.partnerImmigrationStatus}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1633,9 +1626,9 @@ const ApplicationForm = ({ refreshData }) => {
                           placeholder="Other Native Language"
                           className="login-input w-full mt-2 custom-input"
                           onChange={otherOptionHandler}
-                          pattern="[A-Za-z]+"
+                          pattern="^[A-Za-z][A-Za-z\s]*$"
                           title="Enter only alphabet"
-                          maxLength={64}
+                          maxLength={100}
                           required
                         />
                       </div>
@@ -1656,9 +1649,9 @@ const ApplicationForm = ({ refreshData }) => {
                       onChange={InputHandler}
                       pattern="[^\s,].*"
                       title="Enter only letters and optional commas, but no white space at the beginning"
-                      maxLength={64}
+                      maxLength={100}
                       value={formData.partnerLanguageSpeak}
-                      
+
                     />
                   </div>
                   <div className="inputDiv">
@@ -1673,19 +1666,19 @@ const ApplicationForm = ({ refreshData }) => {
                       onChange={InputHandler}
                       pattern="^\S.*$"
                       title="Please enter partner details without leading white space"
-                      maxLength={300}
+                      maxLength={1000}
                       value={formData.partnerDetail}
                     ></textarea>
                   </div>
-                {
-                  !isfemale ? 
-                  <div className="inputDiv">
+                  {
+                    !isfemale ?
+                      <div className="inputDiv">
                         <label htmlFor="hijabStatus" className="login-input-label ">Hijab :</label>
                         <select
                           id="partnerHijabStatus"
                           name="partnerHijabStatus"
                           onChange={InputHandler}
-                          
+
                           value={formData.partnerHijabStatus}
                           className="login-input w-full mt-2 custom-input bg-white capitalize"
                         >
@@ -1700,10 +1693,10 @@ const ApplicationForm = ({ refreshData }) => {
                           </option>
                         </select>
                       </div>
-                  
-                  
-                  :""
-                }
+
+
+                      : ""
+                  }
 
                 </div>
                 {/* ////////////////////////////submit//////////// */}
