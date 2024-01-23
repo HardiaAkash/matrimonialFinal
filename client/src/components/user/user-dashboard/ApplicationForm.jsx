@@ -723,6 +723,7 @@ const ApplicationForm = ({ refreshData }) => {
                       name="nativelanguage"
                       // value={nativeLanguage}
                       onChange={InputHandler}
+                      required
                     >
                       <option value="">Select...</option>
                       <option value="English">English</option>
@@ -875,7 +876,7 @@ const ApplicationForm = ({ refreshData }) => {
                   {/*----------- occupation -----------*/}
 
                   <div className="inputDiv">
-                    <label htmlFor="occupation" className="login-input-label ">Occupation :</label>
+                    <label htmlFor="occupation" className="login-input-label ">Profession :</label>
                     <input
                       type="text"
                       name="occupation"
@@ -886,7 +887,7 @@ const ApplicationForm = ({ refreshData }) => {
                       title="Please enter a valid occuption without leading white space or special characters"
                       maxLength={64}
                       value={formData.occupation}
-                      required
+                      
                     />
                   </div>
 
@@ -921,7 +922,7 @@ const ApplicationForm = ({ refreshData }) => {
                           id="hijabStatus"
                           name="hijabStatus"
                           onChange={InputHandler}
-                          required
+                          
                           value={formData.hijabStatus}
                           className="login-input w-full mt-2 custom-input bg-white capitalize"
                         >
@@ -1007,7 +1008,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="wantRelocate"
                       name="wantRelocate"
                       onChange={InputHandler}
-                      required
+                      
                       value={formData.wantRelocate}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1031,7 +1032,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="isKid"
                       name="isKid"
                       onChange={InputHandler}
-                      required
+                      
                       value={formData.isKid}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1060,7 +1061,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="wantKid"
                       name="wantKid"
                       onChange={InputHandler}
-                      required
+                      
                       value={formData.wantKid}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1083,7 +1084,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="isSmoke"
                       name="isSmoke"
                       onChange={InputHandler}
-                      required
+                      
                       value={formData.isSmoke}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1135,7 +1136,7 @@ const ApplicationForm = ({ refreshData }) => {
                       title="Please enter a valid occuption without leading white space or special characters"
                       maxLength={200}
                       value={formData.socialMedia}
-                      required
+                      
                     />
                   </div>
                   {/*----------- photo -----------*/}
@@ -1194,7 +1195,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerAge"
                       name="partnerAge"
                       onChange={InputHandler}
-                      required
+                      
                       value={formData.partnerAge}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1269,7 +1270,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerMaritalStatus"
                       name="partnerMaritalStatus"
                       onChange={InputHandler}
-                      required
+                      
                       value={formData.partnerMaritalStatus}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1290,7 +1291,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerReligion"
                       name="partnerReligion"
                       onChange={InputHandler}
-                      required
+                      
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
                       <option className="text-gray-100 " value="">
@@ -1333,7 +1334,7 @@ const ApplicationForm = ({ refreshData }) => {
                       name="partnerBackground"
                       // value={nativeLanguage}
                       onChange={InputHandler}
-                      required
+                      
                     >
                       <option value="">Select Ethnicity</option>
                       {
@@ -1375,7 +1376,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerIncome"
                       name="partnerIncome"
                       onChange={InputHandler}
-                      required
+                      
                       value={formData.partnerIncome}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1405,7 +1406,7 @@ const ApplicationForm = ({ refreshData }) => {
                       title="Please enter address without leading white space"
                       onChange={InputHandler}
                       value={formData.partnerCity}
-                      required
+                      
                     />
                   </div>
                   {/*----------- state -----------*/}
@@ -1421,7 +1422,7 @@ const ApplicationForm = ({ refreshData }) => {
                       pattern="^\S.*$"
                       maxLength={`64`}
                       title="Please enter address without leading white space"
-                      required
+                      
                     />
                   </div>
 
@@ -1438,7 +1439,7 @@ const ApplicationForm = ({ refreshData }) => {
                       pattern="^\S.*$"
                       maxLength={`64`}
                       title="Please enter address without leading white space"
-                      required
+                      
                     />
                   </div>
                   {/*----------- Relocate -----------*/}
@@ -1448,7 +1449,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerRelocate"
                       name="partnerRelocate"
                       onChange={InputHandler}
-                      required
+                      
                       value={formData.partnerRelocate}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1473,7 +1474,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerEducation"
                       name="partnerEducation"
                       onChange={InputHandler}
-                      required
+                      
                       value={formData.partnerEducation}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1500,7 +1501,7 @@ const ApplicationForm = ({ refreshData }) => {
                       value={formData.partnerHeight}
                       pattern="^[1-9][0-9]{0,2}$"
                       title="Please enter only numbers upto three digit without leading zero and no space is allowed"
-                      required
+                      
                     />
                   </div>
                   {/*----------- weigth/bodytype -----------*/}
@@ -1511,7 +1512,7 @@ const ApplicationForm = ({ refreshData }) => {
                       name="partnerWeight"
                       value={formData.partnerWeight}
                       onChange={InputHandler}
-                      required
+                      
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
                       <option className="text-gray-100 " value="">
@@ -1534,7 +1535,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerIsKid"
                       name="partnerIsKid"
                       onChange={InputHandler}
-                      required
+                      
                       value={formData.partnerIsKid}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1562,7 +1563,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerWantKid"
                       name="partnerWantKid"
                       onChange={InputHandler}
-                      required
+                      
                       value={formData.partnerWantKid}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1588,7 +1589,7 @@ const ApplicationForm = ({ refreshData }) => {
                       id="partnerImmigrationStatus"
                       name="partnerImmigrationStatus"
                       onChange={InputHandler}
-                      required
+                      
                       value={formData.partnerImmigrationStatus}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1657,7 +1658,7 @@ const ApplicationForm = ({ refreshData }) => {
                       title="Enter only letters and optional commas, but no white space at the beginning"
                       maxLength={64}
                       value={formData.partnerLanguageSpeak}
-                      required
+                      
                     />
                   </div>
                   <div className="inputDiv">
@@ -1684,7 +1685,7 @@ const ApplicationForm = ({ refreshData }) => {
                           id="partnerHijabStatus"
                           name="partnerHijabStatus"
                           onChange={InputHandler}
-                          required
+                          
                           value={formData.partnerHijabStatus}
                           className="login-input w-full mt-2 custom-input bg-white capitalize"
                         >
