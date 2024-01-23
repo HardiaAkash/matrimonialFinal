@@ -44,6 +44,7 @@ exports.verifyUser = async (req, res) => {
       const decodedData = await jwt.verify(token, process.env.jwtKey);
       const LoggedUser = await User.findOne({
         email: decodedData?.email,
+        activeToken:token
       }).select("-password -activeToken");
       if (LoggedUser) {
         return res.status(HttpStatus.OK).json({
@@ -54,6 +55,7 @@ exports.verifyUser = async (req, res) => {
       }
       const LoggedAdmin = await Admin.findOne({
         email: decodedData?.email,
+        activeToken:token
       }).select("-password -activeToken");
         if (LoggedAdmin) {
         return res.status(HttpStatus.OK).json({

@@ -3,13 +3,14 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
+import { useAuth } from "@/components/Utils/AuthContext";
 
 const BackgroundCheck = ({refreshData}) => {
   const router = useRouter();
   const [isLoader, setLoader] = useState(false);
-  const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("authToken" || "")):null;
-
-  const userId =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("userID" || "")):null;
+  const {userToken,userData} = useAuth()
+  const token =  userToken;
+  const userId =  userData;
 
   const getUserUpdate = ( step ) => {
     // router.push("https://www.google.com/","_blank"); 
@@ -18,11 +19,11 @@ const BackgroundCheck = ({refreshData}) => {
       method: "PUT",
       url: `/api/auth/updateUser`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userToken}`,
         "Content-Type": "application/json",
       },
       data: {
-        id: userId,
+        id: userData,
         updatedDetails:{
           step : step
         }

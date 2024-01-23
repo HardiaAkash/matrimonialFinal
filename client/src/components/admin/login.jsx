@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
 import Loader from './loader';
 import Link from 'next/link';
+import { useAuth } from '../Utils/AuthContext';
 
 const Login = () => {
     const [loginDetails,setLoginDetails]=useState({
@@ -18,6 +19,7 @@ const Login = () => {
     const router=useRouter();
     const [showPassword,setShowPassword]=useState(false);
     const [isLoading, setLoading] = useState(false);
+    const { setAuthToken } = useAuth();
     const handleSubmit=async (e)=>{
         e.preventDefault();
         setLoading(true);
@@ -31,6 +33,7 @@ const Login = () => {
             if (response.status === 200) {
                 console.log("response",response?.data?.token);
                 localStorage.setItem("token", JSON.stringify(response?.data?.token));
+                setAuthToken(response?.data?.token)
                 router.push("/admin/admin-dashboard");
                 setLoading(false);
                 toast.success("Login successful!");

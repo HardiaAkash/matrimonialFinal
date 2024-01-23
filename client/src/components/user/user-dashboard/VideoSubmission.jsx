@@ -4,13 +4,15 @@ import { Dialog, Transition } from "@headlessui/react";
 import Link from "next/link";
 import axios from "axios";
 import AddVideo from "./modal/AddVideo";
+import { useAuth } from "@/components/Utils/AuthContext";
 
 const VideoSubmission = ({ formId, refreshData, previewData }) => {
   let [isOpen, setIsOpen] = useState(false);
   let [isVideo, setVideo] = useState(false);
   const [isLoader, setLoader] = useState(false);
-  const userId =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("userID" || "")):null;
-  const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("authToken" || "")):null;
+  const {userToken,userData} = useAuth()
+  const userId =  userData;
+  const token =  userToken;
   // const isVideoUplod = JSON.parse(localStorage.getItem("isVideoUploded" || ""));
   const [isVideoUplod, setIsVideoUplod] = useState(false);
 
@@ -24,11 +26,11 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
       method: "PUT",
       url: `/api/auth/updateUser`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userToken}`,
         "Content-Type": "application/json",
       },
       data: {
-        id: userId,
+        id: userData,
         updatedDetails: {
           step: step,
         },
@@ -77,7 +79,7 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
             previewData?.video?.length > 0 ? (
               <div className="flex md:flex-row flex-col gap-5  justify-center max-w-[80%] ">
                 {previewData?.video?.map((items, inx) => (
-                  <div className="lg:max-w-[50%] md:max-w-[70%] max-w-[80%] mx-auto">
+                  <div className="lg:max-w-[50%] md:max-w-[70%] max-w-[80%] mx-auto" key={inx}>
                     <video controls className="">
                       <source src={items} type="video/mp4" />
                       Your browser does not support the video tag.

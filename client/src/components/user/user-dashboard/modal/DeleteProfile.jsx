@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
+import { useAuth } from "@/components/Utils/AuthContext";
 
 const DeleteProfile = ({ closeModal }) => {
   const [isLoading, setLoading] = useState(false);
-  const token = JSON.parse(localStorage.getItem("authToken" || ""));
-
-  const userId = JSON.parse(localStorage.getItem("userID" || ""));
-
+  // const token = JSON.parse(localStorage.getItem("authToken" || ""));
+  // const userId = JSON.parse(localStorage.getItem("userID" || ""));
+  const {userToken,userData} = useAuth()
   const handleClose = () => {
     closeModal();
   };
@@ -20,11 +20,11 @@ const DeleteProfile = ({ closeModal }) => {
       method: "POST",
       url: `/api/auth/deleteUserReq`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userToken}`,
         "Content-Type": "application/json",
       },
       data : {
-        userId : userId
+        userId : userData
       }
     };
 
@@ -53,7 +53,7 @@ const DeleteProfile = ({ closeModal }) => {
 
       <div className="mt-2">
         <p className=" text-[16px] font-normal leading-[30px] text-gray-500 mt-4">
-          Click 'Yes' to submit the request to delete your profile.
+          Click &apos;Yes&apos; to submit the request to delete your profile.
         </p>
       </div>
 
