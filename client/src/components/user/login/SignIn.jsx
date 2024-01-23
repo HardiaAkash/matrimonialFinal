@@ -9,6 +9,8 @@ import Image from "next/image";
 
 import Closeeye from "@/components/svg/Closeeye";
 import Openeye from "@/components/svg/Openeye";
+import { useAuth } from "@/components/Utils/AuthContext";
+import { destroyCookie } from "nookies";
 
 const SignIn = ({ refreshData }) => {
   const router = useRouter();
@@ -21,7 +23,7 @@ const SignIn = ({ refreshData }) => {
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState("");
   const [loginWith, setLoginWith] = useState(true);
-
+  const {setUserAuthToken} = useAuth()
   const InputHandler = (e) => {
     setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value });
     setError("");
@@ -45,23 +47,27 @@ const SignIn = ({ refreshData }) => {
       if (response.status === 200) {
         toast.success("Login successfully!");
         setLoading(false);
-        localStorage.setItem(
-          "authToken",
-          JSON.stringify(response?.data?.token)
-        );
-        localStorage.setItem("userID", JSON.stringify(response?.data?.userID));
-        // navigate("/admin-dashboard");
+        setUserAuthToken(response?.data?.token,response?.data?.userID)
         router.push("/");
+        // localStorage.setItem(
+        //   "authToken",
+        //   JSON.stringify(response?.data?.token)
+        // );
+        // localStorage.setItem("userID", JSON.stringify(response?.data?.userID));
+        // navigate("/admin-dashboard");
         refreshData();
       } else {
         setError("Invalid credentails");
-        localStorage.removeItem("authToken");
+        // localStorage.removeItem("authToken");
+        destroyCookie(null, "us_Auth", { path: "/" });
+        destroyCookie(null, "us_Data", { path: "/" });
+        
         setLoading(false);
       }
     } catch (error) {
       console.error("Error during login:", error);
       toast.error(error?.response?.data);
-      localStorage.removeItem("authToken");
+      // localStorage.removeItem("authToken");
       setLoading(false);
     }
   };
@@ -109,6 +115,9 @@ const SignIn = ({ refreshData }) => {
                         placeholder="Mobile no."
                         className=" w-full mt-2 custom-input"
                         onChange={InputHandler}
+                        // pattern="^(?!\s)[0-9+\s]+$"
+                        // minLength={10}
+                        // maxLength={12}
                         required
                       />
                     )}

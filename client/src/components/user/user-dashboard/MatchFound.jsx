@@ -24,13 +24,13 @@ const MatchFound = ({ previewData }) => {
             />
           </div>
           <div className="mx-auto mt-4">
-            {previewData?.isMatched ? (
+            {previewData?.isMatched === "true" ? (
               <>
                 <h5 className="pt-2 text-[20px] font-semibold text-center text-[green]">
                 Congratulations!
                 </h5>
                 <h5 className="pt-2 text-[20px] font-semibold text-center">
-                  We've found a match for you.
+                  We&apos;ve found a match for you.
                 </h5>
                 <p className="pt-1 text-[16px] font-medium mb-3 text-center">
                 Please visit our office for more details.
@@ -42,7 +42,7 @@ const MatchFound = ({ previewData }) => {
                 Congratulations on completing your registration! 
               </h5>
                <p className="pt-2 text-[16px] font-normal  text-center 2xl:max-w-[40%] md:max-w-[60%] mx-auto max-w-[80%] ">
-               We're currently
+               We&apos;re currently
                 working on finding your perfect match. Stay tuned for an email
                 confirmation with details on your match. Thank you for your
                 patience!

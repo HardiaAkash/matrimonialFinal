@@ -29,7 +29,7 @@ const StatusMessage = {
     NOT_FOUND: "Data not found."
 
 };
-const mailSend = async(reciever, status) =>{
+const mailSend = async (reciever, status) => {
     console.log(reciever, status);
     const mailOptions = {
         from: "enotify@sacredspouse.com",
@@ -42,15 +42,15 @@ const mailSend = async(reciever, status) =>{
         <p>Thank you for your cooperation.</p>
         <p>Best Regards,</p>
           `
-      };
-      try {
+    };
+    try {
         const info = await sendEmail(mailOptions);
         console.log("Email sent:", info);
-       
-      } catch (error) {
+
+    } catch (error) {
         console.log("Error sending email:", error);
-       
-      }
+
+    }
 }
 
 exports.uploadImage = async (req, res, next) => {
@@ -71,44 +71,52 @@ exports.uploadImage = async (req, res, next) => {
     }
 
 };
-const changeStepUser = async(id, step) =>{
+const changeStepUser = async (id, step) => {
     try {
-        
+
         if (!id || !step) {
             return null
-        }else{
-            const UpdateStep = await User.findByIdAndUpdate(id, {step}, { new: true })
+        } else {
+            const UpdateStep = await User.findByIdAndUpdate(id, { step }, { new: true })
             if (!UpdateStep) {
                 console.log("error")
-            }else{
+            } else {
                 console.log("updated step")
             }
         }
     } catch (error) {
-        console.log("error",error);
+        console.log("error", error);
     }
 
 }
 exports.addForm = async (req, res) => {
     try {
         const {
-            userID, firstname, lastname, address, dateOfBirth, email, education,
+            userID, firstname, middlename,lastname, address, dateOfBirth, email, education,
             occupation, contactNumber, hobbies, gender, maritalStatus, religion,
-            height, income, familyDetails, image
+            height, income, familyDetails, image, age, city, state, background,
+            nativelanguage, weight, degree, hijabStatus, wantRelocate, isKid, wantKid, isSmoke, immigrationStatus, socialMedia, partnerAge, partnerGender, partnerMaritalStatus,
+            partnerReligion, partnerBackground, partnerIncome, partnerCity, partnerCountry, partnerState, partnerRelocate, partnerEducation, partnerHeight, partnerWeight,
+            partnerIsKid, partnerWantKid, partnerImmigrationStatus, partnerNativeLanguage, partnerLanguageSpeak,
+            partnerDetail, partnerHijabStatus
         } = req.body;
 
         // Check for missing data
-        if (!userID || !firstname || !lastname || !address || !dateOfBirth || !email ||
-            !education || !contactNumber || !gender || !maritalStatus || !religion ||
-            !height || !income || !familyDetails) {
+        if (!userID || !firstname || !lastname || !city || !state ||
+            !education || !gender || !maritalStatus || !religion ||
+            !height || !income) {
             return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.MISSING_DATA);
         }
 
         // Create new user form
         const newUserForm = new UserForm({
-            userID, firstname, lastname, address, dateOfBirth, email, education,
+            userID, firstname, middlename,lastname, address, dateOfBirth, email, education,
             occupation, contactNumber, hobbies, gender, maritalStatus, religion,
-            height, income, familyDetails, image
+            height, income, familyDetails, image, age, city, state, background,
+            nativelanguage, weight, degree, hijabStatus, wantRelocate, isKid, wantKid, isSmoke, immigrationStatus, socialMedia, partnerAge, partnerGender, partnerMaritalStatus,
+            partnerReligion, partnerBackground, partnerIncome, partnerCity, partnerCountry, partnerState, partnerRelocate, partnerEducation, partnerHeight, partnerWeight,
+            partnerIsKid, partnerWantKid, partnerImmigrationStatus, partnerNativeLanguage, partnerLanguageSpeak,
+            partnerDetail, partnerHijabStatus
         });
 
         // Save to database
@@ -138,9 +146,18 @@ exports.editFormById = async (req, res) => {
 
         // Build update object dynamically
         const updateData = {};
-        const fields = ['firstname', 'lastname', 'address', 'dateOfBirth', 'email', 'education',
-            'occupation', 'contactNumber', 'hobbies', 'gender', 'maritalStatus',
-            'religion', 'height', 'income', 'familyDetails', 'image', 'video','formStatus'];
+        const fields = ["userID", "firstname", "middlename","lastname", "address", "dateOfBirth", "email", "education",
+        "formStatus", "occupation", "contactNumber", "hobbies", "gender", "maritalStatus", "religion",
+        "height", "income", "familyDetails", "image", "age", "city", "state", "background",
+        "nativelanguage", "weight", "degree", "hijabStatus", "wantRelocate", "isKid", "wantKid", "isSmoke",
+        "immigrationStatus", "socialMedia", "partnerAge", "partnerGender", "partnerMaritalStatus",
+        "partnerReligion", "partnerBackground", "partnerIncome", "partnerCity", "partnerCountry",
+        "partnerState", "partnerRelocate", "partnerEducation", "partnerHeight", "partnerWeight",
+        "partnerIsKid", "partnerWantKid", "partnerImmigrationStatus", "partnerNativeLanguage",
+        "partnerLanguageSpeak", "partnerDetail", "partnerHijabStatus","video"];
+
+
+
 
         fields.forEach(field => {
             if (req.body[field] !== undefined) {
@@ -245,26 +262,26 @@ exports.changeStatusForm = async (req, res) => {
         if (!updatedForm) {
             return res.status(HttpStatus.INVALID).json(StatusMessage.NOT_FOUND);
         }
-        const userData = await User.findById({_id : updatedForm.userID})
-        console.log(userData);  
+        const userData = await User.findById({ _id: updatedForm.userID })
+        console.log(userData);
         console.log(updatedForm.userID);
 
         // Return success response with updated form
         if (formStatus?.toLowerCase() === "pending" || formStatus?.toLowerCase() === "rejected") {
-           if (userData) {
-               mailSend(userData.email, formStatus)
-            
-           }
+            if (userData) {
+                mailSend(userData.email, formStatus)
+
+            }
             changeStepUser(updatedForm.userID, 1)
- 
-            
+
+
         } else {
             changeStepUser(updatedForm.userID, 2)
             if (userData) {
                 mailSend(userData.email, formStatus)
-             
+
             }
-           
+
         }
         return res.status(HttpStatus.OK).json(updatedForm);
 
@@ -330,19 +347,19 @@ exports.viewForm = async (req, res) => {
         return res.status(HttpStatus.BAD_REQUEST).json("Error fetching users.");
     }
 };
-exports.getFormByUserID = async(req,res)=>{
-    const {userID} = req.body
+exports.getFormByUserID = async (req, res) => {
+    const { userID } = req.body
     if (!userID) {
         return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.MISSING_DATA);
     }
     try {
-       const form = await UserForm.find({userID}) 
-       if (!form) {
-        return res.status(HttpStatus.INVALID).json({ message: StatusMessage.NOT_FOUND });
-    }
+        const form = await UserForm.find({ userID })
+        if (!form) {
+            return res.status(HttpStatus.INVALID).json({ message: StatusMessage.NOT_FOUND });
+        }
 
-    // Return the found form
-    return res.status(HttpStatus.OK).json(form);
+        // Return the found form
+        return res.status(HttpStatus.OK).json(form);
     } catch (error) {
         console.error(error); // For debugging purposes
         return res.status(HttpStatus.SERVER_ERROR).json({ message: StatusMessage.SERVER_ERROR });
@@ -377,12 +394,12 @@ exports.changeMatchStatus = async (req, res) => {
         if (!updatedForm) {
             return res.status(HttpStatus.INVALID).json(StatusMessage.NOT_FOUND);
         }
-        const userData = await User.findById({_id : updatedForm.userID})
-        console.log(userData);  
+        const userData = await User.findById({ _id: updatedForm.userID })
+        console.log(userData);
         console.log(updatedForm.userID);
 
         // Return success response with updated form
-        if (isMatched && userData?.email ) {
+        if (isMatched && userData?.email) {
             const mailOptions = {
                 from: "enotify@sacredspouse.com",
                 to: userData?.email,
@@ -393,15 +410,15 @@ exports.changeMatchStatus = async (req, res) => {
                 <br/>
                 <p>Best Regards</p>
                   `
-              };
-              try {
+            };
+            try {
                 const info = await sendEmail(mailOptions);
                 console.log("Email sent:", info);
-               
-              } catch (error) {
+
+            } catch (error) {
                 console.log("Error sending email:", error);
-               
-              }
+
+            }
         }
         return res.status(HttpStatus.OK).json(updatedForm);
 
@@ -418,7 +435,7 @@ exports.approvedForm = async (req, res) => {
         const search = req.query.search || "";
         const gender = req.query.gender;
         const isMatched = req.query.isMatched !== undefined ? req.query.isMatched === 'true' : undefined;
-          
+
         if (!page || !limit) {
             return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.MISSING_PAGE_PARAMS);
         }

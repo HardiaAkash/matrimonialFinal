@@ -6,6 +6,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import Delete from "./delete";
 import Loader from "./loader";
 import { ToastContainer, toast } from "react-toastify";
+import { useAuth } from "../Utils/AuthContext";
 
 const ProfileDelete = () => {
   const [allData, setAllData] = useState([]);
@@ -23,8 +24,8 @@ const ProfileDelete = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const visiblePageCount = 10;
-  const token = JSON.parse(localStorage.getItem("token" || ""));
-
+  // const token = JSON.parse(localStorage.getItem("token" || ""));
+  const { adminAuthToken } = useAuth()
   useEffect(() => {
     getAllData(1);
   }, [isRefresh]);
@@ -36,7 +37,7 @@ const ProfileDelete = () => {
       url: `/api/auth/getDeleteReq?page=${pageNo}&limit=${visiblePageCount}`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${adminAuthToken}`,
       },
     };
     axios
@@ -86,7 +87,7 @@ const ProfileDelete = () => {
       method: "GET",
       url: `/api/auth/viewUser?search=${search_cate}`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${adminAuthToken}`,
         "Content-Type": "multipart/form-data",
       },
     };
@@ -143,13 +144,13 @@ const ProfileDelete = () => {
     // alert("deleted successfully");
     // setDialogMatch(false);
     // return;
-    
+    setLoader(true);
     const options = {
       method: "DELETE",
       url: `/api/auth/deleteUser/${userID}`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${adminAuthToken}`,
       },
     };
 
@@ -162,15 +163,18 @@ const ProfileDelete = () => {
           toast.success("Deleted successfully !");
           //   handleClose();
           setDialogMatch(false);
+          setLoader(false);
           refreshData();
         } else {
           // ;
+          setLoader(false);
           toast.error("Failed. something went wrong!");
           return;
         }
       })
       .catch(function (error) {
         // ;
+        setLoader(false);
         console.error(error);
         // toast.error("Failed. something went wrong!");
       });

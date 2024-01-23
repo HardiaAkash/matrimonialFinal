@@ -89,6 +89,8 @@ const SignUp = () => {
                       placeholder="User name"
                       className=" w-full mt-2 custom-input capitalize"
                       onChange={InputHandler}
+                      maxLength={100}
+                      pattern="^(?!\s)[a-zA-Z\s]*$"
                       required
                     />
                   </div>
@@ -99,6 +101,7 @@ const SignUp = () => {
                       placeholder="Email address"
                       className=" w-full mt-2 custom-input"
                       onChange={InputHandler}
+                      maxLength={100}
                       required
                     />
                   </div>
@@ -109,6 +112,9 @@ const SignUp = () => {
                       placeholder="Mobile no."
                       className=" w-full mt-2 custom-input"
                       onChange={InputHandler}
+                      pattern="^(?!\s)[0-9+\s]+$"
+                      minLength={10}
+                      maxLength={12}
                       required
                     />
                   </div>

@@ -15,18 +15,24 @@ import MatchFound from "./MatchFound";
 import Dashboard from "./Dashboard";
 
 import CloseIcon from "./Svg/CloseIcon";
+import { useAuth } from "@/components/Utils/AuthContext";
+import { destroyCookie } from "nookies";
 
 const UserDashboadr = () => {
   const router = useRouter();
   const [ComponentId, setComponentId] = useState(0);
   const [showDrawer, setShowDrawer] = useState(false);
   const [isLoader, setLoader] = useState(false);
-  const [previewFormData, setPreviewFormData] = useState({});
+  const [previewFormData, setPreviewFormData] = useState();
   const [isPreview, setPreview] = useState(false);
   const [isFormStep, setFormStep] = useState(2);
   const [isRefresh, setRefresh] = useState(false);
-  const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("authToken" || "")) : null;
-  const userId =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("userID" || "")):null;
+  const { userToken, userData } = useAuth()
+  const {setUserAuthToken} = useAuth()
+  // const token = userToken;
+  // const userId = userData;
+  console.log(userData);
+  // alert("loaided")
   // console.log(previewFormData?.isMatched);
 
   const refreshData = () => {
@@ -45,7 +51,7 @@ const UserDashboadr = () => {
       method: "GET",
       url: `/api/auth/logoutUser`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userToken}`,
         "Content-Type": "application/json",
       },
     };
@@ -55,15 +61,22 @@ const UserDashboadr = () => {
         console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("userID");
+          // localStorage.removeItem("authToken");
+          // localStorage.removeItem("userID");
           toast.success("Logout successfully")
+          destroyCookie(null, "us_Auth", { path: "/" });
+          destroyCookie(null, "us_Data", { path: "/" });
+          destroyCookie(null, "us_no", { path: "/" });
+          destroyCookie(null, "us_mail", { path: "/" });
           router.push("/user/sign-in");
         } else {
           setLoader(false);
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("userID");
+
           toast.success("Logout successfully")
+          destroyCookie(null, "us_Auth", { path: "/" });
+          destroyCookie(null, "us_Data", { path: "/" });
+          destroyCookie(null, "us_no", { path: "/" });
+          destroyCookie(null, "us_mail", { path: "/" });
           router.push("/user/sign-in");
           return;
         }
@@ -72,8 +85,11 @@ const UserDashboadr = () => {
         setLoader(false);
         console.error("Error:", error);
         toast.error(error?.response?.data);
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("userID"); 
+        destroyCookie(null, "us_Auth", { path: "/" });
+        destroyCookie(null, "us_Data", { path: "/" });
+        destroyCookie(null, "us_no", { path: "/" });
+        destroyCookie(null, "us_mail", { path: "/" });
+
         router.push("/user/sign-in");
       });
   };
@@ -82,7 +98,7 @@ const UserDashboadr = () => {
   // ------ verify token -------
 
   useEffect(() => {
-    if (token) {
+    if (userToken) {
       verify();
     }
     getAllData();
@@ -91,19 +107,28 @@ const UserDashboadr = () => {
 
   const verify = async () => {
     try {
-      const res = await axios.get(`/api/auth/verifyTokenUser/${token}`);
+      const res = await axios.get(`/api/auth/verifyTokenUser/${userToken}`);
       console.log("verify", res);
       if (res.status === 200) {
         setFormStep(res?.data?.data?.step);
-        localStorage.setItem("user_mail", JSON.stringify(res?.data?.data?.email));
-        localStorage.setItem("user_contact", JSON.stringify(res?.data?.data?.contact));
+        setUserAuthToken(userToken,userData,res?.data?.data?.email,res?.data?.data?.contact)
+        // localStorage.setItem("user_mail", JSON.stringify(res?.data?.data?.email));
+        // localStorage.setItem("user_contact", JSON.stringify(res?.data?.data?.contact));
         return; // Do whatever you need after successful verification
       } else {
         router.push("/user/sign-in");
+        destroyCookie(null, "us_Auth", { path: "/" });
+        destroyCookie(null, "us_Data", { path: "/" });
+        destroyCookie(null, "us_no", { path: "/" });
+        destroyCookie(null, "us_mail", { path: "/" });
       }
     } catch (error) {
       console.error("Error occurred:", error);
       router.push("/user/sign-in");
+      destroyCookie(null, "us_Auth", { path: "/" });
+      destroyCookie(null, "us_Data", { path: "/" });
+      destroyCookie(null, "us_no", { path: "/" });
+        destroyCookie(null, "us_mail", { path: "/" });
       // Handle the error, maybe navigate somewhere or show an error message
     }
   };
@@ -116,11 +141,11 @@ const UserDashboadr = () => {
       method: "POST",
       url: `/api/auth/getFormByUser`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userToken}`,
         "Content-Type": "application/json",
       },
       data: {
-        userID: userId,
+        userID: userData,
       },
     };
     axios
@@ -131,6 +156,7 @@ const UserDashboadr = () => {
           setLoader(false);
           if (response?.data?.length > 0) {
             // console.log("okkk");
+            // console.log(response?.data);
             setPreviewFormData(response?.data[0]);
             setPreview(true);
           } else {
@@ -146,7 +172,7 @@ const UserDashboadr = () => {
         console.error("Error:", error);
       });
   };
-
+// console.log( previewFormData?.isMatched === true);
   const menus = [
     {
       id: 0,
@@ -242,7 +268,7 @@ const UserDashboadr = () => {
                     className={`px-4 py-3 mx-5 rounded-md  flex gap-x-3 items-center cursor-pointer  transition-colors font-semibold dash-menu  hover:transition-all ease-in delay-100 duration-300  text-[#f3f3f3] hover:bg-menu_secondary hover:text-[white] border  
                                     
                                       ${item.id === 5 &&
-                        previewFormData?.isMatched
+                        previewFormData?.isMatched === "true"
                         ? " bg-menu_secondary  border-menu_secondary hover:border-[#f3f3f35e]  text-[white]"
                         :
                         item.id === ComponentId
@@ -255,7 +281,7 @@ const UserDashboadr = () => {
                     <p className=" capitalize whitespace-nowrap relative ">
                       {item.label}
                     </p>
-                    {item.id === 5 && previewFormData?.isMatched && (
+                    {item.id === 5 && previewFormData?.isMatched  === "true" && (
                       <span className="relative flex h-3 w-3">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ef8585] opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-3 w-3 bg-[#e11818a6]"></span>
