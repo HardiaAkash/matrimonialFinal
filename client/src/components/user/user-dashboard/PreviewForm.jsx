@@ -12,7 +12,7 @@ export const marital_status = [
   "separated",
   "widowed",
   "divorced",
-  "married",
+ 
 ];
 
 const ViewApplicationDetails = ({ previewData, refreshData }) => {
@@ -218,6 +218,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
             setLoading(false);
             localStorage.setItem("isFromUpdated", JSON.stringify(true));
             // setUpdated(true);
+            getUserUpdate(2)
             setStatus(true);
             refreshData();
           } else {
@@ -237,6 +238,39 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
         }
       }
     }
+  };
+  const getUserUpdate = (step) => {
+    setLoading(true);
+    const options = {
+      method: "PUT",
+      url: `/api/auth/updateUser`,
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+        "Content-Type": "application/json",
+      },
+      data: {
+        id: userData,
+        updatedDetails: {
+          step: step,
+        },
+      },
+    };
+    axios
+      .request(options)
+      .then((response) => {
+        // console.log(response?.data);
+        if (response.status === 200) {
+          setLoading(false);
+          refreshData();
+        } else {
+          setLoader(false);
+          return;
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error:", error);
+      });
   };
   const radioGender = (e) => {
     if (e.target.name === 'gender' && e.target.value === "female") {
@@ -925,7 +959,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   </div>
                   {/*----------- number -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="contactNumber" className="login-input-label ">Email:</label>
+                    <label htmlFor="contactNumber" className="login-input-label ">Contact No.:</label>
 
                     <input
                       type="text"
@@ -1119,8 +1153,8 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       onChange={InputHandler}
                       disabled={isStatus}
                       value={formData.height}
-                      pattern="^[1-9][0-9]{0,2}$"
-                      title="Please enter only numbers upto three digit without leading zero and no space is allowed"
+                      pattern="^(0|[1-9]\d{0,2})'(\d|1[0-1])$"
+                      title="Please enter height in the format X'Y or X', where X is the feet and Y is the inches (0-11)."
                       required
                     />
                   </div>
@@ -1212,7 +1246,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   {/*----------- occupation -----------*/}
 
                   <div className="inputDiv">
-                    <label htmlFor="occupation" className="login-input-label ">Occupation :</label>
+                    <label htmlFor="occupation" className="login-input-label ">Profession :</label>
                     <input
                       type="text"
                       name="occupation"
@@ -1224,7 +1258,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       title="Please enter a valid occuption without leading white space or special characters"
                       maxLength={64}
                       value={formData.occupation}
-                      
+
                     />
                   </div>
 
@@ -1260,7 +1294,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                           name="hijabStatus"
                           disabled={isStatus}
                           onChange={InputHandler}
-                          
+
                           value={formData.hijabStatus}
                           className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}                        >
                           <option className="text-gray-100 " value="">
@@ -1352,16 +1386,16 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
 
                   {/*----------- familyDetails -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="familyDetails" className="login-input-label ">Family Details :</label>
+                    <label htmlFor="familyDetails" className="login-input-label ">Tell us something about yourself :</label>
                     <textarea
                       type="text"
                       name="familyDetails"
-                      placeholder="Family Details"
+                      placeholder="About yourself"
                       className="login-input w-full mt-2 custom-input h-[80px]"
                       onChange={InputHandler}
                       pattern="^\S.*$"
-                      title="Please enter family details without leading white space"
-                      maxLength={250}
+                      title="Please enter about yourself without leading white space"
+                      maxLength={1000}
                       value={formData.familyDetails}
                       disabled={isStatus}
                       required
@@ -1369,12 +1403,12 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   </div>
                   {/*----------- Relocate -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="wantRelocate" className="login-input-label ">Do you willing to relocate? :</label>
+                    <label htmlFor="wantRelocate" className="login-input-label ">Are you willing to relocate? :</label>
                     <select
                       id="wantRelocate"
                       name="wantRelocate"
                       onChange={InputHandler}
-                      
+
                       value={formData.wantRelocate}
                       disabled={isStatus}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}                    >
@@ -1398,7 +1432,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       id="isKid"
                       name="isKid"
                       onChange={InputHandler}
-                      
+
                       value={formData.isKid}
                       disabled={isStatus}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}
@@ -1421,6 +1455,25 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       </option>
                     </select>
                   </div>
+                  {/* no of kids */}
+                  <div className="inputDiv">
+                    <label htmlFor="NoOfKids" className="login-input-label ">How many kids you have? :</label>
+                    <input
+                      type="number"
+                      name="NoOfKids"
+                      placeholder="No Of Kids"
+                      className="login-input w-full mt-2 custom-input capitalize"
+                      onChange={InputHandler}
+                      // pattern="^[^\s][A-Za-z0-9\s]*$"
+                      title="Please enter valid number kids between 0 to 20"
+                      // maxLength={64}
+                      disabled={isStatus}
+                      value={formData.NoOfKids}
+                      min="0"
+                      max="20"
+
+                    />
+                  </div>
                   {/*----------- Want Kids -----------*/}
                   <div className="inputDiv">
                     <label htmlFor="wantKid" className="login-input-label ">Do you want kids? :</label>
@@ -1428,7 +1481,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       id="wantKid"
                       name="wantKid"
                       onChange={InputHandler}
-                      
+
                       value={formData.wantKid}
                       disabled={isStatus}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}
@@ -1452,7 +1505,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       id="isSmoke"
                       name="isSmoke"
                       onChange={InputHandler}
-                      
+
                       value={formData.isSmoke}
                       disabled={isStatus}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}
@@ -1507,7 +1560,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       maxLength={200}
                       value={formData.socialMedia}
                       disabled={isStatus}
-                      
+
                     />
                   </div>
 
@@ -1611,7 +1664,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       id="partnerAge"
                       name="partnerAge"
                       onChange={InputHandler}
-                      
+
                       disabled={isStatus}
                       value={formData.partnerAge}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}                    >
@@ -1686,7 +1739,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       id="partnerMaritalStatus"
                       name="partnerMaritalStatus"
                       onChange={InputHandler}
-                      
+
                       disabled={isStatus}
                       value={formData.partnerMaritalStatus}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}                    >
@@ -1707,7 +1760,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       id="partnerReligion"
                       name="partnerReligion"
                       onChange={InputHandler}
-                      
+
                       disabled={isStatus}
                       value={formData.partnerReligion}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}                    >
@@ -1718,6 +1771,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                           {sts}
                         </option>
                       ))}
+                      <option value="Any">Any</option>
                     </select>
                   </div>
                   {
@@ -1751,7 +1805,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       value={formData.partnerBackground}
                       disabled={isStatus}
                       onChange={InputHandler}
-                      
+
                     >
                       <option value="">{isStatus ? "Other" : "Select"}</option>
 
@@ -1764,6 +1818,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                           )
                         })
                       }
+                      <option value="Any">Any</option>
                     </select>
                   </div>
                   {
@@ -1795,7 +1850,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       id="partnerIncome"
                       name="partnerIncome"
                       onChange={InputHandler}
-                      
+
                       value={formData.partnerIncome}
                       disabled={isStatus}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}                    >
@@ -1811,7 +1866,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   </div>
 
                   {/*----------- city -----------*/}
-                  <div className="inputDiv">
+                  {/* <div className="inputDiv">
                     <label htmlFor="partnerCity" className="login-input-label ">City:</label>
 
                     <input
@@ -1826,11 +1881,11 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       title="Please enter address without leading white space"
                       onChange={InputHandler}
                       value={formData.partnerCity}
-                      
+
                     />
-                  </div>
+                  </div> */}
                   {/*----------- state -----------*/}
-                  <div className="inputDiv">
+                  {/* <div className="inputDiv">
                     <label htmlFor="partnerState" className="login-input-label ">State:</label>
 
                     <input
@@ -1844,12 +1899,12 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       maxLength={`100`}
                       value={formData.partnerState}
                       title="Please enter address without leading white space"
-                      
+
                     />
-                  </div>
+                  </div> */}
 
                   {/*----------- country -----------*/}
-                  <div className="inputDiv">
+                  {/* <div className="inputDiv">
                     <label htmlFor="partnerCountry" className="login-input-label ">Country:</label>
 
                     <input
@@ -1863,9 +1918,9 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       maxLength={`100`}
                       value={formData.partnerCountry}
                       title="Please enter address without leading white space"
-                      
+
                     />
-                  </div>
+                  </div> */}
                   {/*----------- Relocate -----------*/}
                   <div className="inputDiv">
                     <label htmlFor="partnerRelocate" className="login-input-label ">Willing to relocate :</label>
@@ -1874,7 +1929,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       name="partnerRelocate"
                       onChange={InputHandler}
                       disabled={isStatus}
-                      
+
                       value={formData.partnerRelocate}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}
                     >
@@ -1899,7 +1954,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       id="partnerEducation"
                       name="partnerEducation"
                       onChange={InputHandler}
-                      
+
                       disabled={isStatus}
                       value={formData.partnerEducation}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}
@@ -1925,10 +1980,10 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       className="login-input w-full mt-2 custom-input"
                       onChange={InputHandler}
                       value={formData.partnerHeight}
-                      pattern="^[1-9][0-9]{0,2}$"
                       disabled={isStatus}
-                      title="Please enter only numbers upto three digit without leading zero and no space is allowed"
-                      
+                      pattern="^(0|[1-9]\d{0,2})'(\d|1[0-1])$"
+                      title="Please enter height in the format X'Y or X', where X is the feet and Y is the inches (0-11)."
+
                     />
                   </div>
                   {/*----------- weigth/bodytype -----------*/}
@@ -1939,7 +1994,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       name="partnerWeight"
                       value={formData.partnerWeight}
                       onChange={InputHandler}
-                      
+
                       disabled={isStatus}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}
                     >
@@ -1963,7 +2018,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       id="partnerIsKid"
                       name="partnerIsKid"
                       onChange={InputHandler}
-                      
+
                       disabled={isStatus}
                       value={formData.partnerIsKid}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}                    >
@@ -1991,7 +2046,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       id="partnerWantKid"
                       name="partnerWantKid"
                       onChange={InputHandler}
-                      
+
                       disabled={isStatus}
                       value={formData.partnerWantKid}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}                    >
@@ -2017,7 +2072,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       id="partnerImmigrationStatus"
                       name="partnerImmigrationStatus"
                       onChange={InputHandler}
-                      
+
                       disabled={isStatus}
                       value={formData.partnerImmigrationStatus}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}                    >
@@ -2088,7 +2143,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       title="Enter only letters and optional commas, but no white space at the beginning"
                       maxLength={100}
                       value={formData.partnerLanguageSpeak}
-                      
+
                     />
                   </div>
                   <div className="inputDiv">
@@ -2116,7 +2171,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                           id="partnerHijabStatus"
                           name="partnerHijabStatus"
                           onChange={InputHandler}
-                          
+
                           disabled={isStatus}
                           value={formData.partnerHijabStatus}
                           className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}

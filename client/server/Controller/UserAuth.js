@@ -7,6 +7,7 @@ const Admin = require("../Model/Admin");
 const DeleteUser = require("../Model/DeleteRequest");
 const UserForm = require("../Model/UserForm");
 const deleteFileByURL = require("../Utils/deleteS3");
+const OtpUser = require("../Model/Otp");
 const HttpStatus = {
   OK: 200,
   INVALID: 201,
@@ -83,14 +84,19 @@ exports.verifyUser = async (req, res) => {
 };
 exports.addUser = async (req, res) => {
   try {
-    const { name, contact, email, password } = req.body;
+    const { name, contact, email, password ,otp} = req.body;
 
-    if (!name || !contact || !email || !password) {
+    if (!name || !contact || !email || !password ||!otp) {
       return res
         .status(HttpStatus.BAD_REQUEST)
         .json(StatusMessage.MISSING_DATA);
     }
-
+   const otpCheck = await OtpUser.findOne({email, otp})
+   if (!otpCheck) {
+    return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json("Invalid OTP");
+   }
     const existingUserByEmail = await User.findOne({ email });
     if (existingUserByEmail) {
       return res

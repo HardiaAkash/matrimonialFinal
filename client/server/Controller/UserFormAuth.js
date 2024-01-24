@@ -98,7 +98,7 @@ exports.addForm = async (req, res) => {
             nativelanguage, weight, degree, hijabStatus, wantRelocate, isKid, wantKid, isSmoke, immigrationStatus, socialMedia, partnerAge, partnerGender, partnerMaritalStatus,
             partnerReligion, partnerBackground, partnerIncome, partnerCity, partnerCountry, partnerState, partnerRelocate, partnerEducation, partnerHeight, partnerWeight,
             partnerIsKid, partnerWantKid, partnerImmigrationStatus, partnerNativeLanguage, partnerLanguageSpeak,
-            partnerDetail, partnerHijabStatus
+            partnerDetail, partnerHijabStatus,NoOfKids
         } = req.body;
 
         // Check for missing data
@@ -116,7 +116,7 @@ exports.addForm = async (req, res) => {
             nativelanguage, weight, degree, hijabStatus, wantRelocate, isKid, wantKid, isSmoke, immigrationStatus, socialMedia, partnerAge, partnerGender, partnerMaritalStatus,
             partnerReligion, partnerBackground, partnerIncome, partnerCity, partnerCountry, partnerState, partnerRelocate, partnerEducation, partnerHeight, partnerWeight,
             partnerIsKid, partnerWantKid, partnerImmigrationStatus, partnerNativeLanguage, partnerLanguageSpeak,
-            partnerDetail, partnerHijabStatus
+            partnerDetail, partnerHijabStatus,NoOfKids
         });
 
         // Save to database
@@ -154,7 +154,7 @@ exports.editFormById = async (req, res) => {
         "partnerReligion", "partnerBackground", "partnerIncome", "partnerCity", "partnerCountry",
         "partnerState", "partnerRelocate", "partnerEducation", "partnerHeight", "partnerWeight",
         "partnerIsKid", "partnerWantKid", "partnerImmigrationStatus", "partnerNativeLanguage",
-        "partnerLanguageSpeak", "partnerDetail", "partnerHijabStatus","video"];
+        "partnerLanguageSpeak", "partnerDetail", "partnerHijabStatus","video","NoOfKids"];
 
 
 
@@ -276,7 +276,7 @@ exports.changeStatusForm = async (req, res) => {
 
 
         } else {
-            changeStepUser(updatedForm.userID, 2)
+            changeStepUser(updatedForm.userID, 3)
             if (userData) {
                 mailSend(userData.email, formStatus)
 

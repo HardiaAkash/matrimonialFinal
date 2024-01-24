@@ -108,7 +108,7 @@ const ChangePassword = () => {
                         placeholder="Old password"
                         className="login-input placeholder:text-[gray] w-full custom-input "
                         onChange={InputHandler}
-                        minLength={8}
+                        // minLength={8}
                         required
                       />
                       <div
@@ -125,7 +125,9 @@ const ChangePassword = () => {
                         placeholder="New password"
                         className="login-input placeholder:text-[gray] w-full mt-2 custom-input"
                         onChange={InputHandler}
-                        minLength={8}
+                        pattern="^(?!\s)(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
+                        title="Password should not start with a white space, be alpha-numeric with a symbol, and at least 12 characters."
+                        minLength={12}
                         required
                       />
                       <div
@@ -142,7 +144,9 @@ const ChangePassword = () => {
                         placeholder="Confirm new password "
                         className="login-input placeholder:text-[gray] w-full mt-2 custom-input" 
                         onChange={(e) => setCnfmPassword(e.target.value)}
-                        minLength={8}
+                        pattern="^(?!\s)(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
+                        title="Password should not start with a white space, be alpha-numeric with a symbol, and at least 12 characters."
+                        minLength={12}
                         required
                       />
                       <div
