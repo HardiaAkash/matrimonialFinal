@@ -73,9 +73,9 @@ const userSchema = new mongoose.Schema({
     "isKid": {
         type: String,
     },
-    // "kidStatus": {
-    //     type: String,
-    // },
+    "NoOfKids": {
+        type: String,
+    },
     "wantKid": {
         type: String,
     },

@@ -10,7 +10,7 @@ export const marital_status = [
   "separated",
   "widowed",
   "divorced",
-  "married",
+ 
 ];
 export const nativeBackOptions = [
   "Caucasian",
@@ -18,7 +18,6 @@ export const nativeBackOptions = [
   "Desi",
   "Arab",
   "Middle Eastern",
-  "Hispanic",
   "Asian",
   "Persian",
   "Turkish",
@@ -83,7 +82,7 @@ const ApplicationForm = ({ refreshData }) => {
     income: "",
     hobbies: [],
     familyDetails: "",
-
+    NoOfKids:"",
     image: "",
     userID: userData,
     partnerAge: "",
@@ -347,7 +346,7 @@ const ApplicationForm = ({ refreshData }) => {
     console.log(formData);
 
     if (/^\s/.test(formData.familyDetails)) {
-      toast.error("Family details should not start with whitespace.");
+      toast.error("Your details should not start with whitespace.");
       return
     }
     if (/^\s/.test(formData.address)) {
@@ -368,7 +367,7 @@ const ApplicationForm = ({ refreshData }) => {
         toast.success("Details submit successfully.");
         setLoading(false);
         setSubmited(true);
-        getUserUpdate(1);
+        getUserUpdate(2);
         refreshData();
       } else {
         toast.error(response?.data);
@@ -593,7 +592,7 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- number -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="contactNumber" className="login-input-label ">Email:</label>
+                    <label htmlFor="contactNumber" className="login-input-label ">Contact No.:</label>
 
                     <input
                       type="text"
@@ -772,12 +771,12 @@ const ApplicationForm = ({ refreshData }) => {
                     <input
                       type="text"
                       name="height"
-                      placeholder="Height (cm)"
+                      placeholder="Height (Inches)"
                       className="login-input w-full mt-2 custom-input"
                       onChange={InputHandler}
                       value={formData.height}
-                      pattern="^[1-9][0-9]{0,2}$"
-                      title="Please enter only numbers upto three digit without leading zero and no space is allowed"
+                      pattern="^(0|[1-9]\d{0,2})'(\d|1[0-1])$"
+                      title="Please enter height in the format X'Y or X', where X is the feet and Y is the inches (0-11)."
                       required
                     />
                   </div>
@@ -980,22 +979,22 @@ const ApplicationForm = ({ refreshData }) => {
 
                   {/*----------- familyDetails -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="familyDetails" className="login-input-label ">Family Details :</label>
+                    <label htmlFor="familyDetails" className="login-input-label ">Tell us something about yourself :</label>
                     <textarea
                       type="text"
                       name="familyDetails"
-                      placeholder="Family Details"
+                      placeholder="About yourself"
                       className="login-input w-full mt-2 custom-input h-[80px]"
                       onChange={InputHandler}
                       pattern="^\S.*$"
-                      title="Please enter family details without leading white space"
-                      maxLength={250}
+                      title="Please enter about yourself without leading white space"
+                      maxLength={1000}
                       required
                     ></textarea>
                   </div>
                   {/*----------- Relocate -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="wantRelocate" className="login-input-label ">Do you willing to relocate? :</label>
+                    <label htmlFor="wantRelocate" className="login-input-label ">Are you willing to relocate? :</label>
                     <select
                       id="wantRelocate"
                       name="wantRelocate"
@@ -1046,6 +1045,25 @@ const ApplicationForm = ({ refreshData }) => {
                       </option>
                     </select>
                   </div>
+                  {/* no of kids */}
+                  <div className="inputDiv">
+                    <label htmlFor="NoOfKids" className="login-input-label ">How many kids you have? :</label>
+                    <input
+                      type="number"
+                      name="NoOfKids"
+                      placeholder="No Of Kids"
+                      className="login-input w-full mt-2 custom-input capitalize"
+                      onChange={InputHandler}
+                      // pattern="^[^\s][A-Za-z0-9\s]*$"
+                      title="Please enter valid number kids between 0 to 20"
+                      // maxLength={64}
+                      value={formData.NoOfKids}
+                      min="0"
+                      max="20"
+
+                    />
+                  </div>
+
                   {/*----------- Want Kids -----------*/}
                   <div className="inputDiv">
                     <label htmlFor="wantKid" className="login-input-label ">Do you want kids? :</label>
@@ -1294,6 +1312,7 @@ const ApplicationForm = ({ refreshData }) => {
                           {sts}
                         </option>
                       ))}
+                      <option value="Any">Any</option>
                     </select>
                   </div>
                   {
@@ -1338,6 +1357,7 @@ const ApplicationForm = ({ refreshData }) => {
                           )
                         })
                       }
+                      <option value="Any">Any</option>
                     </select>
                   </div>
                   {
@@ -1384,7 +1404,7 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
 
                   {/*----------- city -----------*/}
-                  <div className="inputDiv">
+                  {/* <div className="inputDiv">
                     <label htmlFor="partnerCity" className="login-input-label ">City:</label>
 
                     <input
@@ -1394,16 +1414,16 @@ const ApplicationForm = ({ refreshData }) => {
                       placeholder="City"
                       className="login-input w-full mt-2 custom-input"
                       pattern="^[A-Za-z][A-Za-z\s]*$"
-                     
+
                       maxLength={`100`}
                       title="Please enter an address without leading white space and only using alphabets"
                       onChange={InputHandler}
                       value={formData.partnerCity}
 
                     />
-                  </div>
+                  </div> */}
                   {/*----------- state -----------*/}
-                  <div className="inputDiv">
+                  {/* <div className="inputDiv">
                     <label htmlFor="partnerState" className="login-input-label ">State:</label>
 
                     <input
@@ -1417,10 +1437,10 @@ const ApplicationForm = ({ refreshData }) => {
                       title="Please enter a state without leading white space and only using alphabets"
 
                     />
-                  </div>
+                  </div> */}
 
                   {/*----------- country -----------*/}
-                  <div className="inputDiv">
+                  {/* <div className="inputDiv">
                     <label htmlFor="partnerCountry" className="login-input-label ">Country:</label>
 
                     <input
@@ -1434,7 +1454,7 @@ const ApplicationForm = ({ refreshData }) => {
                       title="Please enter a country without leading white space and only using alphabets"
 
                     />
-                  </div>
+                  </div> */}
                   {/*----------- Relocate -----------*/}
                   <div className="inputDiv">
                     <label htmlFor="partnerRelocate" className="login-input-label ">Willing to relocate :</label>
@@ -1488,13 +1508,12 @@ const ApplicationForm = ({ refreshData }) => {
                     <input
                       type="text"
                       name="partnerHeight"
-                      placeholder="Height (cm)"
+                      placeholder="Height (Inches)"
                       className="login-input w-full mt-2 custom-input"
                       onChange={InputHandler}
                       value={formData.partnerHeight}
-                      pattern="^[1-9][0-9]{0,2}$"
-                      title="Please enter only numbers upto three digit without leading zero and no space is allowed"
-
+                      pattern="^(0|[1-9]\d{0,2})'(\d|1[0-1])$"
+                      title="Please enter height in the format X'Y or X', where X is the feet and Y is the inches (0-11)."
                     />
                   </div>
                   {/*----------- weigth/bodytype -----------*/}

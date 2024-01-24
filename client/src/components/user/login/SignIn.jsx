@@ -130,7 +130,7 @@ const SignIn = ({ refreshData }) => {
                       placeholder="Password"
                       className=" w-full custom-input"
                       onChange={InputHandler}
-                      minLength={8}
+                      // minLength={8}
                       required
                     />
                     <div

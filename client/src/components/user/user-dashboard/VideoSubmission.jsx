@@ -10,9 +10,9 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
   let [isOpen, setIsOpen] = useState(false);
   let [isVideo, setVideo] = useState(false);
   const [isLoader, setLoader] = useState(false);
-  const {userToken,userData} = useAuth()
-  const userId =  userData;
-  const token =  userToken;
+  const { userToken, userData } = useAuth()
+  const userId = userData;
+  const token = userToken;
   // const isVideoUplod = JSON.parse(localStorage.getItem("isVideoUploded" || ""));
   const [isVideoUplod, setIsVideoUplod] = useState(false);
 
@@ -61,8 +61,26 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
     }
   }, []);
 
-  console.log(previewData);
+  // console.log(previewData);
 
+  const boxStyles = {
+    border: '1px solid #ccc',
+    padding: '15px',
+    borderRadius: '8px',
+    backgroundColor: '#f5f5f5',
+    textAlign:"left"
+
+  };
+
+  const ulStyles = {
+    listStyleType: 'disc',
+    marginLeft: '20px',
+    marginTop: '8px'
+  };
+
+  const listItemStyles = {
+    marginBottom: '8px',
+  };
   return (
     <>
       <section className="bg-white">
@@ -76,7 +94,7 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
             <div className="absolute right-[35px] top-[15px] cursor-pointer ">
             </div>
             {Array.isArray(previewData?.video) &&
-            previewData?.video?.length > 0 ? (
+              previewData?.video?.length > 0 ? (
               <div className="flex md:flex-row flex-col gap-5  justify-center max-w-[80%] ">
                 {previewData?.video?.map((items, inx) => (
                   <div className="lg:max-w-[50%] md:max-w-[70%] max-w-[80%] mx-auto" key={inx}>
@@ -88,14 +106,27 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
                 ))}
               </div>
             ) : (
-              <div className="lg:w-[30%] mx-auto flex flex-col items-center justify-center">
-                <img
-                  src="/user/bg_check.svg"
-                  alt="welcome dashboard"
-                  className="w-full"
-                />
-                <div className="mx-auto mt-6 text-center">
-                  <h5 className="pt-2 text-[20px] font-semibold mb-3 text-center">
+              <div className="lg:w-[50%] mx-auto flex flex-col items-center justify-center">
+                  {/* <img
+                    src="/user/bg_check.svg"
+                    alt="welcome dashboard"
+                    className="w-[450px]"
+                  /> */}
+                <div className="mx-auto mt-3 text-center">
+                  
+                  <div style={boxStyles}>
+                    <h5>Please record your video while considering the following points:</h5>
+                    <ul style={ulStyles}>
+                      <li style={listItemStyles}>Start by introducing yourself.</li>
+                      <li style={listItemStyles}>Tell us something interesting about yourself.</li>
+                      <li style={listItemStyles}>Tell us a little bit about your work.</li>
+                      <li style={listItemStyles}>Tell us a little bit about your family.</li>
+                      <li style={listItemStyles}>What are your hobbies and interests?</li>
+                      <li style={listItemStyles}>How do you spend your free time?</li>
+                      <li style={listItemStyles}>What are you looking for in a partner?</li>
+                    </ul>
+                  </div>
+                  <h5 className="pt-2 mt-8 text-[20px] font-semibold mb-3 text-center">
                     Please upload your recorded video
                   </h5>
                   <button
@@ -116,7 +147,7 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
 
       {/*---------- Add popup---------- */}
       <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-[11]" onClose={() => {}}>
+        <Dialog as="div" className="relative z-[11]" onClose={() => { }}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"

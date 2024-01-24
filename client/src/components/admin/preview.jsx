@@ -85,7 +85,7 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
               <div className="w-[50%] sm:w-[60%]">{item?.maritalStatus}</div>
             </div>
             <div className="flex justify-start">
-              <label className="w-[45%] sm:w-[30%] mr-2">Height(in cm)</label>
+              <label className="w-[45%] sm:w-[30%] mr-2">Height(in Inches)</label>
               <div className="w-[50%] sm:w-[60%]">{item?.height}</div>
             </div>
             <div className="flex justify-start">
@@ -120,16 +120,20 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
             </div>
             
             <div className="flex justify-start">
-              <label className="w-[45%] sm:w-[30%] mr-2">Family Details</label>
+              <label className="w-[45%] sm:w-[30%] mr-2">About Yourself</label>
               <div className="w-[50%] sm:w-[60%]">{item?.familyDetails}</div>
             </div>
             <div className="flex justify-start">
-              <label className="w-[45%] sm:w-[30%] mr-2">Willing to relocate</label>
+              <label className="w-[45%] sm:w-[30%] mr-2">Are you willing to relocate?</label>
               <div className="w-[50%] sm:w-[60%]">{item?.wantRelocate === "true" ? "Yes":"No"}</div>
             </div>
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Do you have kids?</label>
               <div className="w-[50%] sm:w-[60%]">{item?.isKid}</div>
+            </div>
+            <div className="flex justify-start">
+              <label className="w-[45%] sm:w-[30%] mr-2">How many kids you have?</label>
+              <div className="w-[50%] sm:w-[60%]">{item?.NoOfKids}</div>
             </div>
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Do you want kids?</label>
@@ -204,7 +208,7 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
               <label className="w-[45%] sm:w-[30%] mr-2">Income</label>
               <div className="w-[50%] sm:w-[60%]">{item?.partnerIncome}</div>
             </div>
-            <div className="flex justify-start">
+            {/* <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">City</label>
               <div className="w-[50%] sm:w-[60%]">{item?.partnerCity}</div>
             </div>
@@ -215,7 +219,7 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Country</label>
               <div className="w-[50%] sm:w-[60%]">{item?.partnerCountry}</div>
-            </div>
+            </div> */}
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Willing to relocate</label>
               <div className="w-[50%] sm:w-[60%]">{item?.partnerRelocate === "true" ? "Yes":"No"}</div>
@@ -229,7 +233,7 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
               <div className="w-[50%] sm:w-[60%]">{item?.partnerEducation}</div>
             </div>
             <div className="flex justify-start">
-              <label className="w-[45%] sm:w-[30%] mr-2">Height(in cm)</label>
+              <label className="w-[45%] sm:w-[30%] mr-2">Height(in Inches)</label>
               <div className="w-[50%] sm:w-[60%]">{item?.partnerHeight}</div>
             </div>
             <div className="flex justify-start">
