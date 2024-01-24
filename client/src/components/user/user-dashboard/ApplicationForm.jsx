@@ -989,7 +989,7 @@ const ApplicationForm = ({ refreshData }) => {
                       pattern="^\S.*$"
                       title="Please enter about yourself without leading white space"
                       maxLength={1000}
-                      required
+                      // required
                     ></textarea>
                   </div>
                   {/*----------- Relocate -----------*/}
