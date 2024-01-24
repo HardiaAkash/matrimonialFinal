@@ -21,11 +21,12 @@ const SignUp = () => {
     contact: "",
     email: "",
     password: "",
+    otp:"",
   });
   const BASE_URL  = ""
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  
+  const [isOtp, setIsOtp] = useState(false)
   const InputHandler = (e) => {
     setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value });
   };
@@ -64,6 +65,40 @@ const SignUp = () => {
       setLoading(false);
     }
   };
+  const generateOTP = async(e) =>{
+    e.preventDefault();
+    setLoading(true)
+    if (loginDetails.email) {
+      try {
+        const response = await axios.post(`/api/auth/generateOTP`, loginDetails, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (response.status === 200) {
+          toast.success("OTP send successfully, please check email.");
+          setLoading(false);
+          setIsOtp(true)
+          // router.push("/user/sign-in");
+          // sessionStorage.setItem("authToken",JSON.stringify(response?.data?.token));
+          // navigate("/admin-dashboard");
+        } else {
+          toast.error("Invalid details");
+          // sessionStorage.removeItem("authToken");
+          setLoading(false);
+        }
+        
+      } catch (error) {
+        console.error("Error during otp:", error);
+      toast.error(error?.response?.data);
+      // sessionStorage.removeItem("authToken");
+      setLoading(false)
+      }
+    }
+    else{
+      toast.warn("Please enter email.")
+    }
+  }
 
   return (
     <>
@@ -98,6 +133,7 @@ const SignUp = () => {
                     <input
                       type="email"
                       name="email"
+                      disabled={isOtp}
                       placeholder="Email address"
                       className=" w-full mt-2 custom-input"
                       onChange={InputHandler}
@@ -125,7 +161,9 @@ const SignUp = () => {
                       placeholder="Password"
                       className=" w-full custom-input"
                       onChange={InputHandler}
-                      minLength={8}
+                      pattern="^(?!\s)(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
+                      title="Password should not start with a white space, be alpha-numeric with a symbol, and at least 12 characters."
+                      minLength={12}
                       required
                     />
                       <div
@@ -135,15 +173,44 @@ const SignUp = () => {
                         {showPassword ? <Openeye /> : <Closeeye />}
                       </div>
                   </div>
+                  {
+                    isOtp ? 
+                    <div className="md:py-2">
+                    <input
+                      type="text"
+                      name="otp"
+                      placeholder="OTP"
+                      className=" w-full mt-2 custom-input"
+                      onChange={InputHandler}
+                      required
+                    />
+                  </div>
+                    
+                    :""
+                  }
 
                   <div className="mt-6">
-                    <button
+                    {
+                      isOtp ? 
+                      
+                      <button
                       type="submit"
                       disabled={isLoading}
                       className="w-full bg-[#1f2432] font-semibold text-white p-2 rounded-lg  hover:bg-white hover:border text-[white]  hover:border-[gray] h-[50px] login-btn"
                     >
                       {isLoading ? "Loading.." : "Sign up"}
+                    </button>:
+                      <button
+                      type="button"
+                      disabled={isLoading}
+                      onClick={generateOTP}
+                      className="w-full bg-[#1f2432] font-semibold text-white p-2 rounded-lg  hover:bg-white hover:border text-[white]  hover:border-[gray] h-[50px] login-btn"
+                    >
+                      {isLoading ? "Loading.." : "Get OTP"}
                     </button>
+                     
+                    }
+                    
                     <div className="text-[16px] font-medium  text-center py-3">
                       <span className="text-[#00000080] mr-2 "> Already a user? </span>
                       <Link href="/user/sign-in">

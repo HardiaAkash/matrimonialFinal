@@ -37,7 +37,7 @@ const BackgroundCheck = ({refreshData}) => {
           setLoader(false);
           refreshData()
           setTimeout(()=>{
-            window.open('https://www.google.com/', '_blank');
+            window.open('http://www.candidatelink.com/icoi', '_blank');
           },500)
         } else {
           setLoader(false);
