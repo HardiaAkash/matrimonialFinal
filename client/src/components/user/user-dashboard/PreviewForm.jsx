@@ -1398,7 +1398,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       maxLength={1000}
                       value={formData.familyDetails}
                       disabled={isStatus}
-                      required
+                      // required
                     ></textarea>
                   </div>
                   {/*----------- Relocate -----------*/}
