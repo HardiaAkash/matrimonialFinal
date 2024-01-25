@@ -8,11 +8,19 @@ import { useAuth } from "@/components/Utils/AuthContext";
 
 const VideoSubmission = ({ formId, refreshData, previewData }) => {
   let [isOpen, setIsOpen] = useState(false);
+  const [isVideoOpen, setIsVideoOpen] = useState(false)
   let [isVideo, setVideo] = useState(false);
   const [isLoader, setLoader] = useState(false);
   const { userToken, userData } = useAuth()
   const userId = userData;
   const token = userToken;
+  const [videoSrc, setVideoSrc] = useState("")
+  const [sourceTitle, setSourceTitle] = useState("")
+  // const [titleArray, setTitleArray] = useState()
+  const titleArray = [
+    "Start by introducing yourself.", "Tell us something interesting about yourself.", "Tell us a little bit about your work.", "Tell us a little bit about your family.", "What are your hobbies and interests?", "How do you spend your free time?", "What are you looking for in a partner?"
+  ]
+  const [title, setTitle] = useState("")
   // const isVideoUplod = JSON.parse(localStorage.getItem("isVideoUploded" || ""));
   const [isVideoUplod, setIsVideoUplod] = useState(false);
 
@@ -55,20 +63,25 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
   };
 
   useEffect(() => {
-    if (previewData?.video?.length > 0) {
+    console.log(previewData?.video?.length);
+    if (previewData?.video?.length >= 7) {
       getUserUpdate(4);
-      setIsVideoUplod(true)
+      // setIsVideoUplod(true)
+      
+    }else{
+
+      getUserUpdate(3);
     }
   }, []);
 
   // console.log(previewData);
-
+  console.log(previewData.video.length);
   const boxStyles = {
     border: '1px solid #ccc',
     padding: '15px',
     borderRadius: '8px',
     backgroundColor: '#f5f5f5',
-    textAlign:"left"
+    textAlign: "left"
 
   };
 
@@ -94,7 +107,7 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
             <div className="absolute right-[35px] top-[15px] cursor-pointer ">
             </div>
             {Array.isArray(previewData?.video) &&
-              previewData?.video?.length > 0 ? (
+              previewData?.video?.length > 9 ? (
               <div className="flex md:flex-row flex-col gap-5  justify-center max-w-[80%] ">
                 {previewData?.video?.map((items, inx) => (
                   <div className="lg:max-w-[50%] md:max-w-[70%] max-w-[80%] mx-auto" key={inx}>
@@ -106,38 +119,69 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
                 ))}
               </div>
             ) : (
-              <div className="lg:w-[50%] mx-auto flex flex-col items-center justify-center">
-                  {/* <img
+              <div className="lg:w-[100%] mx-auto flex flex-col items-center justify-center">
+                {/* <img
                     src="/user/bg_check.svg"
                     alt="welcome dashboard"
                     className="w-[450px]"
                   /> */}
-                <div className="mx-auto mt-3 text-center">
-                  
-                  <div style={boxStyles}>
-                    <h5>Please record your video while considering the following points:</h5>
-                    <ul style={ulStyles}>
-                      <li style={listItemStyles}>Start by introducing yourself.</li>
-                      <li style={listItemStyles}>Tell us something interesting about yourself.</li>
-                      <li style={listItemStyles}>Tell us a little bit about your work.</li>
-                      <li style={listItemStyles}>Tell us a little bit about your family.</li>
-                      <li style={listItemStyles}>What are your hobbies and interests?</li>
-                      <li style={listItemStyles}>How do you spend your free time?</li>
-                      <li style={listItemStyles}>What are you looking for in a partner?</li>
-                    </ul>
-                  </div>
-                  <h5 className="pt-2 mt-8 text-[20px] font-semibold mb-3 text-center">
+                <h5>Please record your separate video by answering :</h5>
+                <div className="mx-auto mt-3 ">
+
+                  <table className="text-left">
+                    <thead>
+                      <tr>
+                        <th>Question</th>
+                        <th>Video Answer(should be less than 20mb in size)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {
+                        titleArray.map((item, index) => {
+                          const videoItem = previewData.video.find((video) => video.title === item);
+
+                          return (
+                            <tr key={index}>
+                              <td>{item}</td>
+                              <td className="text-center">
+                                {videoItem ? (
+                                  <button
+                                    className="text-white w-[100px] mx-auto py-2 my-2 rounded-[4px] bg-[gray]"
+                                    onClick={() => {
+                                      setIsVideoOpen(true);
+                                      setSourceTitle(videoItem.title);
+                                      setVideoSrc(videoItem.url);
+                                    }}
+                                  >
+                                    View
+                                  </button>
+                                ) : (
+                                  <button
+                                    className={`text-white w-[100px] mx-auto py-2 my-2 rounded-[4px]
+                ${isVideoUplod ? "bg-[gray]" : "login-btn  cursor-pointer"}`}
+                                    disabled={isVideoUplod}
+                                    onClick={() => {
+                                      setIsOpen(true);
+                                      setTitle(item);
+                                    }}
+                                  >
+                                    {isVideoUplod ? "Uploaded" : "Upload"}
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })
+                      }
+
+                    </tbody>
+                  </table>
+                  {/* <div style={boxStyles}>
+                  </div> */}
+                  {/* <h5 className="pt-2 mt-8 text-[20px] font-semibold mb-3 text-center">
                     Please upload your recorded video
-                  </h5>
-                  <button
-                    className={` text-white  w-[300px] mx-auto py-2 rounded-[4px]
-                ${isVideoUplod ? "bg-[gray]" : "login-btn  cursor-pointer"}
-                `}
-                    disabled={isVideoUplod}
-                    onClick={() => setIsOpen(true)}
-                  >
-                    {isVideoUplod ? "Uploaded" : "Upload"}
-                  </button>
+                  </h5> */}
+
                 </div>
               </div>
             )}
@@ -176,14 +220,66 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
                     as="h3"
                     className="xl:text-[20px] text-[18px] font-medium leading-6 text-gray-900 text-center md:text-left px-2"
                   >
-                    Add recorded video
+                    {title}
                   </Dialog.Title>
                   <AddVideo
                     closeModal={closeModal}
                     isVideoUpload={setVideo}
                     updateId={formId}
                     getUserUpdate={getUserUpdate}
+                    previewData={previewData}
+                    title={title}
+                    refreshData={refreshData}
                   />
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+
+
+
+      <Transition appear show={isVideoOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-[11]" onClose={() => { setIsVideoOpen(!isVideoOpen) }}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/80" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-[600px] transform overflow-hidden rounded-2xl bg-white py-10 px-2 md:px-12 text-left align-middle shadow-xl transition-all relative">
+                  <button className="absolute right-4 top-1 focus-visible:outline-none" onClick={() => setIsVideoOpen(false)}>Close</button>
+                  <Dialog.Title
+                    as="h3"
+                    className="xl:text-[20px] text-[18px] font-medium leading-6 text-gray-900 text-center md:text-left px-2"
+                  >
+                    {sourceTitle}
+                  </Dialog.Title>
+                  <div className="mx-auto w-full text-center">
+
+                    <video controls className="">
+                      <source src={videoSrc} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
                 </Dialog.Panel>
               </Transition.Child>
             </div>

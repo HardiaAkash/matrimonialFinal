@@ -1,8 +1,9 @@
-import React from "react";
+"use client";
+import React, { Fragment, useState, useEffect } from "react";
 import Image from "next/image";
 import CloseIcon from "../svg/CloseIcon";
-import { useState } from "react";
-
+// import { useState } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 const Preview = ({ selectedItem, closeModal, refreshData }) => {
   const [showLargeImage, setShowLargeImage] = useState(false);
   const [largeImageSrc, setLargeImageSrc] = useState("");
@@ -10,6 +11,9 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
     closeModal();
     refreshData();
   };
+  const [isVideoOpen, setIsVideoOpen] = useState(false)
+  const [videoSrc, setVideoSrc] = useState("")
+  const [sourceTitle, setSourceTitle] = useState("")
   const handleImageClick = (imageSrc) => {
     setLargeImageSrc(imageSrc);
     setShowLargeImage(true);
@@ -25,7 +29,7 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
           <CloseIcon />
         </div> */}
         {selectedItem.map((item, index) => (
-          
+
           <div
             key={index}
             className="space-y-1 sm:space-y-3 text-[12px] sm:text-[16px]"
@@ -110,7 +114,7 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
             </div>
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Hijab(If Female)</label>
-              <div className="w-[50%] sm:w-[60%]">{item?.hijabStatus === "true" ? "Yes":"No"}</div>
+              <div className="w-[50%] sm:w-[60%]">{item?.hijabStatus === "true" ? "Yes" : "No"}</div>
             </div>
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Hobbies</label>
@@ -118,14 +122,14 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
                 {item.hobbies ? item.hobbies.join(", ") : "-"}
               </div>
             </div>
-            
+
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">About Yourself</label>
               <div className="w-[50%] sm:w-[60%]">{item?.familyDetails}</div>
             </div>
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Are you willing to relocate?</label>
-              <div className="w-[50%] sm:w-[60%]">{item?.wantRelocate === "true" ? "Yes":"No"}</div>
+              <div className="w-[50%] sm:w-[60%]">{item?.wantRelocate === "true" ? "Yes" : "No"}</div>
             </div>
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Do you have kids?</label>
@@ -137,11 +141,11 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
             </div>
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Do you want kids?</label>
-              <div className="w-[50%] sm:w-[60%]">{item?.wantKid === "true" ? "Yes":"No"}</div>
+              <div className="w-[50%] sm:w-[60%]">{item?.wantKid === "true" ? "Yes" : "No"}</div>
             </div>
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Do you smoke?</label>
-              <div className="w-[50%] sm:w-[60%]">{item?.isSmoke === "true" ? "Yes":"No"}</div>
+              <div className="w-[50%] sm:w-[60%]">{item?.isSmoke === "true" ? "Yes" : "No"}</div>
             </div>
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Immigration Legal Status </label>
@@ -155,8 +159,8 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
             <div className="flex  justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Image</label>
               <div
-              className="w-[50%] sm:w-[60%] cursor-pointer"
-                
+                className="w-[50%] sm:w-[60%] cursor-pointer"
+
                 onClick={() => handleImageClick(item?.image)}
               >
                 <Image
@@ -173,10 +177,23 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
               {item.video && item.video.length > 0 ? (
                 <div className="grid grid-cols-2 gap-4">
                   {item.video.map((videoUrl, index) => (
-                    <video key={index} width={200} height={200} controls>
+                    <>
+                      <p>{videoUrl.title}</p>
+                      <button
+                        className="text-white w-[100px] mx-auto py-2 my-2 rounded-[4px] bg-[gray]"
+                        onClick={() => {
+                          setIsVideoOpen(true);
+                          setSourceTitle(videoUrl.title);
+                          setVideoSrc(videoUrl.url);
+                        }}
+                      >
+                        View
+                      </button>
+                      {/* <video key={index} width={200} height={200} controls>
                       <source src={videoUrl} type="video/mp4" />
                       Your browser does not support the video tag.
-                    </video>
+                    </video> */}
+                    </>
                   ))}
                 </div>
               ) : (
@@ -222,7 +239,7 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
             </div> */}
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Willing to relocate</label>
-              <div className="w-[50%] sm:w-[60%]">{item?.partnerRelocate === "true" ? "Yes":"No"}</div>
+              <div className="w-[50%] sm:w-[60%]">{item?.partnerRelocate === "true" ? "Yes" : "No"}</div>
             </div>
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Education</label>
@@ -266,24 +283,24 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
             </div>
             <div className="flex justify-start">
               <label className="w-[45%] sm:w-[30%] mr-2">Hijab</label>
-              <div className="w-[50%] sm:w-[60%]">{item?.partnerHijabStatus === "true" ? "Yes":"No"}</div>
+              <div className="w-[50%] sm:w-[60%]">{item?.partnerHijabStatus === "true" ? "Yes" : "No"}</div>
             </div>
           </div>
         ))}
       </div>
 
-      
+
       {showLargeImage && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-75">
           <div className="max-w-3xl w-full">
             <div
               className="cursor-pointer"
-              
+
               onClick={() => setShowLargeImage(false)}
             >
-             <div className="flex justify-end cursor-pointer bg-[white] w-fit" onClick={handleLargeImageClose}>
-          <CloseIcon />
-        </div>
+              <div className="flex justify-end cursor-pointer bg-[white] w-fit" onClick={handleLargeImageClose}>
+                <CloseIcon />
+              </div>
               <Image
                 src={largeImageSrc}
                 alt="Large image"
@@ -291,10 +308,57 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
                 height={500}
               />
             </div>
-           
+
           </div>
         </div>
       )}
+      <Transition appear show={isVideoOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-[11]" onClose={() => { setIsVideoOpen(!isVideoOpen) }}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/80" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-[600px] transform overflow-hidden rounded-2xl bg-white py-10 px-2 md:px-12 text-left align-middle shadow-xl transition-all relative">
+                  <button className="absolute right-4 top-1 focus-visible:outline-none" onClick={() => setIsVideoOpen(false)}>Close</button>
+                  <Dialog.Title
+                    as="h3"
+                    className="xl:text-[20px] text-[18px] font-medium leading-6 text-gray-900 text-center md:text-left px-2"
+                  >
+                    {sourceTitle}
+                  </Dialog.Title>
+                  <div className="mx-auto w-full text-center">
+
+                    <video controls className="">
+                      <source src={videoSrc} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+
     </>
   );
 };

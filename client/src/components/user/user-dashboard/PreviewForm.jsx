@@ -807,7 +807,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                 {/*-----------first name -----------*/}
                 <div className="py-[20px] lg:max-w-[80%]  mx-auto flex flex-col md:grid md:grid-cols-2 gap-3 gap-x-10 items-start justify-center lg:px-0 px-[20px]">
                   <div className="inputDiv">
-                    <label htmlFor="firstname" className="login-input-label ">First Name:</label>
+                    <label htmlFor="firstname" className="login-input-label ">First Name*:</label>
 
                     <input
                       id="firstname"
@@ -844,7 +844,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   </div>
                   {/*-----------last name -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="lastname" className="login-input-label ">Last Name:</label>
+                    <label htmlFor="lastname" className="login-input-label ">Last Name*:</label>
 
                     <input
                       type="text"
@@ -863,7 +863,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   </div>
                   {/*-----------Age -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="age" className="login-input-label ">Age:</label>
+                    <label htmlFor="age" className="login-input-label ">Age*:</label>
 
                     <input
                       type="number"
@@ -881,7 +881,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   </div>
                   {/*----------- dob -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="dateOfBirth" className="login-input-label ">DOB:</label>
+                    <label htmlFor="dateOfBirth" className="login-input-label ">DOB*:</label>
 
                     <input
                       id="dateOfBirth"
@@ -940,7 +940,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   </div>
                   {/*----------- email -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="email" className="login-input-label ">Email:</label>
+                    <label htmlFor="email" className="login-input-label ">Email*:</label>
 
                     <input
                       type="email"
@@ -959,7 +959,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   </div>
                   {/*----------- number -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="contactNumber" className="login-input-label ">Contact No.:</label>
+                    <label htmlFor="contactNumber" className="login-input-label ">Contact No.*:</label>
 
                     <input
                       type="text"
@@ -997,7 +997,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   </div>
                   {/*----------- city -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="city" className="login-input-label ">City:</label>
+                    <label htmlFor="city" className="login-input-label ">City*:</label>
 
                     <input
                       type="text"
@@ -1016,7 +1016,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   </div>
                   {/*----------- state -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="state" className="login-input-label ">State:</label>
+                    <label htmlFor="state" className="login-input-label ">State*:</label>
 
                     <input
                       type="text"
@@ -1034,7 +1034,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   </div>
                   {/*----------- background -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="background" className="login-input-label ">Background:</label>
+                    <label htmlFor="background" className="login-input-label ">Background*:</label>
                     <select
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`} id="background"
                       name="background"
@@ -1059,7 +1059,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   {
                     isOtherBackOption ?
                       <div className="inputDiv">
-                        <label htmlFor="background" className="login-input-label ">Other Ethnicity:</label>
+                        <label htmlFor="background" className="login-input-label ">Other Ethnicity*:</label>
 
                         <input
                           type="text"
@@ -1081,7 +1081,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
 
                   {/* /////////////////////////////language///////////     */}
                   <div className="inputDiv">
-                    <label htmlFor="nativeLanguage" className="login-input-label ">Native Language:</label>
+                    <label htmlFor="nativeLanguage" className="login-input-label ">Native Language*:</label>
                     <select
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`} id="nativelanguage"
                       name="nativelanguage"
@@ -1100,7 +1100,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   {
                     isOtherLanguage ?
                       <div className="inputDiv">
-                        <label htmlFor="nativeLanguage" className="login-input-label ">Other Native Language:</label>
+                        <label htmlFor="nativeLanguage" className="login-input-label ">Other Native Language*:</label>
 
                         <input
                           type="text"
@@ -1121,7 +1121,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   }
                   {/*----------- marital Status -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="maritalStatus" className="login-input-label ">Marital Status :</label>
+                    <label htmlFor="maritalStatus" className="login-input-label ">Marital Status*:</label>
                     <select
                       id="maritalStatus"
                       name="maritalStatus"
@@ -1143,7 +1143,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   </div>
                   {/*----------- height -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="height" className="login-input-label ">Height :</label>
+                    <label htmlFor="height" className="login-input-label ">Height*:</label>
 
                     <input
                       type="text"
@@ -1153,14 +1153,14 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       onChange={InputHandler}
                       disabled={isStatus}
                       value={formData.height}
-                      pattern="^(0|[1-9]\d{0,2})'(\d|1[0-1])$"
-                      title="Please enter height in the format X'Y or X', where X is the feet and Y is the inches (0-11)."
+                      pattern="^([1-9]|[1-9]\d|1\d{2}|200)$"
+  title="Please enter height in inches without leading 0 and up to 3 digits."
                       required
                     />
                   </div>
                   {/*----------- weigth/bodytype -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="weight" className="login-input-label ">Weight/Body Type :</label>
+                    <label htmlFor="weight" className="login-input-label ">Weight/Body Type*:</label>
                     <select
                       id="weight"
                       name="weight"
@@ -1181,7 +1181,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   </div>
                   {/*----------- religion -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="religion" className="login-input-label ">Religion :</label>
+                    <label htmlFor="religion" className="login-input-label ">Religion*:</label>
                     <select
                       id="religion"
                       name="religion"
@@ -1202,7 +1202,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   {
                     isOtherMuslim ?
                       <div className="inputDiv">
-                        <label htmlFor="religion" className="login-input-label ">Other Muslim:</label>
+                        <label htmlFor="religion" className="login-input-label ">Other Muslim*:</label>
 
                         <input
                           type="text"
@@ -1264,7 +1264,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
 
                   {/*----------- income -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="income" className="login-input-label ">Income(in dollar) :</label>
+                    <label htmlFor="income" className="login-input-label ">Income(in dollar)*:</label>
                     <select
                       id="income"
                       name="income"
@@ -1524,7 +1524,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   </div>
                   {/*----------- Immigration Legal Status -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="immigrationStatus" className="login-input-label ">Immigration Legal Status :</label>
+                    <label htmlFor="immigrationStatus" className="login-input-label ">Immigration Legal Status*:</label>
                     <select
                       id="immigrationStatus"
                       name="immigrationStatus"
@@ -1777,7 +1777,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   {
                     isPartnerOtherMuslim ?
                       <div className="inputDiv">
-                        <label htmlFor="partnerReligion" className="login-input-label ">Other Muslim:</label>
+                        <label htmlFor="partnerReligion" className="login-input-label ">Other Muslim*:</label>
 
                         <input
                           type="text"
@@ -1824,7 +1824,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   {
                     isPartnerOtherBackground ?
                       <div className="inputDiv">
-                        <label htmlFor="partnerBackground" className="login-input-label ">Other Ethnicity:</label>
+                        <label htmlFor="partnerBackground" className="login-input-label ">Other Ethnicity*:</label>
 
                         <input
                           type="text"
@@ -1981,8 +1981,8 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       onChange={InputHandler}
                       value={formData.partnerHeight}
                       disabled={isStatus}
-                      pattern="^(0|[1-9]\d{0,2})'(\d|1[0-1])$"
-                      title="Please enter height in the format X'Y or X', where X is the feet and Y is the inches (0-11)."
+                      pattern="^([1-9]|[1-9]\d|1\d{2}|200)$"
+                      title="Please enter height in inches without leading 0 and up to 3 digits."
 
                     />
                   </div>
@@ -2107,7 +2107,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                   {
                     isPartnerOtherLanguage ?
                       <div className="inputDiv">
-                        <label htmlFor="partnerNativeLanguage" className="login-input-label ">Other Native Language:</label>
+                        <label htmlFor="partnerNativeLanguage" className="login-input-label ">Other Native Language*:</label>
 
                         <input
                           type="text"
