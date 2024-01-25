@@ -46,9 +46,9 @@ const ProfileDelete = () => {
         console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
-          console.log("delete", response?.data?.deleteUserRequests);
-          setAllData(response?.data?.deleteUserRequests);
-          setTotalPages(response?.data?.totalPages);
+          console.log("delete", response?.data?.pagination);
+          setAllData(response?.data);
+          setTotalPages(response?.data?.pagination?.totalPages);
         } else {
           setLoader(false);
           return;
@@ -137,7 +137,7 @@ const ProfileDelete = () => {
   };
 
   //   -------delete api--------
-
+console.log(allData?.deleteUserRequests);
   const handleDelete = (userID) => {
     console.log(userID);
     // ;
@@ -204,7 +204,7 @@ const ProfileDelete = () => {
                 name="search"
               /> */}
             </div>
-            {allData?.length > 0 ? (
+            {allData?.deleteUserRequests?.length > 0 ? (
             <table className="w-full min-w-[640px] table-auto mt-[20px] ">
               <thead>
                 <tr>
@@ -233,7 +233,7 @@ const ProfileDelete = () => {
               </thead>
 
               <tbody>
-                {allData?.map((items, index) => {
+                {Array.isArray(allData?.deleteUserRequests)&& allData?.deleteUserRequests?.map((items, index) => {
                   console.log(items.userId);
                   return (
                     <>
