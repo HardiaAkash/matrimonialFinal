@@ -116,6 +116,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
 
       if (e.target.name === "religion" && e.target.value?.toLowerCase() === "muslim(other)") {
         setIsOtherMuslim(true);
+        
         setFormData({ ...formData, [e.target.name]: "" });
         return;
       }
@@ -1044,7 +1045,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       onChange={InputHandler}
                       required
                     >
-                      <option value="">{isStatus ? "Other" : "Select"}</option>
+                      <option value="">{isOtherBackOption ? "Other" : "Select"}</option>
                       {
                         nativeBackOptions.map((items, index) => {
                           return (
@@ -1091,7 +1092,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       onChange={InputHandler}
                       required
                     >
-                      <option value="">{isStatus ? "Other" : "Select"}</option>
+                      <option value="">{isOtherLanguage ? "Other" : "Select"}</option>
                       <option value="English">English</option>
                       <option value="other">Other</option>
                     </select>
@@ -1190,7 +1191,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       value={formData.religion}
                       required
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}                    >
-                      <option value="">{isStatus ? "Other" : "Select"}</option>
+                      <option value="">{ isOtherMuslim ? "Other" : "Select"}</option>
 
                       {religionType?.map((sts, inx) => (
                         <option value={sts} key={inx} className="py-2">
@@ -1764,7 +1765,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       disabled={isStatus}
                       value={formData.partnerReligion}
                       className={`login-input w-full  mt-2 custom-input  ${isStatus ? "disable_input" : "bg-white"}`}                    >
-                      <option value="">{isStatus ? "Other" : "Select"}</option>
+                      <option value="">{isPartnerOtherMuslim ? "Other" : "Select"}</option>
 
                       {religionType?.map((sts, inx) => (
                         <option value={sts} key={inx} className="py-2">
@@ -1807,7 +1808,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       onChange={InputHandler}
 
                     >
-                      <option value="">{isStatus ? "Other" : "Select"}</option>
+                      <option value="">{isPartnerOtherBackground ? "Other" : "Select"}</option>
 
                       {
                         nativeBackOptions.map((items, index) => {
@@ -2098,7 +2099,7 @@ const ViewApplicationDetails = ({ previewData, refreshData }) => {
                       onChange={InputHandler}
                       disabled={isStatus}
                     >
-                      <option value="">{isStatus ? "Other" : "Select"}</option>
+                      <option value="">{isPartnerOtherLanguage ? "Other" : "Select"}</option>
                       <option value="English">English</option>
                       <option value="other">Other</option>
                     </select>
