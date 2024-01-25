@@ -45,10 +45,11 @@ const Pages = () => {
     axios
       .request(options)
       .then((response) => {
-        console.log(response?.data);
+        // console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
           setAllData(response?.data);
+          setTotalPages(response?.data?.pagination?.totalPages);
         } else {
           setLoader(false);
           return;
@@ -98,7 +99,7 @@ const searchDataFunc = (search_cate) => {
       console.log(response?.data);
       if (response.status === 200) {
         setAllData(response?.data);
-        setTotalPages(response?.data?.totalPages);
+        setTotalPages(response?.data?.pagination?.totalPages);
         setLoader(false);
       } else {
         return;
