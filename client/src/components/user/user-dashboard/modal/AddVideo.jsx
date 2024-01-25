@@ -4,11 +4,13 @@ import { toast } from "react-toastify";
 import Loader from "../WebsiiteLoader/Index";
 import { useAuth } from "@/components/Utils/AuthContext";
 
-const AddVideo = ({ closeModal, isVideoUpload, updateId,getUserUpdate }) => {
+const AddVideo = ({ closeModal, isVideoUpload, updateId, getUserUpdate, title, previewData ,refreshData}) => {
   // const token = JSON.parse(localStorage.getItem("authToken"));
-  const {userToken} = useAuth()
+  // console.log(previewData.video);
+  console.log(title);
+  const { userToken } = useAuth()
   const [formData, setFormData] = useState({
-    video: [],
+    video:previewData.video,
   });
   const [video, setVideo] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -30,7 +32,7 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId,getUserUpdate }) => {
     setVideoDisable(false);
     setVideo("");
   };
-
+console.log(formData);
   const uploadVideo = async (e) => {
     setVideoUploading(true);
 
@@ -48,7 +50,10 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId,getUserUpdate }) => {
       });
       if (response.status === 200) {
         // setVideoUrl(response?.data?.url);
-        const videoUrl = response?.data?.url;
+        const videoUrl = {
+          title,
+          url: response?.data?.url
+        }
         setFormData({ ...formData, video: [...formData.video, videoUrl] });
         setVideoDisable(true);
         setVideoUploading(false);
@@ -71,7 +76,7 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId,getUserUpdate }) => {
     console.log(formData);
 
     if (formData?.video?.length < 1) {
-      toast.warn("Please upload atleast 1 video");
+      toast.warn("Please upload all video");
     } else {
       setLoading(true);
       try {
@@ -89,7 +94,9 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId,getUserUpdate }) => {
         if (response.status === 200) {
           toast.success("Video submitted successfully.");
           setLoading(false);
-          getUserUpdate(4)
+          console.log(response);
+          refreshData()
+          // getUserUpdate(4)
           // localStorage.setItem( "isVideoUploded",JSON.stringify(true));
           closeModal();
         } else {
@@ -119,7 +126,7 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId,getUserUpdate }) => {
             <div className="py-2 mt-1 flex  items-end gap-x-10">
               <div className="w-[50%]">
                 <span className="login-input-label cursor-pointer mb-1">
-                  Video
+                  
                 </span>
                 <div className="flex sm:flex-row flex-col items-center  w-full">
                   <input
@@ -134,34 +141,25 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId,getUserUpdate }) => {
                 </div>
               </div>
               <div className="">
-                {videoDisable ? (
-                  <button
-                    className="p-2 border h-[20px] flex justify-center items-center"
-                    type="button"
-                    onClick={addField}
-                  >
-                    +
-                  </button>
-                ) : (
-                  <button
-                    className={`focus-visible:outline-none  text-white text-[13px] px-4 py-1 rounded
-                                        ${
-                                          videoDisable
-                                            ? "bg-[green]"
-                                            : "bg-[#070708bd]"
-                                        }`}
-                    type="button"
-                    onClick={uploadVideo}
-                    disabled={videoDisable || videoUploading}
-                  >
-                    {videoDisable
-                      ? "Uploaded"
-                      : videoUploading
+
+                <button
+                  className={`focus-visible:outline-none  text-white text-[13px] px-4 py-1 rounded
+                                        ${videoDisable
+                      ? "bg-[green]"
+                      : "bg-[#070708bd]"
+                    }`}
+                  type="button"
+                  onClick={uploadVideo}
+                  disabled={videoDisable || videoUploading}
+                >
+                  {videoDisable
+                    ? "Uploaded"
+                    : videoUploading
                       ? "Loading.."
                       : "Upload"}{" "}
-                  </button>
-                )}
+                </button>
               </div>
+
               {/* <div className="">
                 <button
                   className={`focus-visible:outline-none  text-white text-[13px] px-4 py-1 rounded
@@ -182,6 +180,7 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId,getUserUpdate }) => {
                 </button>
               </div> */}
             </div>
+
             <div className="mt-4 flex pt-6 items-center justify-center md:justify-end  md:flex-nowrap gap-y-3 gap-x-3 ">
               <button
                 type="button"

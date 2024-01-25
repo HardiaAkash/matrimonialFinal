@@ -96,6 +96,7 @@ const SignUp = () => {
       }
     }
     else{
+      setLoading(false)
       toast.warn("Please enter email.")
     }
   }
