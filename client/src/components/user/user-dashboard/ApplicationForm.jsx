@@ -812,7 +812,7 @@ const ApplicationForm = ({ refreshData }) => {
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
                       <option className="text-gray-100 " value="">
-                        Choose Religion
+                        Select Religion
                       </option>
                       {religionType?.map((sts, inx) => (
                         <option value={sts} key={inx} className="py-2">
@@ -1305,7 +1305,7 @@ const ApplicationForm = ({ refreshData }) => {
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
                       <option className="text-gray-100 " value="">
-                        Choose Religion
+                       Select Religion
                       </option>
                       {religionType?.map((sts, inx) => (
                         <option value={sts} key={inx} className="py-2">
@@ -1347,7 +1347,7 @@ const ApplicationForm = ({ refreshData }) => {
                       onChange={InputHandler}
 
                     >
-                      <option value="">Select Ethnicity</option>
+                      <option value=""> Ethnicity</option>
                       {
                         nativeBackOptions.map((items, index) => {
                           return (
