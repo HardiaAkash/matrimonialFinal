@@ -123,6 +123,7 @@ const SignUp = () => {
                       type="text"
                       name="name"
                       placeholder="User name"
+                      title="Please enter only alphabet without number, symbol and do not start with space."
                       className=" w-full mt-2 custom-input capitalize"
                       onChange={InputHandler}
                       maxLength={100}
@@ -138,6 +139,7 @@ const SignUp = () => {
                       placeholder="Email address"
                       className=" w-full mt-2 custom-input"
                       onChange={InputHandler}
+                      title="Please enter valid email."
                       maxLength={100}
                       required
                     />
@@ -149,6 +151,7 @@ const SignUp = () => {
                       placeholder="Mobile no."
                       className=" w-full mt-2 custom-input"
                       onChange={InputHandler}
+                      title="Please enter only digit max of 12 char without alphabet, symbol and do not start with space"
                       pattern="^(?!\s)[0-9+\s]+$"
                       minLength={10}
                       maxLength={12}
@@ -163,8 +166,11 @@ const SignUp = () => {
                       className=" w-full custom-input"
                       onChange={InputHandler}
                       // pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
-                      pattern="/^[A-z\d_@.#$=!%^)(\]:\*;\?\/\,}{'\|<>\[&\+-]{12,}*$/"
-                      title="Password should not start with a white space, be alpha-numeric with a symbol, and at least 12 characters."
+                      // pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
+                      // pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?\&])[A-Za-z\d@$!%*?\&]{12,}$"
+                      pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!#%*?&])[A-Za-z\d@$#!%*?&]{12,}$"
+                      // pattern="^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{12,}$" 
+                      title="Password should not contain white space, be alpha-numeric with a symbol, and at least 12 characters."
                       minLength={12}
                       required
                     />
