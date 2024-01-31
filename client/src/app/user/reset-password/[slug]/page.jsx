@@ -78,7 +78,9 @@ const ResetPassword = ({params}) => {
                     placeholder="Password"
                     className="login-input w-full custom-input"
                     onChange={(e) => setPassword(e.target.value)}
-                    minLength={8}
+                    pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!#%*?&])[A-Za-z\d@$#!%*?&]{12,}$"
+                    title="Password should not contain white space, be alpha-numeric with a symbol, and at least 12 characters."
+                    minLength={12}
                     required
                   />
                    <div
