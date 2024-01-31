@@ -21,9 +21,9 @@ const SignUp = () => {
     contact: "",
     email: "",
     password: "",
-    otp:"",
+    otp: "",
   });
-  const BASE_URL  = ""
+  const BASE_URL = ""
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isOtp, setIsOtp] = useState(false)
@@ -37,7 +37,7 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
- 
+
     setLoading(true);
     try {
       const response = await axios.post(`/api/auth/adduser`, loginDetails, {
@@ -65,7 +65,7 @@ const SignUp = () => {
       setLoading(false);
     }
   };
-  const generateOTP = async(e) =>{
+  const generateOTP = async (e) => {
     e.preventDefault();
     setLoading(true)
     if (loginDetails.email) {
@@ -87,15 +87,15 @@ const SignUp = () => {
           // sessionStorage.removeItem("authToken");
           setLoading(false);
         }
-        
+
       } catch (error) {
         console.error("Error during otp:", error);
-      toast.error(error?.response?.data);
-      // sessionStorage.removeItem("authToken");
-      setLoading(false)
+        toast.error(error?.response?.data);
+        // sessionStorage.removeItem("authToken");
+        setLoading(false)
       }
     }
-    else{
+    else {
       setLoading(false)
       toast.warn("Please enter email.")
     }
@@ -103,12 +103,12 @@ const SignUp = () => {
 
   return (
     <>
-    <ToastContainer />
+      <ToastContainer />
       <div className="flex items-center justify-center lg:min-h-screen  ">
         <div className="md:px-[50px] w-full mx-auto">
           <div className="relative flex flex-col 2xl:gap-x-20 xl:gap-x-10 gap-x-7 min-h-screen justify-center lg:shadow-none  items-center lg:flex-row space-y-8 md:space-y-0 w-[100%] px-[10px]bg-white lg:px-[40px] py-[20px] md:py-[40px] ">
             <div className="w-[100%] lg:w-[60%] xl:w-[50%]">
-              <form  className="" onSubmit={handleSubmit}>
+              <form className="" onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-3 justify-center p-8 lg:p-14 md:max-w-[80%] lg:w-full lg:max-w-[100%] mx-auto ">
                   <div className="text-left ">
                     <p className="mb-2 2xl:text-[40px] md:text-[35px] text-[30px] leading-[38px] font-bold capitalize">
@@ -162,56 +162,57 @@ const SignUp = () => {
                       placeholder="Password"
                       className=" w-full custom-input"
                       onChange={InputHandler}
-                      pattern="^(?!\s)(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
+                      // pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
+                      pattern="/^[A-z\d_@.#$=!%^)(\]:\*;\?\/\,}{'\|<>\[&\+-]{12,}*$/"
                       title="Password should not start with a white space, be alpha-numeric with a symbol, and at least 12 characters."
                       minLength={12}
                       required
                     />
-                      <div
-                        className="absolute right-[15px] cursor-pointer"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <Openeye /> : <Closeeye />}
-                      </div>
+                    <div
+                      className="absolute right-[15px] cursor-pointer"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <Openeye /> : <Closeeye />}
+                    </div>
                   </div>
                   {
-                    isOtp ? 
-                    <div className="md:py-2">
-                    <input
-                      type="text"
-                      name="otp"
-                      placeholder="OTP"
-                      className=" w-full mt-2 custom-input"
-                      onChange={InputHandler}
-                      required
-                    />
-                  </div>
-                    
-                    :""
+                    isOtp ?
+                      <div className="md:py-2">
+                        <input
+                          type="text"
+                          name="otp"
+                          placeholder="OTP"
+                          className=" w-full mt-2 custom-input"
+                          onChange={InputHandler}
+                          required
+                        />
+                      </div>
+
+                      : ""
                   }
 
                   <div className="mt-6">
                     {
-                      isOtp ? 
-                      
-                      <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="w-full bg-[#1f2432] font-semibold text-white p-2 rounded-lg  hover:bg-white hover:border text-[white]  hover:border-[gray] h-[50px] login-btn"
-                    >
-                      {isLoading ? "Loading.." : "Sign up"}
-                    </button>:
-                      <button
-                      type="button"
-                      disabled={isLoading}
-                      onClick={generateOTP}
-                      className="w-full bg-[#1f2432] font-semibold text-white p-2 rounded-lg  hover:bg-white hover:border text-[white]  hover:border-[gray] h-[50px] login-btn"
-                    >
-                      {isLoading ? "Loading.." : "Get OTP"}
-                    </button>
-                     
+                      isOtp ?
+
+                        <button
+                          type="submit"
+                          disabled={isLoading}
+                          className="w-full bg-[#1f2432] font-semibold text-white p-2 rounded-lg  hover:bg-white hover:border text-[white]  hover:border-[gray] h-[50px] login-btn"
+                        >
+                          {isLoading ? "Loading.." : "Sign up"}
+                        </button> :
+                        <button
+                          type="button"
+                          disabled={isLoading}
+                          onClick={generateOTP}
+                          className="w-full bg-[#1f2432] font-semibold text-white p-2 rounded-lg  hover:bg-white hover:border text-[white]  hover:border-[gray] h-[50px] login-btn"
+                        >
+                          {isLoading ? "Loading.." : "Get OTP"}
+                        </button>
+
                     }
-                    
+
                     <div className="text-[16px] font-medium  text-center py-3">
                       <span className="text-[#00000080] mr-2 "> Already a user? </span>
                       <Link href="/user/sign-in">
@@ -228,7 +229,7 @@ const SignUp = () => {
                 alt="login"
                 height={500}
                 width={500}
-                // className="w-full h-auto mx-auto"
+              // className="w-full h-auto mx-auto"
               />
             </div>
           </div>

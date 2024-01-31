@@ -313,11 +313,16 @@ const AppForm = () => {
 
           </div>
         </div>
-        <Pagination
-          currentPage={allData?.pagination?.currentPage}
-          totalPages={allData?.pagination?.totalPages}
-          onPageChange={handlePageChange}
-        />
+        {
+          allData?.pagination?.totalPages > 1 ? 
+          <Pagination
+            currentPage={allData?.pagination?.currentPage}
+            totalPages={allData?.pagination?.totalPages}
+            onPageChange={handlePageChange}
+          />
+          
+          : ""
+        }
       </section>
 
       {/* ------------preview dialog box--------- */}
