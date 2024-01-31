@@ -144,8 +144,8 @@ const ChangePassword = () => {
                         placeholder="Confirm new password "
                         className="login-input placeholder:text-[gray] w-full mt-2 custom-input" 
                         onChange={(e) => setCnfmPassword(e.target.value)}
-                        pattern="^(?!\s)(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
-                        title="Password should not start with a white space, be alpha-numeric with a symbol, and at least 12 characters."
+                        pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!#%*?&])[A-Za-z\d@$#!%*?&]{12,}$"
+                        title="Password should not contain white space, be alpha-numeric with a symbol, and at least 12 characters."
                         minLength={12}
                         required
                       />
