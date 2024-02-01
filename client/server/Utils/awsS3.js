@@ -14,7 +14,7 @@ function uploadOnS3(file, filename) {
     var parentFolder = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
 
     const params = {
-        Bucket: 'exerciseimage',
+        Bucket: 'sacredspouse.com',
         Key: parentFolder + '/' + filename,
         Body: file,
     };

@@ -7,6 +7,7 @@ const Admin = require("../Model/Admin");
 const DeleteUser = require("../Model/DeleteRequest");
 const UserForm = require("../Model/UserForm");
 const deleteFileByURL = require("../Utils/deleteS3");
+const OtpUser = require("../Model/Otp");
 const HttpStatus = {
   OK: 200,
   INVALID: 201,
@@ -44,11 +45,32 @@ exports.verifyUser = async (req, res) => {
       const decodedData = await jwt.verify(token, process.env.jwtKey);
       const LoggedUser = await User.findOne({
         email: decodedData?.email,
+        activeToken:token
       }).select("-password -activeToken");
-      return res.status(HttpStatus.OK).json({
-        data: LoggedUser,
-        message: "Verification successful",
-      });
+      if (LoggedUser) {
+        return res.status(HttpStatus.OK).json({
+          data: LoggedUser,
+          message: "Verification successful",
+        });
+        
+      }
+      const LoggedAdmin = await Admin.findOne({
+        email: decodedData?.email,
+        activeToken:token
+      }).select("-password -activeToken");
+        if (LoggedAdmin) {
+        return res.status(HttpStatus.OK).json({
+          data: LoggedAdmin,
+          message: "Verification successful",
+        });
+        
+      }else{
+        return res.status(HttpStatus.UNAUTHORIZED).json({
+          data: null,
+          message: "Invalid Token",
+        });
+      }
+
     }
     // If verification succeeds, proceed with other actions or return success
     // For example:
@@ -62,14 +84,19 @@ exports.verifyUser = async (req, res) => {
 };
 exports.addUser = async (req, res) => {
   try {
-    const { name, contact, email, password } = req.body;
+    const { name, contact, email, password ,otp} = req.body;
 
-    if (!name || !contact || !email || !password) {
+    if (!name || !contact || !email || !password ||!otp) {
       return res
         .status(HttpStatus.BAD_REQUEST)
         .json(StatusMessage.MISSING_DATA);
     }
-
+   const otpCheck = await OtpUser.findOne({email, otp})
+   if (!otpCheck) {
+    return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json("Invalid OTP");
+   }
     const existingUserByEmail = await User.findOne({ email });
     if (existingUserByEmail) {
       return res
@@ -90,12 +117,12 @@ exports.addUser = async (req, res) => {
         .status(HttpStatus.BAD_REQUEST)
         .json(StatusMessage.DUPLICATE_EMAIL);
     }
-    const existingAdminByContact = await Admin.findOne({ contact });
-    if (existingAdminByContact) {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json(StatusMessage.DUPLICATE_CONTACT);
-    }
+    // const existingAdminByContact = await Admin.findOne({ contact });
+    // if (existingAdminByContact) {
+    //   return res
+    //     .status(HttpStatus.BAD_REQUEST)
+    //     .json(StatusMessage.DUPLICATE_CONTACT);
+    // }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -175,7 +202,7 @@ exports.userLogin = async (req, res) => {
     } else {
       return res
         .status(HttpStatus.UNAUTHORIZED)
-        .json("Old password does not match.");
+        .json(StatusMessage.INVALID_CREDENTIALS);
     }
   } catch (error) {
     console.log(error);
@@ -402,11 +429,11 @@ exports.forgotPwd = async (req, res) => {
   }
   const token = generateToken({ email: user.email });
   const mailOptions = {
-    from: "akash.hardia@gmail.com",
+    from: "enotify@sacredspouse.com",
     to: user.email,
     subject: "Reset Password Link",
     text: `<h2>Hello! ${user.name ? user.name : ""} </h2>
-      <h3>Please follow the link to reset your password: http://localhost:5000/user/reset-password/${token}</h3>
+      <h3>Please follow the link to reset your password: http://52.5.254.27:5000/user/reset-password/${token}</h3>
       <h3>Thanks and regards</h3>
       `,
   };
@@ -584,7 +611,7 @@ exports.changeUserPwd = async (req, res) => {
     } else {
       return res
         .status(HttpStatus.UNAUTHORIZED)
-        .json(StatusMessage.INVALID_CREDENTIALS);
+        .json("Old password does not match.");
     }
   } catch (error) {
     console.log(error);

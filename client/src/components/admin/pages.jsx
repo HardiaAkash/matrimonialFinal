@@ -6,6 +6,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import Delete from "./delete";
 import Loader from "./loader";
 import { ToastContainer } from "react-toastify";
+import { useAuth } from "../Utils/AuthContext";
 
 const Pages = () => {
   const [allData, setAllData] = useState([]);
@@ -22,8 +23,9 @@ const Pages = () => {
   
   
   const visiblePageCount = 10;
-  const token = JSON.parse(localStorage.getItem("token" || ""));
-  
+  // const token = JSON.parse(localStorage.getItem("token" || ""));
+  const { adminAuthToken } = useAuth()
+
 
 
   useEffect(() => {
@@ -37,16 +39,17 @@ const Pages = () => {
       url: `/api/auth/viewUser?page=${pageNo}&limit=${visiblePageCount}`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${adminAuthToken}`,
       },
     };
     axios
       .request(options)
       .then((response) => {
-        console.log(response?.data);
+        // console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
           setAllData(response?.data);
+          setTotalPages(response?.data?.pagination?.totalPages);
         } else {
           setLoader(false);
           return;
@@ -86,7 +89,7 @@ const searchDataFunc = (search_cate) => {
     method: "GET",
     url: `/api/auth/viewUser?search=${search_cate}`,
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${adminAuthToken}`,
       "Content-Type": "multipart/form-data",
     },
   };
@@ -96,7 +99,7 @@ const searchDataFunc = (search_cate) => {
       console.log(response?.data);
       if (response.status === 200) {
         setAllData(response?.data);
-        setTotalPages(response?.data?.totalPages);
+        setTotalPages(response?.data?.pagination?.totalPages);
         setLoader(false);
       } else {
         return;

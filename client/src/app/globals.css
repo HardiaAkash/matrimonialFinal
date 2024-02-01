@@ -27,3 +27,13 @@
     background: linear-gradient(54deg, #383260, #d3d0e7)
  }
  
+ @media (max-width:768px) {
+    .inputDiv{
+        width: 100%;
+        height: fit-content !important;
+    }
+    .inputDiv input{
+        width: 100%;
+        height: fit-content !important;
+    }
+ }

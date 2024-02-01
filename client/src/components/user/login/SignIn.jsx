@@ -9,6 +9,8 @@ import Image from "next/image";
 
 import Closeeye from "@/components/svg/Closeeye";
 import Openeye from "@/components/svg/Openeye";
+import { useAuth } from "@/components/Utils/AuthContext";
+import { destroyCookie } from "nookies";
 
 const SignIn = ({ refreshData }) => {
   const router = useRouter();
@@ -21,7 +23,7 @@ const SignIn = ({ refreshData }) => {
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState("");
   const [loginWith, setLoginWith] = useState(true);
-
+  const {setUserAuthToken} = useAuth()
   const InputHandler = (e) => {
     setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value });
     setError("");
@@ -45,30 +47,34 @@ const SignIn = ({ refreshData }) => {
       if (response.status === 200) {
         toast.success("Login successfully!");
         setLoading(false);
-        localStorage.setItem(
-          "authToken",
-          JSON.stringify(response?.data?.token)
-        );
-        localStorage.setItem("userID", JSON.stringify(response?.data?.userID));
-        // navigate("/admin-dashboard");
+        setUserAuthToken(response?.data?.token,response?.data?.userID)
         router.push("/");
+        // localStorage.setItem(
+        //   "authToken",
+        //   JSON.stringify(response?.data?.token)
+        // );
+        // localStorage.setItem("userID", JSON.stringify(response?.data?.userID));
+        // navigate("/admin-dashboard");
         refreshData();
       } else {
         setError("Invalid credentails");
-        localStorage.removeItem("authToken");
+        // localStorage.removeItem("authToken");
+        destroyCookie(null, "us_Auth", { path: "/" });
+        destroyCookie(null, "us_Data", { path: "/" });
+        
         setLoading(false);
       }
     } catch (error) {
       console.error("Error during login:", error);
       toast.error(error?.response?.data);
-      localStorage.removeItem("authToken");
+      // localStorage.removeItem("authToken");
       setLoading(false);
     }
   };
 
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div className="flex items-center justify-center lg:min-h-screen  ">
         <div className="md:px-[50px] w-full mx-auto">
           <div className="relative flex flex-col 2xl:gap-x-20 xl:gap-x-10 gap-x-7 min-h-screen justify-center lg:shadow-none  items-center lg:flex-row space-y-8 md:space-y-0 w-[100%] px-[10px]bg-white lg:px-[40px] py-[20px] md:py-[40px] ">
@@ -109,6 +115,9 @@ const SignIn = ({ refreshData }) => {
                         placeholder="Mobile no."
                         className=" w-full mt-2 custom-input"
                         onChange={InputHandler}
+                        // pattern="^(?!\s)[0-9+\s]+$"
+                        // minLength={10}
+                        // maxLength={12}
                         required
                       />
                     )}
@@ -121,7 +130,8 @@ const SignIn = ({ refreshData }) => {
                       placeholder="Password"
                       className=" w-full custom-input"
                       onChange={InputHandler}
-                      minLength={8}
+                      // minLength={8}
+                    
                       required
                     />
                     <div

@@ -39,19 +39,19 @@ exports.addAdmin = async (req, res) => {
           return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_EMAIL);
         }
     
-        const existingUserByContact = await User.findOne({ contact });
-        if (existingUserByContact) {
-          return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_CONTACT);
-        }
+        // const existingUserByContact = await User.findOne({ contact });
+        // if (existingUserByContact) {
+        //   return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_CONTACT);
+        // }
         //////admin check
         const existingAdminByEmail = await Admin.findOne({ email });
         if (existingAdminByEmail) {
           return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_EMAIL);
         }
-        const existingAdminByContact = await Admin.findOne({ contact });
-        if (existingAdminByContact) {
-          return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_CONTACT);
-        }
+        // const existingAdminByContact = await Admin.findOne({ contact });
+        // if (existingAdminByContact) {
+        //   return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.DUPLICATE_CONTACT);
+        // }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -75,13 +75,13 @@ exports.addAdmin = async (req, res) => {
 exports.adminLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
-
+        console.log(email);
         if (!email || !password) {
             return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.MISSING_EMAIL_PASSWORD);
         }
 
         const admin = await Admin.findOne({ email });
-
+        console.log(admin);
         if (!admin) {
             return res.status(HttpStatus.UNAUTHORIZED).json(StatusMessage.USER_NOT_FOUND);
         }
@@ -145,3 +145,61 @@ exports.adminLogout = async (req, res) => {
     }
   }
 }
+exports.changeAdminPwd = async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const authHeader = req.headers.authorization;
+  let token = "";
+  let user = "";
+
+  if (!authHeader || !oldPassword || !newPassword) {
+    return res.status(HttpStatus.BAD_REQUEST).json(StatusMessage.MISSING_DATA);
+  }
+  try {
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      token = authHeader.slice(7);
+    } else {
+      token = authHeader;
+    }
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: "Please login to access this resource" });
+    } else {
+      const decodedData = jwt.verify(token, process.env.jwtKey);
+      //   console.log(decodedData);
+      if (!decodedData) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(StatusMessage.USER_NOT_FOUND);
+      }
+      user = await Admin.findOne({ email: decodedData?.email });
+      if (!user) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(StatusMessage.USER_NOT_FOUND);
+      }
+    }
+    // const user = await Admin.findById(id)
+    //  console.log(user._id.toString());
+    const id = user._id?.toString();
+    const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+    if (isPasswordMatch) {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const changedPwd = await Admin.findByIdAndUpdate(id, {
+        password: hashedPassword,
+      });
+      if (!changedPwd) {
+        return res.status(HttpStatus.BAD_REQUEST).json("Admin not found.");
+      } else {
+        return res.status(HttpStatus.OK).json(StatusMessage.USER_UPDATED);
+      }
+    } else {
+      return res
+        .status(HttpStatus.UNAUTHORIZED)
+        .json("Old password does not match.");
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(HttpStatus.SERVER_ERROR).json(StatusMessage.SERVER_ERROR);
+  }
+};

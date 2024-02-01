@@ -9,6 +9,8 @@ import Image from "next/image";
 import OpenEye from "@/components/svg/Openeye";
 import CloseEye from "@/components/svg/Closeeye";
 import Backarrow from "../user-dashboard/Svg/Backarrow";
+import { destroyCookie } from "nookies";
+import { useAuth } from "@/components/Utils/AuthContext";
 
 
 const ChangePassword = () => {
@@ -23,8 +25,8 @@ const ChangePassword = () => {
   const [showCnfmPassword, setShowCnfmPassword] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState("");
-  const token = JSON.parse(localStorage.getItem("authToken" || ""));
-
+  // const token = JSON.parse(localStorage.getItem("authToken" || ""));
+  const {userToken,userData} = useAuth()
   const InputHandler = (e) => {
     setError("")
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -47,7 +49,7 @@ const ChangePassword = () => {
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${userToken}`,
             },
           }
         );
@@ -56,8 +58,9 @@ const ChangePassword = () => {
           toast.success("Password change successfully!");
           setLoading(false);
           setError("")
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("userID");
+          destroyCookie(null, "us_Auth", { path: "/" });
+          destroyCookie(null, "us_Data", { path: "/" });
+          
           router.push("/user/sign-in");
         } else {
           setError("")
@@ -105,7 +108,7 @@ const ChangePassword = () => {
                         placeholder="Old password"
                         className="login-input placeholder:text-[gray] w-full custom-input "
                         onChange={InputHandler}
-                        minLength={8}
+                        // minLength={8}
                         required
                       />
                       <div
@@ -122,7 +125,9 @@ const ChangePassword = () => {
                         placeholder="New password"
                         className="login-input placeholder:text-[gray] w-full mt-2 custom-input"
                         onChange={InputHandler}
-                        minLength={8}
+                        pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)(?![\s\S]*\s).{12,}$"                        // pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$:!#%*,`~?$&%^()-_+={}/\|;}][><.)[A-Za-z\d@$#!%*$~:,`?&%^()-_{}/\|;][><.]{12,}$"
+                        title="Password should include at least one uppercase letter, one lowercase letter, one digit, one non-word character, and a minimum length of 12 characters, while disallowing any whitespace."
+                        minLength={12}
                         required
                       />
                       <div
@@ -139,7 +144,9 @@ const ChangePassword = () => {
                         placeholder="Confirm new password "
                         className="login-input placeholder:text-[gray] w-full mt-2 custom-input" 
                         onChange={(e) => setCnfmPassword(e.target.value)}
-                        minLength={8}
+                        pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)(?![\s\S]*\s).{12,}$"                        // pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$:!#%*,`~?$&%^()-_+={}/\|;}][><.)[A-Za-z\d@$#!%*$~:,`?&%^()-_{}/\|;][><.]{12,}$"
+                        title="Password should include at least one uppercase letter, one lowercase letter, one digit, one non-word character, and a minimum length of 12 characters, while disallowing any whitespace."
+                        minLength={12}
                         required
                       />
                       <div

@@ -2,24 +2,51 @@ const mongoose = require("mongoose")
 const userSchema = new mongoose.Schema({
     "userID": {
         type: String,
-        required: [true],
+        
         unique: [true]
     },
     "firstname": {
         type: String,
-        required: [true]
+        
+    },
+    "middlename": {
+        type: String,
+
     },
     "lastname": {
         type: String,
-        required: [true]
+        
+    },
+    "age": {
+        type: String,
+
     },
     "address": {
         type: String,
-        required: [true]
+       
+    },
+    "city": {
+        type: String,
+       
+    },
+    "state": {
+        type: String,
+       
     },
     "dateOfBirth": {
         type: String,
-        required: [true]
+       
+    },
+    "background": {
+        type: String,
+        // 
+    },
+    "nativelanguage": {
+        type: String,
+        // 
+    },
+    "weight": {
+        type: String,
     },
     "email": {
         type: String,
@@ -28,11 +55,38 @@ const userSchema = new mongoose.Schema({
     },
     "education": {
         type: String,
-        required: [true]
+        
+    },
+    "degree": {
+        type: String,
     },
     "occupation": {
         type: String,
 
+    },
+    "hijabStatus": {
+        type: String,
+    },
+    "wantRelocate": {
+        type: String,
+    },
+    "isKid": {
+        type: String,
+    },
+    "NoOfKids": {
+        type: String,
+    },
+    "wantKid": {
+        type: String,
+    },
+    "isSmoke": {
+        type: String,
+    },
+    "immigrationStatus": {
+        type: String,
+    },
+    "socialMedia": {
+        type: String,
     },
     "contactNumber": {
         type: String,
@@ -44,27 +98,27 @@ const userSchema = new mongoose.Schema({
     },
     "gender": {
         type: String,
-        required: [true],
+        
     },
     "maritalStatus": {
         type: String,
-        required: [true],
+        
     },
     "religion": {
         type: String,
-        required: [true],
+        
     },
     "height": {
         type: String,
-        required: [true],
+        
     },
     "income": {
         type: String,
-        required: [true],
+        
     },
     "familyDetails": {
         type: String,
-        required: [true],
+        
     },
     "image": {
         type: String,
@@ -77,10 +131,69 @@ const userSchema = new mongoose.Schema({
         default: "Pending"
     },
     "isMatched": {
-        type: Boolean,
+        type: String,
         default: false
-    }
-
+    },
+    "partnerAge": {
+        type: String,
+    },
+    "partnerGender": {
+        type: String,
+    },
+    "partnerMaritalStatus": {
+        type: String,
+    },
+    "partnerReligion": {
+        type: String,
+    },
+    "partnerBackground": {
+        type: String,
+    },
+    "partnerIncome": {
+        type: String,
+    },
+    "partnerCity": {
+        type: String,
+    },
+    "partnerCountry": {
+        type: String,
+    },
+    "partnerState": {
+        type: String,
+    },
+    "partnerRelocate": {
+        type: String,
+    },
+    "partnerEducation": {
+        type: String,
+    },
+    "partnerHeight": {
+        type: String,
+    },
+    "partnerWeight": {
+        type: String,
+    },
+    "partnerIsKid": {
+        type: String,
+    },
+    "partnerWantKid": {
+        type: String,
+    },
+    "partnerImmigrationStatus": {
+        type: String,
+    },
+    "partnerNativeLanguage": {
+        type: String,
+    },
+    "partnerLanguageSpeak": {
+        type: String,
+    },
+    "partnerDetail": {
+        type: String,
+    },
+    "partnerHijabStatus": {
+        type: String,
+    },
 }, {
     timestamps: true, // Add createdAt and updatedAt fields
 })
