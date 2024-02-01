@@ -168,9 +168,9 @@ const SignUp = () => {
                       // pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
                       // pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
                       // pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?\&])[A-Za-z\d@$!%*?\&]{12,}$"
-                      pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!#%*?&])[A-Za-z\d@$#!%*?&]{12,}$"
+                      pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)(?![\s\S]*\s).{12,}$"
                       // pattern="^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{12,}$" 
-                      title="Password should not contain white space, be alpha-numeric with a symbol, and at least 12 characters."
+                      title="Password should include at least one uppercase letter, one lowercase letter, one digit, one non-word character, and a minimum length of 12 characters, while disallowing any whitespace."
                       minLength={12}
                       required
                     />
@@ -199,12 +199,12 @@ const SignUp = () => {
 
                   <div className="mt-6">
                     {
-                      isOtp ?
+                     isOtp ?
 
                         <button
                           type="submit"
                           disabled={isLoading}
-                          className="w-full bg-[#1f2432] font-semibold text-white p-2 rounded-lg  hover:bg-white hover:border text-[white]  hover:border-[gray] h-[50px] login-btn"
+                          className="w-full bg-[#1f2432] font-semibold  p-2 rounded-lg  hover:bg-white hover:border text-[white]  hover:border-[gray] h-[50px] login-btn"
                         >
                           {isLoading ? "Loading.." : "Sign up"}
                         </button> :
@@ -212,7 +212,7 @@ const SignUp = () => {
                           type="button"
                           disabled={isLoading}
                           onClick={generateOTP}
-                          className="w-full bg-[#1f2432] font-semibold text-white p-2 rounded-lg  hover:bg-white hover:border text-[white]  hover:border-[gray] h-[50px] login-btn"
+                          className="w-full bg-[#1f2432] font-semibold  p-2 rounded-lg  hover:bg-white hover:border text-[white]  hover:border-[gray] h-[50px] login-btn"
                         >
                           {isLoading ? "Loading.." : "Get OTP"}
                         </button>

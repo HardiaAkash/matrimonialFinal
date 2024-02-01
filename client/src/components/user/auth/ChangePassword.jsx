@@ -125,8 +125,8 @@ const ChangePassword = () => {
                         placeholder="New password"
                         className="login-input placeholder:text-[gray] w-full mt-2 custom-input"
                         onChange={InputHandler}
-                        pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!#%*?&])[A-Za-z\d@$#!%*?&]{12,}$"
-                        title="Password should not contain white space, be alpha-numeric with a symbol, and at least 12 characters."
+                        pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)(?![\s\S]*\s).{12,}$"                        // pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$:!#%*,`~?$&%^()-_+={}/\|;}][><.)[A-Za-z\d@$#!%*$~:,`?&%^()-_{}/\|;][><.]{12,}$"
+                        title="Password should include at least one uppercase letter, one lowercase letter, one digit, one non-word character, and a minimum length of 12 characters, while disallowing any whitespace."
                         minLength={12}
                         required
                       />
@@ -144,8 +144,8 @@ const ChangePassword = () => {
                         placeholder="Confirm new password "
                         className="login-input placeholder:text-[gray] w-full mt-2 custom-input" 
                         onChange={(e) => setCnfmPassword(e.target.value)}
-                        pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!#%*?&])[A-Za-z\d@$#!%*?&]{12,}$"
-                        title="Password should not contain white space, be alpha-numeric with a symbol, and at least 12 characters."
+                        pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)(?![\s\S]*\s).{12,}$"                        // pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$:!#%*,`~?$&%^()-_+={}/\|;}][><.)[A-Za-z\d@$#!%*$~:,`?&%^()-_{}/\|;][><.]{12,}$"
+                        title="Password should include at least one uppercase letter, one lowercase letter, one digit, one non-word character, and a minimum length of 12 characters, while disallowing any whitespace."
                         minLength={12}
                         required
                       />
