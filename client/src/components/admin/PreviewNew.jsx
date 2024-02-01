@@ -392,7 +392,7 @@ const PreviewNew = ({ selectedItem, closeModal, refreshData }) => {
       <Transition appear show={isVideoOpen} as={Fragment}>
         <Dialog
           as="div"
-          className="relative z-[11]"
+          className="relative z-[1111]"
           onClose={() => {
             setIsVideoOpen(!isVideoOpen);
           }}
