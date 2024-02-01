@@ -7,6 +7,7 @@ import Loader from "./loader";
 import Preview from "./preview";
 import CloseIcon from "../svg/CloseIcon";
 import { useAuth } from "../Utils/AuthContext";
+import PreviewNew from "./PreviewNew";
 
 const AppForm = () => {
   const [allData, setAllData] = useState([]);
@@ -22,7 +23,7 @@ const AppForm = () => {
   const [formStatus, setFormStatus] = useState("");
   const visiblePageCount = 10;
   // const token =  typeof window !== "undefined" ? JSON.parse(localStorage.getItem("token" || "")):"";
-  const { adminAuthToken } = useAuth()
+  const { adminAuthToken } = useAuth();
 
   // -------form api--------
 
@@ -43,7 +44,7 @@ const AppForm = () => {
     axios
       .request(options)
       .then((response) => {
-        console.log(response?.data);
+        // console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
           setAllData(response?.data);
@@ -122,22 +123,43 @@ const AppForm = () => {
   };
 
   const closeAddPopupModel = () => {
-    // setOpenPopup(false);
     setAddPopup(false);
   };
 
-  const handleOpenPopup = (id) => {
-    const selectedItemData = allData.userForm.filter((item) => item._id === id);
-    setSelectedItem(selectedItemData);
-
-    setUserId(id);
-    setAddPopup(true);
+  const handleOpenPopup = async (id) => {
+    // const selectedItemData = allData?.userForm?.filter(
+    //   (item) => item._id === id
+    // );
+    // console.log(selectedItemData)
+   
+    try {
+      const res = await axios.get(`/api/auth/getFormByID/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${adminAuthToken}`,
+        },
+      });
+      if(res.statusText==="OK"){
+        setSelectedItem(res?.data);
+        setUserId(id);
+        setAddPopup(true);
+        setLoader(false);
+        // console.log(res);
+      }
+      else{
+        setLoader(false);
+        return
+      }
+    } catch (error) {
+      setLoader(false);
+      console.error(error);
+    }
   };
 
   // ---------approve api-----------
   const handleApprove = async (e, id) => {
-    console.log(e.target.value);
-    console.log(id);
+    // console.log(e.target.value);
+    // console.log(id);
 
     setLoader(true);
     try {
@@ -202,133 +224,133 @@ const AppForm = () => {
               </select>
             </div>
             {allData?.userForm?.length > 0 ? (
-            <table className="w-full min-w-[640px] table-auto mt-[20px] ">
-              <thead>
-                <tr>
-                  <th className="py-3 px-2 text-left bg-[white]">
-                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      First Name
-                    </p>
-                  </th>
-                  <th className="py-3 px-5 text-left bg-[white] ">
-                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      Address
-                    </p>
-                  </th>
-                  <th className="py-3 px-5 text-left bg-[white]">
-                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      Contact No.
-                    </p>
-                  </th>
+              <table className="w-full min-w-[640px] table-auto mt-[20px] ">
+                <thead>
+                  <tr>
+                    <th className="py-3 px-2 text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        First Name
+                      </p>
+                    </th>
+                    <th className="py-3 px-5 text-left bg-[white] ">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        Address
+                      </p>
+                    </th>
+                    <th className="py-3 px-5 text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        Contact No.
+                      </p>
+                    </th>
 
-                  <th className="py-3 px-5 text-left bg-[white]">
-                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      Email
-                    </p>
-                  </th>
+                    <th className="py-3 px-5 text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        Email
+                      </p>
+                    </th>
 
-                  <th className="py-3 px-5 text-left bg-[white]">
-                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      Gender
-                    </p>
-                  </th>
+                    <th className="py-3 px-5 text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        Gender
+                      </p>
+                    </th>
 
-                  <th className="py-3 px- text-left bg-[white]">
-                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      Preview
-                    </p>
-                  </th>
-
-                  <th className="py-3 px- text-left bg-[white]">
-                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      Status
-                    </p>
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {allData?.userForm?.map((items, index) => (
-                  <tr key={index}>
-                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
-                      {items?.firstname}
-                    </td>
-                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize ">
-                      {items?.address}
-                    </td>
-
-                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
-                      {items?.contactNumber}
-                    </td>
-                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
-                      {items?.email}
-                    </td>
-                    <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
-                      {items?.gender}
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => handleOpenPopup(items?._id)}
-                        className="text-[12px] px-2 py-1 rounded-sm border bg-[white] mr-3"
-                      >
+                    <th className="py-3 px- text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
                         Preview
-                      </button>
-                    </td>
+                      </p>
+                    </th>
 
-                    <td>
-                      <select
-                        className="text-[13px] p-1 cursor-pointer border border-[gray] rounded"
-                        name="gender"
-                        disabled={
-                          items?.formStatus?.toLowerCase() !== "pending"
-                        }
-                        id="genderSelect"
-                        onChange={(e) => {
-                          setFormStatus((prevItems) => ({
-                            ...prevItems,
-                            formStatus: e.target.value,
-                          }));
-
-                          handleApprove(e, items?._id);
-                        }}
-                        // value={
-                        //   formStatus?.formStatus
-                        //     ? formStatus?.formStatus
-                        //     : items?.formStatus
-                        // }
-                        defaultValue={items?.formStatus}
-                      >
-                        <option value="pending">Pending</option>
-
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                      </select>
-                    </td>
+                    <th className="py-3 px- text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        Status
+                      </p>
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table> ) : (  <div className="py-4 px-4 w-full flex flex-col items-center justify-center border border-[#f3f3f3] bg-white rounded-[20px] mt-[10px]">
-      <p className="text-[18px] font-semibold">No data found</p>
-    </div>)}
+                </thead>
 
+                <tbody>
+                  {allData?.userForm?.map((items, index) => (
+                    <tr key={index}>
+                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
+                        {items?.firstname}
+                      </td>
+                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize ">
+                        {items?.address}
+                      </td>
+
+                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
+                        {items?.contactNumber}
+                      </td>
+                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
+                        {items?.email}
+                      </td>
+                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
+                        {items?.gender}
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => handleOpenPopup(items?._id)}
+                          className="text-[12px] px-2 py-1 rounded-sm border bg-[white] mr-3"
+                        >
+                          Preview
+                        </button>
+                      </td>
+
+                      <td>
+                        <select
+                          className="text-[13px] p-1 cursor-pointer border border-[gray] rounded"
+                          name="gender"
+                          disabled={
+                            items?.formStatus?.toLowerCase() !== "pending"
+                          }
+                          id="genderSelect"
+                          onChange={(e) => {
+                            setFormStatus((prevItems) => ({
+                              ...prevItems,
+                              formStatus: e.target.value,
+                            }));
+
+                            handleApprove(e, items?._id);
+                          }}
+                          // value={
+                          //   formStatus?.formStatus
+                          //     ? formStatus?.formStatus
+                          //     : items?.formStatus
+                          // }
+                          defaultValue={items?.formStatus}
+                        >
+                          <option value="pending">Pending</option>
+
+                          <option value="approved">Approved</option>
+                          <option value="rejected">Rejected</option>
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="py-4 px-4 w-full flex flex-col items-center justify-center border border-[#f3f3f3] bg-white rounded-[20px] mt-[10px]">
+                <p className="text-[18px] font-semibold">No data found</p>
+              </div>
+            )}
           </div>
         </div>
-        {
-          allData?.pagination?.totalPages > 1 ? 
+        {allData?.pagination?.totalPages > 1 ? (
           <Pagination
             currentPage={allData?.pagination?.currentPage}
             totalPages={allData?.pagination?.totalPages}
             onPageChange={handlePageChange}
           />
-          
-          : ""
-        }
+        ) : (
+          ""
+        )}
       </section>
-      
 
       {/* ------------preview dialog box--------- */}
       <Transition appear show={openAddPopup} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeAddPopup}>
+        <Dialog as="div" className="relative z-[111]" onClose={closeAddPopup}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -338,7 +360,7 @@ const AppForm = () => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
+            <div className="fixed inset-0 bg-black/70 bg-opacity-25" />
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
@@ -352,8 +374,8 @@ const AppForm = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className=" w-full max-w-[800px] transform overflow-hidden rounded-2xl bg-white px-5  sm:pl-12 py-4 text-left align-middle shadow-2xl transition-all" >
-                  <div className="flex justify-end items-end ">
+                <Dialog.Panel className=" w-full 2xl:max-w-[900px] xl:max-w-[800px] md:max-w-[600px] transform overflow-hidden rounded-2xl bg-white px-5  sm:pl-12 py-4 text-left align-middle shadow-2xl transition-all">
+                  <div className="flex justify-end items-end z-[11]">
                     <button
                       className=" cursor-pointer"
                       onClick={closeAddPopupModel}
@@ -361,14 +383,14 @@ const AppForm = () => {
                       <CloseIcon />
                     </button>
                   </div>
-                  <Dialog.Title
+                  {/* <Dialog.Title
                     as="h3"
-                    className=" flex justify-center lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"
+                    className=" flex justify-center lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900 pb-4"
                   >
                     Applicant&apos;s full detail
-                  </Dialog.Title>
+                  </Dialog.Title> */}
 
-                  <Preview
+                  <PreviewNew
                     selectedItem={selectedItem}
                     closeModal={closeAddPopupModel}
                     refreshData={refreshData}
