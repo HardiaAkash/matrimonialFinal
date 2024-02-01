@@ -131,6 +131,7 @@ const SignIn = ({ refreshData }) => {
                       className=" w-full custom-input"
                       onChange={InputHandler}
                       // minLength={8}
+                    
                       required
                     />
                     <div

@@ -78,8 +78,8 @@ const ResetPassword = ({params}) => {
                     placeholder="Password"
                     className="login-input w-full custom-input"
                     onChange={(e) => setPassword(e.target.value)}
-                    pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!#%*?&])[A-Za-z\d@$#!%*?&]{12,}$"
-                    title="Password should not contain white space, be alpha-numeric with a symbol, and at least 12 characters."
+                    pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)(?![\s\S]*\s).{12,}$"
+                    title="Password should include at least one uppercase letter, one lowercase letter, one digit, one non-word character, and a minimum length of 12 characters, while disallowing any whitespace."
                     minLength={12}
                     required
                   />
