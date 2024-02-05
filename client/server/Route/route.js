@@ -4,7 +4,7 @@ const multer = require('multer');
 const { authorizeRoles, isAuthJWT } = require("../Utils/jwt");
 const { addAdmin, adminLogin, adminLogout, changeAdminPwd } = require("../Controller/AdminAuth");
 const { addUser, userLogin, deleteUser, updateUser, logoutUser, getUserByID, viewUser, forgotPwd, resetPassword, changeUserPwd, verifyUser, deleteUserReq, getDeleteUserRequests } = require("../Controller/UserAuth");
-const { addForm, editFormById, changeStatusForm, uploadImage, viewForm, deleteFormById, getFormByUserID, changeMatchStatus, approvedForm, getFormById } = require("../Controller/UserFormAuth");
+const { addForm, editFormById, changeStatusForm, uploadImage, viewForm, deleteFormById, getFormByUserID, changeMatchStatus, approvedForm, getFormById, findPotentialPartners } = require("../Controller/UserFormAuth");
 const { addCounVideo, getAllCounsVideo } = require("../Controller/VideoAuth");
 const { addUserOTP } = require("../Controller/OtpAuth");
 const storage = multer.memoryStorage();
@@ -43,4 +43,6 @@ router.route("/counselVideo").post(isAuthJWT,authorizeRoles("Admin"),addCounVide
 router.route("/getCounselVideo").get(isAuthJWT, getAllCounsVideo)
 router.route("/isMatched/:id").post(isAuthJWT, authorizeRoles("Admin"),changeMatchStatus)
 router.route("/approvedForm").get(isAuthJWT, authorizeRoles("Admin"), approvedForm)
+router.route("/getTest/:id").get(findPotentialPartners)
+router.route("/getPotentialPartner/:id").get(isAuthJWT,findPotentialPartners)
 module.exports = router;
