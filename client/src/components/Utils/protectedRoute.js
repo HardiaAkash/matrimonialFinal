@@ -35,6 +35,7 @@ const protectedRoute = (WrappedComponent) => {
           if (res?.data?.data === null) {
             router.push("/admin")
             destroyCookie(null, "ad_Auth", { path: "/" });
+             destroyCookie(null, "ad_Role", { path: "/" });
           }
           if (res.status === 200) {
             // setAuthenticated(true);
@@ -44,6 +45,7 @@ const protectedRoute = (WrappedComponent) => {
           } else {
             // setAuthenticated(false);
             destroyCookie(null, "ad_Auth", { path: "/" });
+             destroyCookie(null, "ad_Role", { path: "/" });
             router.push("/admin");
             setIsLoading(false);
           }

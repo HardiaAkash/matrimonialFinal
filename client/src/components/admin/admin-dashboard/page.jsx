@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useEffect, useState, Fragment } from "react";
 import axios from "axios";
 
@@ -9,27 +9,25 @@ import VideoIcon from "../../../../public/admin/video.svg";
 import Users from "../../../../public/admin/users.svg";
 import conversation from "../../../../public/admin/conversation.svg";
 import contactIcon from "../../../../public/admin/contact-mail.svg";
-import CloseIcon from '../../svg/CloseIcon';
-import LogoutIcon from '../../svg/Logout';
+import CloseIcon from "../../svg/CloseIcon";
+import LogoutIcon from "../../svg/Logout";
 import signout from "../../../../public/admin/signout.svg";
-import Image from 'next/image';
-import Pages from '../pages';
-import { useRouter } from 'next/navigation'
-import AppForm from '../appForm';
-import ConsultVideo from '../consultVideo';
-import ProfileMatch from '../profileMatch';
-import ProfileDelete from '../profileDelete';
-import Dashboard from '../dashboard';
+import Image from "next/image";
+import Pages from "../pages";
+import { useRouter } from "next/navigation";
+import AppForm from "../appForm";
+import ConsultVideo from "../consultVideo";
+import ProfileMatch from "../profileMatch";
+import ProfileDelete from "../profileDelete";
+import Dashboard from "../dashboard";
 import Loader from "../loader";
 import { toast } from "react-toastify";
 import protectedRoute from "@/components/Utils/protectedRoute";
 import { destroyCookie } from "nookies";
 import { useAuth } from "@/components/Utils/AuthContext";
-
-
+import AddAdmin from "../AddAdmin";
 
 const SideMenu = () => {
-
   const [ComponentId, setComponentId] = useState(1);
   const [showDrawer, setShowDrawer] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
@@ -37,7 +35,7 @@ const SideMenu = () => {
   const router = useRouter();
   // const token = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("token" || "")) : "";
   const [isLoading, setIsLoading] = useState(false);
-  const { adminAuthToken } = useAuth()
+  const { adminAuthToken, setRoleOfAdmin, adminRole } = useAuth();
   const menu = [
     {
       id: 1,
@@ -75,8 +73,12 @@ const SideMenu = () => {
       component: <ProfileDelete />,
       icon: Users,
     },
-
-
+    // adminRole == "SuperAdmin" &&
+    // {
+    //   id: 7,
+    //   label: "Add Admin",
+    //   component: <AddAdmin />,
+    // },
   ];
 
   const handleClick = (id) => {
@@ -88,8 +90,6 @@ const SideMenu = () => {
     // alert("siggned out")
 
     setIsLoading(true);
-
-
 
     const options = {
       method: "GET",
@@ -111,9 +111,10 @@ const SideMenu = () => {
           router.push("/admin");
         } else {
           setIsLoading(false);
-          toast.warn("Something went wrong!")
+          toast.warn("Something went wrong!");
           destroyCookie(null, "ad_Auth", { path: "/" });
-          router.push("/admin")
+          destroyCookie(null, "ad_Role", { path: "/" });
+          router.push("/admin");
 
           // localStorage.removeItem("token")
           return;
@@ -121,9 +122,10 @@ const SideMenu = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        router.push("/admin")
+        router.push("/admin");
         // localStorage.removeItem("token")
         destroyCookie(null, "ad_Auth", { path: "/" });
+        destroyCookie(null, "ad_Role", { path: "/" });
         console.error("Error:", error);
       });
   };
@@ -142,18 +144,23 @@ const SideMenu = () => {
   const verify = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get(`/api/auth/verifyTokenUser/${adminAuthToken}`);
+      const res = await axios.get(
+        `/api/auth/verifyTokenUser/${adminAuthToken}`
+      );
       if (res?.data?.data === null) {
-        router.push("/admin")
+        router.push("/admin");
         destroyCookie(null, "ad_Auth", { path: "/" });
+        destroyCookie(null, "ad_Role", { path: "/" });
       }
       if (res.status === 200) {
         setAuthenticated(true);
         setIsLoading(false);
+        setRoleOfAdmin(res?.data?.data?.role);
         return;
       } else {
         setAuthenticated(false);
         destroyCookie(null, "ad_Auth", { path: "/" });
+        destroyCookie(null, "ad_Role", { path: "/" });
         router.push("/admin");
         setIsLoading(false);
       }
@@ -161,6 +168,7 @@ const SideMenu = () => {
       setAuthenticated(false);
       console.error("Error occurred:", error);
       destroyCookie(null, "ad_Auth", { path: "/" });
+      destroyCookie(null, "ad_Role", { path: "/" });
       router.push("/admin");
       setIsLoading(false);
     }
@@ -180,10 +188,11 @@ const SideMenu = () => {
           </div>
           <div
             className={`w-[250px] sm:w-[300px] bg-[#313A46]  text-[white] lg:px-[20px] px-[10px] z-[11] drawer
-                 ${showDrawer
-                ? "block  absolute top-0 left-0 min-h-screen is-show"
-                : "hidden lg:block"
-              }`}
+                 ${
+                   showDrawer
+                     ? "block  absolute top-0 left-0 min-h-screen is-show"
+                     : "hidden lg:block"
+                 }`}
           >
             <div
               className="relative text-[white]  flex flex-col gap-[5px] cursor-pointer lg:hidden  text-right mr-3 mt-2"
@@ -205,28 +214,60 @@ const SideMenu = () => {
                 <div className="bg-[white] h-[1px] w-[77%] lg:w-[80%] 2xl:w-[83%] mx-auto mt-[40px]"></div>
               </div>
 
-
               <div className="flex flex-col 2xl:gap-6 gap-3 ">
                 {menu.map((item, index) => (
-                  <div
-                    key={index}
-                    className={`pl-1 sm:pl-2 2xl:pl-3 py-3 mx-5 lg:mx-4 2xl:mx-5 rounded-md  flex gap-x-3 items-center cursor-pointer  transition-colors font-semibold dash-menu  hover:transition-all ease-in delay-100 duration-300  
-                                    ${item.id === ComponentId
-                        ? "bg-[#b8bbdf47]"
-                        : "hover:bg-[#b8bbdf47] hover:text-[white] hover:rounded-md"
-                      }  `}
-                    onClick={() => handleClick(item.id)}
-                  >
-                    <Image
-                      src={item?.icon}
-                      alt={item.label}
-                      width={50}
-                      height={50}
-                      className="h-[20px] w-[20px] fill-white"
-                    />
+                  <>
+                    <div
+                      key={index}
+                      className={`pl-1 sm:pl-2 2xl:pl-3 py-3 mx-5 lg:mx-4 2xl:mx-5 rounded-md  flex gap-x-3 items-center cursor-pointer  transition-colors font-semibold dash-menu  hover:transition-all ease-in delay-100 duration-300  
+                                    ${
+                                      item?.id === ComponentId
+                                        ? "bg-[#b8bbdf47]"
+                                        : "hover:bg-[#b8bbdf47] hover:text-[white] hover:rounded-md"
+                                    }  `}
+                      onClick={() => handleClick(item?.id)}
+                    >
+                      <Image
+                        src={item?.icon}
+                        alt={item?.label}
+                        width={50}
+                        height={50}
+                        className="h-[20px] w-[20px] fill-white"
+                      />
 
-                    <p className=" capitalize whitespace-nowrap ">{item.label}</p>
-                  </div>
+                      <p className=" capitalize whitespace-nowrap ">
+                        {item?.label}
+                      </p>
+                    </div>
+                    {/* <>
+                      {(adminRole === "SuperAdmin" || index === 7) && (
+                        <div
+                          key={7}
+                          className={`
+        pl-1 sm:pl-2 2xl:pl-3 py-3 mx-5 lg:mx-4 2xl:mx-5 rounded-md flex gap-x-3 items-center cursor-pointer transition-colors font-semibold dash-menu hover:transition-all ease-in delay-100 duration-300 
+        ${
+          menu[7]?.id === ComponentId
+            ? "bg-[#b8bbdf47]"
+            : "hover:bg-[#b8bbdf47] hover:text-[white] hover:rounded-md"
+        }
+      `}
+                          onClick={() => handleClick(menu[7]?.id)}
+                        >
+                          <Image
+                            src={menu[7]?.icon}
+                            alt={menu[7]?.label}
+                            width={50}
+                            height={50}
+                            className="h-[20px] w-[20px] fill-white"
+                          />
+
+                          <p className="capitalize whitespace-nowrap">
+                            {menu[7]?.label}
+                          </p>
+                        </div>
+                      )}
+                    </> */}
+                  </>
                 ))}
               </div>
 
@@ -237,7 +278,7 @@ const SideMenu = () => {
                   onClick={handleSignout}
                 >
                   {/* <LogoutIcon/> */}
-                  <Image className='w-6' src={signout} alt='signout' />
+                  <Image className="w-6" src={signout} alt="signout" />
                   <div>
                     <p>Sign Out</p>
                   </div>
@@ -249,14 +290,14 @@ const SideMenu = () => {
           <div className="bg-[#f3f3f3] w-full">
             {menu.map((item, index) => (
               <Fragment key={index}>
-                {ComponentId === item.id && item.component}
+                {ComponentId === item?.id && item?.component}
               </Fragment>
             ))}
           </div>
         </div>
       </section>
     </>
-  )
-}
-export default protectedRoute(SideMenu)
+  );
+};
+export default protectedRoute(SideMenu);
 // export default SideMenu
