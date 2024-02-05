@@ -9,6 +9,7 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [messgae, setMessage] = useState("");
+  const [isError, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,25 +26,25 @@ const ForgotPassword = () => {
       );
 
       if (response.status === 200) {
-        // toast.success("Mail sent, Please check your mail!");
         setLoading(false);
         setMessage(
           "The reset link has been sent to your email. Please check your email."
         );
+        setError("")
       } else {
-        toast.error("Invalid email!");
+        setError("Invalid email!");
+        setMessage("")
         setLoading(false);
       }
     } catch (error) {
-      toast.error(error?.response?.data || "server error");
+      setError(error?.response?.data || "server error");
       setLoading(false);
-      setMessage("");
+      setMessage("")
     }
   };
 
   return (
     <>
-      <ToastContainer />
       <div className="flex items-center justify-center lg:min-h-screen  ">
         <div className="md:px-[50px] w-full mx-auto">
           <div className="relative flex flex-col 2xl:gap-x-20 xl:gap-x-10 gap-x-7 min-h-screen justify-center lg:shadow-none  items-center lg:flex-row space-y-8 md:space-y-0 w-[100%] px-[10px]bg-white lg:px-[40px] py-[20px] md:py-[40px] ">
@@ -71,6 +72,11 @@ const ForgotPassword = () => {
                   {messgae && (
                     <div className="py-2 px-4 rounded text-[green] bg-[#e0f8e0c1] font-medium text-[15px]">
                       {messgae}
+                    </div>
+                  )}
+                     {isError && (
+                    <div className="py-2 px-4 rounded bg-[#e6c8c8e3] text-[red] text-[12px] font-medium mb-2">
+                      {isError}
                     </div>
                   )}
                   <div className="mt-4">
