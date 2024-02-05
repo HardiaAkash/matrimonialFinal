@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const { generateToken, verifyToken } = require("../Utils/jwt");
 const User = require("../Model/User");
 const jwt = require("jsonwebtoken");
+const { default: mongoose } = require("mongoose");
+const sendEmail = require("../Utils/SendEmail");
 const HttpStatus = {
     OK: 200,
     INVALID: 201,
@@ -60,6 +62,29 @@ exports.addAdmin = async (req, res) => {
         const result = await adminData.save();
 
         // console.log(result); // Log the result for debugging, avoid exposing in production
+        if (result) {
+          const mailOptions = {
+            from: "enotify@sacredspouse.com",
+            to: email,
+            subject: "Welcome to SacredSpouse - Your Admin Credentials",
+            text: `
+                <p>Dear ,</p>
+                <p>Welcome to SacredSpouse! You are now an administrator of our platform.</p>
+                <p>Please find below your login credentials:</p>
+                <ul>
+                    <li><strong>User-name:</strong> ${email}</li>
+                    <li><strong>Password:</strong> ${password}</li>
+                </ul>
+                <p>For security reasons, we recommend keeping your login credentials confidential and not sharing them with anyone.</p>
+                <p>Thank you for being a part of SacredSpouse.</p>
+                <p>Best regards,</p>
+               
+            `,
+        };
+        
+       const infow = await sendEmail(mailOptions)
+       console.log(infow);
+        }
 
         return res.status(HttpStatus.OK).json(result);
     } catch (error) {
@@ -201,5 +226,68 @@ exports.changeAdminPwd = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(HttpStatus.SERVER_ERROR).json(StatusMessage.SERVER_ERROR);
+  }
+};
+exports.getAllAdmins = async (req, res) => {
+  try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const search = req.query.search || "";
+
+      if (!page || !limit) {
+          return res.status(HttpStatus.BAD_REQUEST).json({ message: "Invalid page or limit parameter." });
+      }
+
+      const startIndex = (page - 1) * limit;
+
+      let query = {}; // You can add more conditions based on your needs
+
+      // Add search query
+      if (search) {
+          query.$or = [
+              { email: { $regex: search, $options: 'i' } },
+              // Add more fields for search if needed
+          ];
+      }
+
+      const admins = await Admin.find(query).skip(startIndex).limit(limit);
+      const totalAdmins = await Admin.countDocuments(query);
+
+      const pagination = {
+          currentPage: page,
+          totalPages: Math.ceil(totalAdmins / limit),
+          totalAdmins
+      };
+
+      return res.status(HttpStatus.OK).json({ admins, pagination });
+  } catch (error) {
+      console.error("Error in getAllAdmins:", error);
+      return res.status(HttpStatus.SERVER_ERROR).json({ message: "Server error." });
+  }
+};
+exports.deleteAdmin = async (req, res) => {
+  try {
+      const adminId = req.params.id; // Assuming adminId is passed as a URL parameter
+
+      // Validate if id is a valid MongoDB ObjectId
+      if (!mongoose.Types.ObjectId.isValid(adminId)) {
+          return res.status(HttpStatus.BAD_REQUEST).json({ message: "Invalid admin ID." });
+      }
+
+      // Find the admin by its _id
+      const admin = await Admin.findById(adminId);
+
+      // Check if the admin was found
+      if (!admin) {
+          return res.status(HttpStatus.BAD_REQUEST).json({ message: "Admin not found." });
+      }
+
+      // Delete the admin
+      const DeletedAdmin =  await Admin.findByIdAndDelete(adminId);
+      console.log(DeletedAdmin);
+      return res.status(HttpStatus.OK).json({ message: "Admin deleted successfully." });
+  } catch (error) {
+      console.error("Error in deleteAdmin:", error);
+      return res.status(HttpStatus.SERVER_ERROR).json({ message: "Server error." });
   }
 };
