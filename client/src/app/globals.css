@@ -29,7 +29,7 @@
     @apply 2xl:text-[15px] text-[13px]  
 }
 .form_info{
-    @apply 2xl:text-[16px] text-[14px] capitalize
+    @apply 2xl:text-[16px] text-[14px] 
 }
 .form_heading{
     @apply whitespace-nowrap capitalize lg:text-[16px] text-[14px] font-medium

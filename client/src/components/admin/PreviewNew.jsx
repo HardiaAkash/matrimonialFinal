@@ -37,7 +37,7 @@ const PreviewNew = ({ selectedItem, closeModal, refreshData }) => {
             <div className="pt-2">
               <div className="form_col">
                 <label className="form_label_head">Gender:</label>
-                <div className="form_info">{previewData?.gender}</div>
+                <div className="form_info capitalize">{previewData?.gender}</div>
               </div>
               <div className="form_col">
                 <label className="form_label_head">Age :</label>
@@ -77,7 +77,7 @@ const PreviewNew = ({ selectedItem, closeModal, refreshData }) => {
                 <h6 className="form_heading">Interest</h6>
                 <div className="form_col">
                   <label className="form_label_head">Hobbies:</label>
-                  <div className="form_info">
+                  <div className="form_info capitalize">
                     {previewData?.hobbies
                       ? previewData?.hobbies.join(", ")
                       : "-"}
@@ -98,9 +98,9 @@ const PreviewNew = ({ selectedItem, closeModal, refreshData }) => {
             </div>
 
             <div className="py-2">
-              <h6 className="form_heading">More Info: </h6>
+              <h6 className="form_heading">More Info </h6>
               <div className="form_col">
-                <label className="form_label_head">Family Deatils:</label>
+                <label className="form_label_head">Family Details:</label>
                 <div className="form_info">
                   {previewData?.familyDetails
                     ? previewData?.familyDetails
@@ -115,15 +115,15 @@ const PreviewNew = ({ selectedItem, closeModal, refreshData }) => {
               <div className="">
                 <div className="form_col">
                   <label className="form_label_head">Background:</label>
-                  <div className="form_info">{previewData?.background}</div>
+                  <div className="form_info capitalize">{previewData?.background}</div>
                 </div>
                 <div className="form_col">
                   <label className="form_label_head">Marital Status:</label>
-                  <div className="form_info">{previewData?.maritalStatus}</div>
+                  <div className="form_info capitalize">{previewData?.maritalStatus}</div>
                 </div>
                 <div className="form_col">
                   <label className="form_label_head">Religion:</label>
-                  <div className="form_info">{previewData?.religion}</div>
+                  <div className="form_info capitalize">{previewData?.religion}</div>
                 </div>
                 <div className="form_col">
                   <label className="form_label_head">Hijab(If Female):</label>
@@ -259,7 +259,7 @@ const PreviewNew = ({ selectedItem, closeModal, refreshData }) => {
               <div className="pt-2">
                 <div className="form_col">
                   <label className="form_label_head">Gender:</label>
-                  <div className="form_info">{previewData?.partnerGender}</div>
+                  <div className="form_info capitalize">{previewData?.partnerGender}</div>
                 </div>
                 <div className="form_col">
                   <label className="form_label_head">Age :</label>
@@ -269,7 +269,7 @@ const PreviewNew = ({ selectedItem, closeModal, refreshData }) => {
                 </div>
                 <div className="form_col">
                   <label className="form_label_head">Marital Status :</label>
-                  <div className="form_info">
+                  <div className="form_info capitalize">
                     {previewData?.partnerMaritalStatus
                       ? previewData?.partnerMaritalStatus
                       : "-"}
