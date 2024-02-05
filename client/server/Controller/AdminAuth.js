@@ -230,9 +230,9 @@ exports.changeAdminPwd = async (req, res) => {
 };
 exports.getAllAdmins = async (req, res) => {
   try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
-      const search = req.query.search || "";
+    const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
+    const limit = parseInt(req.query.limit) || 1000; // Default limit to 10 if not specified
+    const search = req.query.search || "";
 
       if (!page || !limit) {
           return res.status(HttpStatus.BAD_REQUEST).json({ message: "Invalid page or limit parameter." });
@@ -240,7 +240,7 @@ exports.getAllAdmins = async (req, res) => {
 
       const startIndex = (page - 1) * limit;
 
-      let query = {}; // You can add more conditions based on your needs
+      let query = { role: 'Admin' };  // No initial role filter
 
       // Add search query
       if (search) {
@@ -250,7 +250,21 @@ exports.getAllAdmins = async (req, res) => {
           ];
       }
 
-      const admins = await Admin.find(query).skip(startIndex).limit(limit);
+      const allAdmins = await Admin.find(query).skip(startIndex).limit(limit);
+
+      // Filter out superAdmins from all admins
+      // const admins = allAdmins.filter(admin => admin.role === 'Admin');
+
+      // Filter sensitive information (e.g., password) from each admin object
+      const sanitizedAdmins = allAdmins.map(admin => {
+          return {
+              _id: admin._id,
+              email: admin.email,
+              // Add other fields you want to include
+              role: admin.role, // Include the admin role
+          };
+      });
+
       const totalAdmins = await Admin.countDocuments(query);
 
       const pagination = {
@@ -259,12 +273,14 @@ exports.getAllAdmins = async (req, res) => {
           totalAdmins
       };
 
-      return res.status(HttpStatus.OK).json({ admins, pagination });
+      return res.status(HttpStatus.OK).json({ admins: sanitizedAdmins, pagination });
   } catch (error) {
       console.error("Error in getAllAdmins:", error);
       return res.status(HttpStatus.SERVER_ERROR).json({ message: "Server error." });
   }
 };
+
+
 exports.deleteAdmin = async (req, res) => {
   try {
       const adminId = req.params.id; // Assuming adminId is passed as a URL parameter
