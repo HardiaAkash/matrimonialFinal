@@ -9,6 +9,7 @@ import MatchPopup from "./matchPopup";
 import { toast } from "react-toastify";
 import CloseIcon from "../svg/CloseIcon";
 import { useAuth } from "../Utils/AuthContext";
+import PreviewNew from "./PreviewNew";
 
 const ProfileMatch = () => {
   const [allData, setAllData] = useState([]);
@@ -129,12 +130,35 @@ const ProfileMatch = () => {
     setAddPopup(false);
   };
 
-  const handleOpenPopup = (id) => {
-    const selectedItemData = allData.userForm.filter((item) => item._id === id);
-    setSelectedItem(selectedItemData);
+  const handleOpenPopup = async (id) => {
+    // const selectedItemData = allData.userForm.filter((item) => item._id === id);
+    // setSelectedItem(selectedItemData);
 
-    setUserId(id);
-    setAddPopup(true);
+    // setUserId(id);
+    // setAddPopup(true);
+    setLoader(true);
+    try {
+      const res = await axios.get(`/api/auth/getFormByID/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${adminAuthToken}`,
+        },
+      });
+      if(res.statusText==="OK"){
+        setSelectedItem(res?.data);
+        setUserId(id);
+        setAddPopup(true);
+        setLoader(false);
+        // console.log(res);
+      }
+      else{
+        setLoader(false);
+        return
+      }
+    } catch (error) {
+      setLoader(false);
+      console.error(error);
+    }
   };
 
   //   -------Match checkbox----------
@@ -334,7 +358,7 @@ const ProfileMatch = () => {
 
       {/* ------------preview dialog box--------- */}
       <Transition appear show={openAddPopup} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeAddPopup}>
+        <Dialog as="div" className="relative z-[111]" onClose={closeAddPopup}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -367,13 +391,13 @@ const ProfileMatch = () => {
                       <CloseIcon />
                     </button>
                   </div>
-                  <Dialog.Title
+                  {/* <Dialog.Title
                     as="h3"
                     className="flex justify-center lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"
                   >
                     Applicant&apos;s full detail
-                  </Dialog.Title>
-                  <Preview
+                  </Dialog.Title> */}
+                  <PreviewNew
                     selectedItem={selectedItem}
                     closeModal={closeAddPopupModel}
                     refreshData={refreshData}
@@ -401,7 +425,7 @@ const ProfileMatch = () => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
+            <div className="fixed inset-0 bg-black/70 bg-opacity-25" />
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">

@@ -22,6 +22,18 @@
 .disable_input{
     @apply bg-[#d2d2d259] border border-[transparent] hover:border-none
 }
+.form_col{
+    @apply grid grid-cols-2  py-[4px]
+}
+.form_label_head{
+    @apply 2xl:text-[15px] text-[13px]  
+}
+.form_info{
+    @apply 2xl:text-[16px] text-[14px] 
+}
+.form_heading{
+    @apply whitespace-nowrap capitalize lg:text-[16px] text-[14px] font-medium
+}
 
  .login-btn{
     background: linear-gradient(54deg, #383260, #d3d0e7)
