@@ -55,6 +55,23 @@ export const partnerAgeArray = [
   "55-60",
   "over 60",
 ];
+export const hobbiesList = [
+  "Reading",
+  "Writing",
+  "Outdoor Activities",
+  "Art and Craft",
+  "Music",
+  "Sports and Fitness",
+  "Cooking and Baking",
+  "Photography",
+  "Technology and Gaming",
+  "Collecting",
+  "Language Learning",
+  "Volunteering",
+  "Science and Nature",
+  "Dancing",
+  "Mind Games",
+];
 
 const ApplicationForm = ({ refreshData }) => {
   const { userToken, userData, userMail, userContact } = useAuth();
@@ -137,16 +154,21 @@ const ApplicationForm = ({ refreshData }) => {
   const [isError, setError] = useState("");
   const [isSuccess, setSuccess] = useState("");
   const [isHobbyErr, setHobbyErr] = useState("");
+  const [selectedHobbies, setSelectedHobbies] = useState([]);
 
   const formattedToday = new Date().toISOString().split("T")[0];
 
   const InputHandler = (e) => {
     if (e.target.name === "image") {
       setPhotograph({ file: e.target.files[0] });
-      setImgError("")
+      setImgError("");
     } else if (e.target.name === "hobby") {
-      setHobby(e.target.value);
-      setHobbyErr("")
+      const selectedOptions = Array.from(e.target.selectedOptions, (option) => option.value);
+      setFormData({
+        ...formData,
+        hobbies: selectedOptions,
+      });
+      setHobbyErr("");
     } else if (e.target.name === "dateOfBirth") {
       const enteredDate = new Date(e.target.value);
       const currentDate = new Date();
@@ -268,31 +290,38 @@ const ApplicationForm = ({ refreshData }) => {
   const otherOptionHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const handleAddHobbies = () => {
-    if (!hobby) {
-      setHobbyErr("Please enter a valid hobby.");
-      return;
-    }
+  // const handleAddHobbies = () => {
+  //   if (!hobby) {
+  //     setHobbyErr("Please enter a valid hobby.");
+  //     return;
+  //   }
 
-    if (/^\s|[^\w\s]/.test(hobby)) {
-      setHobbyErr(
-        "Hobbies should not start with whitespace and also special character not allowed"
-      );
-      return;
-    }
+  //   if (/^\s|[^\w\s]/.test(hobby)) {
+  //     setHobbyErr(
+  //       "Hobbies should not start with whitespace and also special character not allowed"
+  //     );
+  //     return;
+  //   }
 
+  //   setFormData({
+  //     ...formData,
+  //     hobbies: [...(formData.hobbies || []), hobby.trim()], // Remove leading/trailing whitespaces
+  //   });
+
+  //   setHobby("");
+  // };
+  const removeHobbies = (index) => {
+    // let newHobbies = formData.hobbies.filter((items, index) => {
+    //   return index !== id;
+    // });
+    // setFormData({ ...formData, [`hobbies`]: newHobbies });
+    const updatedHobbies = [...formData.hobbies];
+    updatedHobbies.splice(index, 1);
+  
     setFormData({
       ...formData,
-      hobbies: [...(formData.hobbies || []), hobby.trim()], // Remove leading/trailing whitespaces
+      hobbies: updatedHobbies,
     });
-
-    setHobby("");
-  };
-  const removeHobbies = (id) => {
-    let newHobbies = formData.hobbies.filter((items, index) => {
-      return index !== id;
-    });
-    setFormData({ ...formData, [`hobbies`]: newHobbies });
   };
   const uploadImage = async () => {
     setImageUpload(true);
@@ -970,15 +999,14 @@ const ApplicationForm = ({ refreshData }) => {
                   )}
 
                   {/*----------- hobbies -----------*/}
-                  <div className="flex flex-col items-center gap-1 inputDiv">
+                  <div className="inputDiv">
                     <label
                       htmlFor="hobby"
-                      className="login-input-label text-left w-full "
+                      className="login-input-label"
                     >
                       Interests/Hobbies :
                     </label>
-                    <div className="flex w-full gap-6 inputDiv">
-                      <input
+                      {/* <input
                         type="text"
                         name="hobby"
                         placeholder="Hobbies"
@@ -989,28 +1017,44 @@ const ApplicationForm = ({ refreshData }) => {
                         title="Please enter a valid hobbies without leading white space or special characters"
                         maxLength={64}
                         // maxLength={100}
-                      />
-                      <button
+                      /> */}
+                      {/* <button
                         type="button"
                         className="rounded px-1 py-1 text-[18px] cursor-pointer font-bold"
                         onClick={handleAddHobbies}
                       >
                         +
-                      </button>
-                    </div>
-                    <div className="text-[13px] text-left w-full px-2 font-[400]">
+                      </button> */}
+                      <select
+                        name="hobby"
+                        id="hobby"
+                        className="login-input w-full mt-2 custom-input bg-white capitalize"
+                        value={formData.hobbies}
+                        onChange={InputHandler}
+                        // multiple
+                      >
+                        <option className="text-gray-100" value="">Select a Hobby</option>
+                        {hobbiesList.map((hobbyOption, inx) => (
+                          <option
+                            key={inx}
+                            value={hobbyOption} className="py-2" >
+                            {hobbyOption}
+                          </option>
+                        ))}
+                      </select>
+                    {/* <div className="text-[13px] text-left w-full px-2 font-[400]">
                       Note* : Click on add button to add a hobby
-                    </div>
-                    {isHobbyErr && (
-                    <div className="py-1 w-full px-4 rounded bg-[#e6c8c8e3] text-[red] text-[12px] font-medium mb-2">
-                      {isHobbyErr}
-                    </div>
-                  )}
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3  flex-col gap-3 justify-between w-full px-2">
+                    </div> */}
+                    {/* {isHobbyErr && (
+                      <div className="py-1 w-full px-4 rounded bg-[#e6c8c8e3] text-[red] text-[12px] font-medium mb-2">
+                        {isHobbyErr}
+                      </div>
+                    )} */}
+                    <div className="grid md:grid-cols-2 flex-col gap-3 justify-between w-full px-2">
                       {formData?.hobbies?.length > 0 &&
                         formData?.hobbies?.map((hob, inx) => (
                           <p className="flex gap-x-2 text-[14px]" key={inx}>
-                            <span className="max-w-[100px] text-ellipsis overflow-hidden flex whitespace-nowrap capitalize">
+                            <span className="max-w-[150px] text-ellipsis overflow-hidden flex whitespace-nowrap capitalize">
                               <b className="mr-2">{inx + 1}.</b> {hob}
                             </span>
                             <span

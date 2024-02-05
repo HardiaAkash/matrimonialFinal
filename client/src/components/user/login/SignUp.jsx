@@ -6,9 +6,12 @@ import Image from "next/image";
 import Closeeye from "@/components/svg/Closeeye";
 import Openeye from "@/components/svg/Openeye";
 import Link from "next/link";
+import { useAuth } from "@/components/Utils/AuthContext";
+import { destroyCookie } from "nookies";
 
 const SignUp = () => {
   const router = useRouter();
+  const {setUserAuthToken} = useAuth()
   const [loginDetails, setLoginDetails] = useState({
     name: "",
     contact: "",
@@ -26,40 +29,8 @@ const SignUp = () => {
     setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value });
     setError("");
     setSuccess("");
-  };
+  };;
 
-  useEffect(() => {
-    sessionStorage.removeItem("authToken");
-  }, []);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    setLoading(true);
-    try {
-      const response = await axios.post(`/api/auth/adduser`, loginDetails, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.status === 200) {
-        setSuccess("Registered successfully!");
-        setLoading(false);
-        setError("");
-        router.push("/user/sign-in");
-      } else {
-        setError("Invalid details");
-        setLoading(false);
-        setSuccess("")
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-      setError(error?.response?.data || "Server error!");
-      setLoading(false);
-      setSuccess("")
-    }
-  };
   const generateOTP = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -96,6 +67,70 @@ const SignUp = () => {
       setSuccess("")
     }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setLoading(true);
+    try {
+      const response = await axios.post(`/api/auth/adduser`, loginDetails, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 200) {
+        setSuccess("Registered successfully!");
+        setLoading(false);
+        setError("");
+        // router.push("/user/sign-in");
+        handleLogin()
+      } else {
+        setError("Invalid details");
+        setSuccess("")
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      setError(error?.response?.data || "Server error!");
+      setLoading(false);
+      setSuccess("")
+    }
+  };
+
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`/api/auth/userlogin`, loginDetails, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        // setSuccess("Login successfully!");
+        setError("");
+        setLoading(false);
+        setUserAuthToken(response?.data?.token,response?.data?.userID)
+        router.push("/");
+      } else {
+        setError("Invalid credentails");
+        setSuccess("")
+        destroyCookie(null, "us_Auth", { path: "/" });
+        destroyCookie(null, "us_Data", { path: "/" });
+        setLoading(false);
+        return
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      setError(error?.response?.data || "Server error!");
+      setSuccess("")
+      setLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
+    sessionStorage.removeItem("authToken");
+  }, [])
 
   return (
     <>
