@@ -134,6 +134,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: false
     },
+    "potentialMatched":{
+        type: Array
+    },
     "partnerAge": {
         type: String,
     },
