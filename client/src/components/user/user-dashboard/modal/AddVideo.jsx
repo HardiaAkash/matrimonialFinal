@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { toast } from "react-toastify";
 import Loader from "../WebsiiteLoader/Index";
 import { useAuth } from "@/components/Utils/AuthContext";
 
@@ -16,30 +15,34 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId, getUserUpdate, title, p
   const [isLoading, setLoading] = useState(false);
   const [videoDisable, setVideoDisable] = useState(false);
   const [videoUploading, setVideoUploading] = useState(false);
+  const [isError, setError] = useState("");
+  const [isSuccess, setSuccess] = useState("");
 
   const InputHandler = (e) => {
     const file = e.target.files[0];
     const maxSize = 20 * 1024 * 1024;
     if (file && file.size > maxSize) {
-      toast.warn("Please upload video upto 20mb.");
+    setError("Please upload video upto 20mb.");
       e.target.value = null;
     } else {
       setVideo({ file: e.target.files[0] });
     }
+    setError("")
   };
 
   const addField = (e) => {
     setVideoDisable(false);
     setVideo("");
   };
-console.log(formData);
+// console.log(formData);
   const uploadVideo = async (e) => {
     setVideoUploading(true);
 
     try {
       if (!video) {
         setVideoUploading(false);
-        return toast.warn("Please upload a video.");
+        return setError("Please upload a video.");
+        setSuccess("")
       }
 
       const response = await axios.post("api/auth/uploadImage", video, {
@@ -66,7 +69,8 @@ console.log(formData);
         "Error uploading video:",
         error?.response?.data || error?.message
       );
-      toast.error(error?.response?.data);
+      setError(error?.response?.data || "Server error !");
+      setSuccess("")
       setVideoUploading(false);
     }
   };
@@ -76,7 +80,8 @@ console.log(formData);
     console.log(formData);
 
     if (formData?.video?.length < 1) {
-      toast.warn("Please upload all video");
+      setError("Please upload all video");
+      setSuccess("")
     } else {
       setLoading(true);
       try {
@@ -92,22 +97,21 @@ console.log(formData);
         );
 
         if (response.status === 200) {
-          toast.success("Video submitted successfully.");
+          setSuccess("Video submitted successfully.");
+          setError("");
           setLoading(false);
-          console.log(response);
           refreshData()
-          // getUserUpdate(4)
-          // localStorage.setItem( "isVideoUploded",JSON.stringify(true));
-          closeModal();
+          setTimeout(() => {
+            closeModal();
+          }, 1000);
         } else {
-          // console.log(response);
-          setError("Invalid details");
-          toast.error(response);
           setLoading(false);
+          return
         }
       } catch (error) {
         console.error("Error during category:", error);
-        toast.error(error?.response?.data || "server error");
+        setError(error?.response?.data || "Server error");
+        setSuccess("")
         setLoading(false);
       }
     }
@@ -123,7 +127,7 @@ console.log(formData);
       <div className="">
         <form action="" className="" onSubmit={handleSubmit}>
           <div className="flex flex-col justify-center px-4 lg:px-8 py-4">
-            <div className="py-2 mt-1 flex  items-end gap-x-10">
+            <div className="py-2 mt-1 flex  items-end gap-x-10 mb-4">
               <div className="w-[50%]">
                 <span className="login-input-label cursor-pointer mb-1">
                   
@@ -140,8 +144,8 @@ console.log(formData);
                   />
                 </div>
               </div>
-              <div className="">
 
+              <div className="">
                 <button
                   className={`focus-visible:outline-none  text-white text-[13px] px-4 py-1 rounded
                                         ${videoDisable
@@ -159,29 +163,18 @@ console.log(formData);
                       : "Upload"}{" "}
                 </button>
               </div>
-
-              {/* <div className="">
-                <button
-                  className={`focus-visible:outline-none  text-white text-[13px] px-4 py-1 rounded
-                                        ${
-                                          videoDisable
-                                            ? "bg-[green]"
-                                            : "bg-[#070708bd]"
-                                        }`}
-                  type="button"
-                  onClick={uploadVideo}
-                  disabled={videoDisable || videoUploading}
-                >
-                  {videoDisable
-                    ? "Uploaded"
-                    : videoUploading
-                    ? "Loading.."
-                    : "Upload"}{" "}
-                </button>
-              </div> */}
             </div>
-
-            <div className="mt-4 flex pt-6 items-center justify-center md:justify-end  md:flex-nowrap gap-y-3 gap-x-3 ">
+            {isError && (
+                    <div className="py-2 px-4 rounded bg-[#e6c8c8e3] text-[red] text-[12px] font-medium mb-2">
+                      {isError}
+                    </div>
+                  )}
+                  {isSuccess && (
+                    <div className="py-2 px-4 rounded bg-[#dcf6dcdd] text-[green] text-[12px] font-medium mb-2">
+                      {isSuccess}
+                    </div>
+                  )}
+            <div className=" flex pt-2 items-center justify-center md:justify-end  md:flex-nowrap gap-y-3 gap-x-3 ">
               <button
                 type="button"
                 className="rounded-[6px] py-1 px-4 max-w-[300px] w-full lg:w-[50%] border border-[gray] bg-white text-black"

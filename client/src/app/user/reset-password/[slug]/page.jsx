@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -9,17 +9,17 @@ import Link from "next/link";
 import OpenEye from "@/components/user/user-dashboard/Svg/OpenEye";
 import CloseEye from "@/components/user/user-dashboard/Svg/CloseEye";
 
-
-const ResetPassword = ({params}) => {
-    // console.log(params.slug)
+const ResetPassword = ({ params }) => {
+  // console.log(params.slug)
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const resetToken = params?.slug || "";
+  const [isError, setError] = useState("");
+  const [isSuccess, setSuccess] = useState("");
   // const token = JSON.parse(localStorage.getItem("authToken" || ""));
 
-  console.log(params.slug)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -36,22 +36,22 @@ const ResetPassword = ({params}) => {
       );
 
       if (response.status === 200) {
-        toast.success("Password change successful!");
+        setSuccess("Password change successful!");
         setLoading(false);
-        console.log(response.data?.role)
         if (response.data?.role === "Admin") {
           router.push("/admin");
         } else {
-           router.push("/user/sign-in");
+          router.push("/user/sign-in");
         }
         // router.push("/user/sign-in");
       } else {
-        toast.error("Invalid password!");
         setLoading(false);
+        return;
       }
     } catch (error) {
       console.error("Error during login:", error);
-      toast.error("Failed please try again!");
+      setError(error?.response?.data || "Server error !");
+      setSuccess("");
       setLoading(false);
     }
   };
@@ -77,25 +77,38 @@ const ResetPassword = ({params}) => {
                     name="password"
                     placeholder="Password"
                     className="login-input w-full custom-input"
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value), setError(""), setSuccess("");
+                    }}
                     pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)(?![\s\S]*\s).{12,}$"
                     title="Password should include at least one uppercase letter, one lowercase letter, one digit, one non-word character, and a minimum length of 12 characters, while disallowing any whitespace."
                     minLength={12}
                     required
                   />
-                   <div
-                        className="absolute right-[10px] cursor-pointer"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <OpenEye /> : <CloseEye />}
-                      </div>
+                  <div
+                    className="absolute right-[10px] cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <OpenEye /> : <CloseEye />}
+                  </div>
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-2">
+                  {isError && (
+                    <div className="py-2 px-4 rounded bg-[#e6c8c8e3] text-[red] text-[12px] font-medium mb-2">
+                      {isError}
+                    </div>
+                  )}
+                  {isSuccess && (
+                    <div className="py-2 px-4 rounded bg-[#dcf6dcdd] text-[green] text-[12px] font-medium mb-2">
+                      {isSuccess}
+                    </div>
+                  )}
+
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-[#1f2432] font-medium text-white p-2 rounded-lg  hover:bg-white hover:border hover:border-gray-300 h-[50px] login-btn"
+                    className="w-full bg-[#1f2432] mt-2 font-medium text-white p-2 rounded-lg  hover:bg-white hover:border hover:border-gray-300 h-[50px] login-btn"
                   >
                     {isLoading ? "Loading.." : "Reset password"}
                   </button>

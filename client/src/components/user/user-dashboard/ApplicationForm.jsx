@@ -23,7 +23,7 @@ export const nativeBackOptions = [
   "Turkish",
   "Hispanic/Latino",
   "Other"
-];  
+];
 export const bodyType = [
   "Slim/Slender", "Curvy", "Athletic/Fit", "Big & Beautiful"
 ]

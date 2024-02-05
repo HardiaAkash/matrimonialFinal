@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
 import { useRouter } from "next/navigation";
@@ -19,14 +18,17 @@ const SignIn = ({ refreshData }) => {
     password: "",
   });
 
+  const {setUserAuthToken} = useAuth()
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState("");
+  const [isSuccess, setSuccess] = useState("");
   const [loginWith, setLoginWith] = useState(true);
-  const {setUserAuthToken} = useAuth()
+
   const InputHandler = (e) => {
     setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value });
     setError("");
+    setSuccess("");
   };
 
   useEffect(() => {
@@ -43,38 +45,31 @@ const SignIn = ({ refreshData }) => {
           "Content-Type": "application/json",
         },
       });
-      // console.log(response);
       if (response.status === 200) {
-        toast.success("Login successfully!");
+        setSuccess("Login successfully!");
+        setError("");
         setLoading(false);
         setUserAuthToken(response?.data?.token,response?.data?.userID)
         router.push("/");
-        // localStorage.setItem(
-        //   "authToken",
-        //   JSON.stringify(response?.data?.token)
-        // );
-        // localStorage.setItem("userID", JSON.stringify(response?.data?.userID));
-        // navigate("/admin-dashboard");
         refreshData();
       } else {
         setError("Invalid credentails");
-        // localStorage.removeItem("authToken");
+        setSuccess("")
         destroyCookie(null, "us_Auth", { path: "/" });
         destroyCookie(null, "us_Data", { path: "/" });
-        
         setLoading(false);
+        return
       }
     } catch (error) {
       console.error("Error during login:", error);
-      toast.error(error?.response?.data);
-      // localStorage.removeItem("authToken");
+      setError(error?.response?.data || "Server error!");
+      setSuccess("")
       setLoading(false);
     }
   };
 
   return (
     <>
-      {/* <ToastContainer /> */}
       <div className="flex items-center justify-center lg:min-h-screen  ">
         <div className="md:px-[50px] w-full mx-auto">
           <div className="relative flex flex-col 2xl:gap-x-20 xl:gap-x-10 gap-x-7 min-h-screen justify-center lg:shadow-none  items-center lg:flex-row space-y-8 md:space-y-0 w-[100%] px-[10px]bg-white lg:px-[40px] py-[20px] md:py-[40px] ">
@@ -123,7 +118,7 @@ const SignIn = ({ refreshData }) => {
                     )}
                   </div>
 
-                  <div className="relative flex justify-center items-center mt-2">
+                  <div className="relative flex justify-center items-center mt-2 ">
                     <input
                       type={showPassword ? "text" : "password"}
                       name="password"
@@ -142,11 +137,16 @@ const SignIn = ({ refreshData }) => {
                     </div>
                   </div>
                   {isError && (
-                    <div className="py-1 px-4 rounded bg-red-50 text-red-600 text-[12px] font-medium mb-2">
-                      {isError}{" "}
+                    <div className="py-2 px-4 rounded bg-[#e6c8c8e3] text-[red] text-[12px] font-medium mb-2">
+                      {isError}
                     </div>
                   )}
-                  <div className="mt-6">
+                  {isSuccess && (
+                    <div className="py-2 px-4 rounded bg-[#dcf6dcdd] text-[green] text-[12px] font-medium mb-2">
+                      {isSuccess}
+                    </div>
+                  )}
+                  <div className="mt-4">
                     <button
                       type="submit"
                       disabled={isLoading}
