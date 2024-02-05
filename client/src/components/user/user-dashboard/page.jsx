@@ -3,7 +3,6 @@ import React, { Fragment, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
 
 import ViewApplicationDetails from "./PreviewForm";
 import ApplicationForm from "./ApplicationForm";
@@ -29,12 +28,7 @@ const UserDashboadr = () => {
   const [isRefresh, setRefresh] = useState(false);
   const { userToken, userData } = useAuth()
   const {setUserAuthToken} = useAuth()
-  // const token = userToken;
-  // const userId = userData;
-  console.log(userData);
-  // alert("loaided")
-  // console.log(previewFormData?.isMatched);
-
+  
   const refreshData = () => {
     setRefresh(!isRefresh);
   };
@@ -61,9 +55,6 @@ const UserDashboadr = () => {
         console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
-          // localStorage.removeItem("authToken");
-          // localStorage.removeItem("userID");
-          toast.success("Logout successfully")
           destroyCookie(null, "us_Auth", { path: "/" });
           destroyCookie(null, "us_Data", { path: "/" });
           destroyCookie(null, "us_no", { path: "/" });
@@ -72,7 +63,6 @@ const UserDashboadr = () => {
         } else {
           setLoader(false);
 
-          toast.success("Logout successfully")
           destroyCookie(null, "us_Auth", { path: "/" });
           destroyCookie(null, "us_Data", { path: "/" });
           destroyCookie(null, "us_no", { path: "/" });
@@ -84,7 +74,6 @@ const UserDashboadr = () => {
       .catch((error) => {
         setLoader(false);
         console.error("Error:", error);
-        toast.error(error?.response?.data);
         destroyCookie(null, "us_Auth", { path: "/" });
         destroyCookie(null, "us_Data", { path: "/" });
         destroyCookie(null, "us_no", { path: "/" });
@@ -108,12 +97,9 @@ const UserDashboadr = () => {
   const verify = async () => {
     try {
       const res = await axios.get(`/api/auth/verifyTokenUser/${userToken}`);
-      console.log("verify", res);
       if (res.status === 200) {
         setFormStep(res?.data?.data?.step);
         setUserAuthToken(userToken,userData,res?.data?.data?.email,res?.data?.data?.contact)
-        // localStorage.setItem("user_mail", JSON.stringify(res?.data?.data?.email));
-        // localStorage.setItem("user_contact", JSON.stringify(res?.data?.data?.contact));
         return; // Do whatever you need after successful verification
       } else {
         router.push("/user/sign-in");
@@ -151,12 +137,9 @@ const UserDashboadr = () => {
     axios
       .request(options)
       .then((response) => {
-        // console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
           if (response?.data?.length > 0) {
-            // console.log("okkk");
-            // console.log(response?.data);
             setPreviewFormData(response?.data[0]);
             setPreview(true);
           } else {
@@ -172,25 +155,21 @@ const UserDashboadr = () => {
         console.error("Error:", error);
       });
   };
-// console.log( previewFormData?.isMatched === true);
   const menus = [
     {
       id: 0,
       label: "Dashboard",
       component: <Dashboard handleSignout={handleSignout} isLoader={isLoader} />,
-      // icon: HomeIcon,
     },
     {
       id: 1,
       label: "Application Form",
       component: <ApplicationForm refreshData={refreshData} />,
-      // // icon: PageIcon,
     },
     {
       id: 2,
       label: "Background Check",
       component: <BackgroundCheck refreshData={refreshData} />,
-      // // icon: webIcon,
     },
     {
       id: 3,
@@ -202,26 +181,22 @@ const UserDashboadr = () => {
           refreshData={refreshData}
         />
       ),
-      // icon: conversation,
     },
     {
       id: 4,
       label: "Counseling Video",
       component: <CounselingVideo refreshData={refreshData} />,
-      // // icon: contactIcon,
     },
     {
       id: 5,
       label: "Match Found",
       component: <MatchFound previewData={previewFormData} />,
-      // // icon: contactIcon,
     },
   ];
 
   return (
     <>
       {isLoader && <Loader />}
-      <ToastContainer />
       <section className="">
         <div className="flex min-h-screen relative lg:static">
           <div
@@ -317,12 +292,10 @@ const UserDashboadr = () => {
                       />
                     ) : (
                       <>
-                        {/* {console.log(isFormStep)} */}
                         {isFormStep >= item.id || isFormStep == 4 ? (
                           item.component
                         ) : (
                           <>
-                            {/* {item.component} */}
                             <div className="text-center flex flex-col justify-center items-center min-h-screen 2xl:gap-y-20 lg:gap-10 gap-5 px-[20px]">
                               <p className="text-gray-500 2xl:text-[30px]  text-[20px] font-normal pt-[40px]">
                                 Complete the previous steps to unlock{" "}

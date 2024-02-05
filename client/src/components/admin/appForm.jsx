@@ -131,7 +131,7 @@ const AppForm = () => {
     //   (item) => item._id === id
     // );
     // console.log(selectedItemData)
-   
+    setLoader(true);
     try {
       const res = await axios.get(`/api/auth/getFormByID/${id}`, {
         headers: {

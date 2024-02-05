@@ -1,21 +1,14 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter } from 'next/navigation'
-import { ToastContainer, toast } from 'react-toastify';
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-// import { Link, useNavigate } from "react-router-dom";
-// import { toast } from "react-toastify";
 import Closeeye from "@/components/svg/Closeeye";
 import Openeye from "@/components/svg/Openeye";
 import Link from "next/link";
-// import { BASE_URL } from "./config";
-// import RightSection from "./RightSection";
-
 
 const SignUp = () => {
-
-  const router = useRouter()
+  const router = useRouter();
   const [loginDetails, setLoginDetails] = useState({
     name: "",
     contact: "",
@@ -23,12 +16,16 @@ const SignUp = () => {
     password: "",
     otp: "",
   });
-  const BASE_URL = ""
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [isOtp, setIsOtp] = useState(false)
+  const [isOtp, setIsOtp] = useState(false);
+  const [isError, setError] = useState("");
+  const [isSuccess, setSuccess] = useState("");
+
   const InputHandler = (e) => {
     setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value });
+    setError("");
+    setSuccess("");
   };
 
   useEffect(() => {
@@ -45,65 +42,63 @@ const SignUp = () => {
           "Content-Type": "application/json",
         },
       });
-      // console.log(response);
-      // return
+
       if (response.status === 200) {
-        toast.success("Registered successfully!");
+        setSuccess("Registered successfully!");
         setLoading(false);
+        setError("");
         router.push("/user/sign-in");
-        // sessionStorage.setItem("authToken",JSON.stringify(response?.data?.token));
-        // navigate("/admin-dashboard");
       } else {
-        toast.error("Invalid details");
-        // sessionStorage.removeItem("authToken");
+        setError("Invalid details");
         setLoading(false);
+        setSuccess("")
       }
     } catch (error) {
       console.error("Error during login:", error);
-      toast.error(error?.response?.data);
-      // sessionStorage.removeItem("authToken");
+      setError(error?.response?.data || "Server error!");
       setLoading(false);
+      setSuccess("")
     }
   };
   const generateOTP = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
     if (loginDetails.email) {
       try {
-        const response = await axios.post(`/api/auth/generateOTP`, loginDetails, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await axios.post(
+          `/api/auth/generateOTP`,
+          loginDetails,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (response.status === 200) {
-          toast.success("OTP send successfully, please check email.");
+          setSuccess("OTP send successfully, please check email.");
+          setError("");
           setLoading(false);
-          setIsOtp(true)
-          // router.push("/user/sign-in");
-          // sessionStorage.setItem("authToken",JSON.stringify(response?.data?.token));
-          // navigate("/admin-dashboard");
+          setIsOtp(true);
         } else {
-          toast.error("Invalid details");
-          // sessionStorage.removeItem("authToken");
           setLoading(false);
+          setSuccess("")
+          return
         }
-
       } catch (error) {
         console.error("Error during otp:", error);
-        toast.error(error?.response?.data);
-        // sessionStorage.removeItem("authToken");
-        setLoading(false)
+        setError(error?.response?.data || "Server error !");
+        setLoading(false);
+        setSuccess("")
       }
+    } else {
+      setLoading(false);
+      setError("Please enter email.");
+      setSuccess("")
     }
-    else {
-      setLoading(false)
-      toast.warn("Please enter email.")
-    }
-  }
+  };
 
   return (
     <>
-      <ToastContainer />
       <div className="flex items-center justify-center lg:min-h-screen  ">
         <div className="md:px-[50px] w-full mx-auto">
           <div className="relative flex flex-col 2xl:gap-x-20 xl:gap-x-10 gap-x-7 min-h-screen justify-center lg:shadow-none  items-center lg:flex-row space-y-8 md:space-y-0 w-[100%] px-[10px]bg-white lg:px-[40px] py-[20px] md:py-[40px] ">
@@ -165,11 +160,7 @@ const SignUp = () => {
                       placeholder="Password"
                       className=" w-full custom-input"
                       onChange={InputHandler}
-                      // pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
-                      // pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
-                      // pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?\&])[A-Za-z\d@$!%*?\&]{12,}$"
                       pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)(?![\s\S]*\s).{12,}$"
-                      // pattern="^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{12,}$" 
                       title="Password should include at least one uppercase letter, one lowercase letter, one digit, one non-word character, and a minimum length of 12 characters, while disallowing any whitespace."
                       minLength={12}
                       required
@@ -181,48 +172,62 @@ const SignUp = () => {
                       {showPassword ? <Openeye /> : <Closeeye />}
                     </div>
                   </div>
-                  {
-                    isOtp ?
-                      <div className="md:py-2">
-                        <input
-                          type="text"
-                          name="otp"
-                          placeholder="OTP"
-                          className=" w-full mt-2 custom-input"
-                          onChange={InputHandler}
-                          required
-                        />
-                      </div>
+                  {isOtp ? (
+                    <div className="md:py-2">
+                      <input
+                        type="text"
+                        name="otp"
+                        placeholder="OTP"
+                        className=" w-full mt-2 custom-input"
+                        onChange={InputHandler}
+                        required
+                      />
+                    </div>
+                  ) : (
+                    ""
+                  )}
 
-                      : ""
-                  }
+                  {isError && (
+                    <div className="py-2 px-4 rounded bg-[#e6c8c8e3] text-[red] text-[12px] font-medium mb-2">
+                      {isError}
+                    </div>
+                  )}
+                  {isSuccess && (
+                    <div className="py-2 px-4 rounded bg-[#dcf6dcdd] text-[green] text-[12px] font-medium mb-2">
+                      {isSuccess}
+                    </div>
+                  )}
 
                   <div className="mt-6">
-                    {
-                     isOtp ?
-
-                        <button
-                          type="submit"
-                          disabled={isLoading}
-                          className="w-full bg-[#1f2432] font-semibold  p-2 rounded-lg  hover:bg-white hover:border text-[white]  hover:border-[gray] h-[50px] login-btn"
-                        >
-                          {isLoading ? "Loading.." : "Sign up"}
-                        </button> :
-                        <button
-                          type="button"
-                          disabled={isLoading}
-                          onClick={generateOTP}
-                          className="w-full bg-[#1f2432] font-semibold  p-2 rounded-lg  hover:bg-white hover:border text-[white]  hover:border-[gray] h-[50px] login-btn"
-                        >
-                          {isLoading ? "Loading.." : "Get OTP"}
-                        </button>
-
-                    }
+                    {isOtp ? (
+                      <button
+                        type="submit"
+                        disabled={isLoading}
+                        className="w-full bg-[#1f2432] font-semibold  p-2 rounded-lg  hover:bg-white hover:border text-[white]  hover:border-[gray] h-[50px] login-btn"
+                      >
+                        {isLoading ? "Loading.." : "Sign up"}
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled={isLoading}
+                        onClick={generateOTP}
+                        className="w-full bg-[#1f2432] font-semibold  p-2 rounded-lg  hover:bg-white hover:border text-[white]  hover:border-[gray] h-[50px] login-btn"
+                      >
+                        {isLoading ? "Loading.." : "Get OTP"}
+                      </button>
+                    )}
 
                     <div className="text-[16px] font-medium  text-center py-3">
-                      <span className="text-[#00000080] mr-2 "> Already a user? </span>
+                      <span className="text-[#00000080] mr-2 ">
+                        {" "}
+                        Already a user?{" "}
+                      </span>
                       <Link href="/user/sign-in">
-                        <span className="underline cursor-pointer font-semibold"> Sign in </span>
+                        <span className="underline cursor-pointer font-semibold">
+                          {" "}
+                          Sign in{" "}
+                        </span>
                       </Link>
                     </div>
                   </div>
@@ -235,7 +240,7 @@ const SignUp = () => {
                 alt="login"
                 height={500}
                 width={500}
-              // className="w-full h-auto mx-auto"
+                // className="w-full h-auto mx-auto"
               />
             </div>
           </div>
