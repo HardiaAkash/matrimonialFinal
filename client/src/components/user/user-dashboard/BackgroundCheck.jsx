@@ -1,19 +1,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import axios from "axios";
-import Link from "next/link";
 import { useAuth } from "@/components/Utils/AuthContext";
+import Loader from "./WebsiiteLoader/Index";
 
 const BackgroundCheck = ({refreshData}) => {
-  const router = useRouter();
   const [isLoader, setLoader] = useState(false);
   const {userToken,userData} = useAuth()
   const token =  userToken;
   const userId =  userData;
 
   const getUserUpdate = ( step ) => {
-    // router.push("https://www.google.com/","_blank"); 
     setLoader(true);
     const options = {
       method: "PUT",
@@ -34,11 +31,11 @@ const BackgroundCheck = ({refreshData}) => {
       .then((response) => {
         // console.log(response?.data);
         if (response.status === 200) {
-          setLoader(false);
           refreshData()
           setTimeout(()=>{
             window.open('http://www.candidatelink.com/icoi', '_blank');
           },500)
+          setLoader(false);
         } else {
           setLoader(false);
           return;
@@ -53,6 +50,7 @@ const BackgroundCheck = ({refreshData}) => {
 
   return (
     <>
+    {isLoader && <Loader /> }
       <section>
         <div className="flex flex-col h-[100vh] justify-center 2xl:gap-20 md:gap-10 gap-6 items-center bg-white relative">
           <div className="absolute right-[35px] top-[15px] cursor-pointer ">

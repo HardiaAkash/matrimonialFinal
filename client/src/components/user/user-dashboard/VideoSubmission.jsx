@@ -1,7 +1,6 @@
 "use client";
 import React, { Fragment, useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import Link from "next/link";
 import axios from "axios";
 import AddVideo from "./modal/AddVideo";
 import { useAuth } from "@/components/Utils/AuthContext";
@@ -12,16 +11,12 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
   let [isVideo, setVideo] = useState(false);
   const [isLoader, setLoader] = useState(false);
   const { userToken, userData } = useAuth()
-  const userId = userData;
-  const token = userToken;
   const [videoSrc, setVideoSrc] = useState("")
   const [sourceTitle, setSourceTitle] = useState("")
-  // const [titleArray, setTitleArray] = useState()
   const titleArray = [
     "Start by introducing yourself.", "Tell us something interesting about yourself.", "Tell us a little bit about your work.", "Tell us a little bit about your family.", "What are your hobbies and interests?", "How do you spend your free time?", "What are you looking for in a partner?"
   ]
   const [title, setTitle] = useState("")
-  // const isVideoUplod = JSON.parse(localStorage.getItem("isVideoUploded" || ""));
   const [isVideoUplod, setIsVideoUplod] = useState(false);
 
   const closeModal = () => {
@@ -74,26 +69,6 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
     }
   }, []);
 
-  // console.log(previewData);
-  console.log(previewData.video.length);
-  const boxStyles = {
-    border: '1px solid #ccc',
-    padding: '15px',
-    borderRadius: '8px',
-    backgroundColor: '#f5f5f5',
-    textAlign: "left"
-
-  };
-
-  const ulStyles = {
-    listStyleType: 'disc',
-    marginLeft: '20px',
-    marginTop: '8px'
-  };
-
-  const listItemStyles = {
-    marginBottom: '8px',
-  };
   return (
     <>
       <section className="bg-white">
@@ -126,7 +101,7 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
                     className="w-[450px]"
                   /> */}
                 <h5>Please record your separate video by answering :</h5>
-                <div className="mx-auto mt-3 ">
+                <div className="mx-auto mt-4 ">
 
                   <table className="text-left">
                     <thead>

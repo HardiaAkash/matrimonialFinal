@@ -1,17 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import Loader from "./WebsiiteLoader/Index";
 import { useAuth } from "@/components/Utils/AuthContext";
 
-export const marital_status = [
-  "single",
-  "separated",
-  "widowed",
-  "divorced",
-
-];
+export const marital_status = ["single", "separated", "widowed", "divorced"];
 export const nativeBackOptions = [
   "Caucasian",
   "Black",
@@ -22,32 +15,75 @@ export const nativeBackOptions = [
   "Persian",
   "Turkish",
   "Hispanic/Latino",
-  "Other"
+  "Other",
 ];
 export const bodyType = [
-  "Slim/Slender", "Curvy", "Athletic/Fit", "Big & Beautiful"
-]
-export const religionType = [
-  "Muslim(Sunni)", "Muslim(Shia)", "Muslim(Other)"
-]
-export const educationLevel = ["High School", "College/Diploma", `Bachelors Degree`, "Masters", "PHD"]
-export const incomeRange = ["less than 25,000", "25,000- 50,000", "50,000-75,000", "75,000-100,000", "over 100,000"]
-export const immigrationStatusArray = ["Citizens. A US citizen is either a person who was born in the US or became a naturalized citizen.", "Conditional and Permanent Residents.", "Non-Immigrant Status.", "Undocumented."]
-export const partnerAgeArray = ['18- 25', '25- 30', '30- 35', '35-40', '40- 45', '45-50', '50-55', '55-60', 'over 60']
+  "Slim/Slender",
+  "Curvy",
+  "Athletic/Fit",
+  "Big & Beautiful",
+];
+export const religionType = ["Muslim(Sunni)", "Muslim(Shia)", "Muslim(Other)"];
+export const educationLevel = [
+  "High School",
+  "College/Diploma",
+  `Bachelors Degree`,
+  "Masters",
+  "PHD",
+];
+export const incomeRange = [
+  "less than 25,000",
+  "25,000- 50,000",
+  "50,000-75,000",
+  "75,000-100,000",
+  "over 100,000",
+];
+export const immigrationStatusArray = [
+  "Citizens. A US citizen is either a person who was born in the US or became a naturalized citizen.",
+  "Conditional and Permanent Residents.",
+  "Non-Immigrant Status.",
+  "Undocumented.",
+];
+export const partnerAgeArray = [
+  "18-25",
+  "25-30",
+  "30-35",
+  "35-40",
+  "40-45",
+  "45-50",
+  "50-55",
+  "55-60",
+  "over 60",
+];
+export const hobbiesList = [
+  "Reading",
+  "Writing",
+  "Outdoor Activities",
+  "Art and Craft",
+  "Music",
+  "Sports and Fitness",
+  "Cooking and Baking",
+  "Photography",
+  "Technology and Gaming",
+  "Collecting",
+  "Language Learning",
+  "Volunteering",
+  "Science and Nature",
+  "Dancing",
+  "Mind Games",
+];
 
 const ApplicationForm = ({ refreshData }) => {
-  const { userToken, userData, userMail, userContact } = useAuth()
-  const [isOtherBackOption, setIsOtherBackOption] = useState(false)
-  const [isOtherLanguage, setIsOtherLanguage] = useState(false)
-  const [isfemale, setIsfemale] = useState(false)
-  const [isOtherMuslim, setIsOtherMuslim] = useState(false)
-  // console.log(userMail);
-  const [isPartnerOtherMuslim, setIsPartnerOtherMuslim] = useState(false)
-  const [isPartnerOtherBackground, setIsPartnerOtherBackground] = useState(false)
-  const [isPartnerOtherLanguage, setIsPartnerOtherLanguage] = useState(false)
+  const { userToken, userData, userMail, userContact } = useAuth();
+  const [isOtherBackOption, setIsOtherBackOption] = useState(false);
+  const [isOtherLanguage, setIsOtherLanguage] = useState(false);
+  const [isfemale, setIsfemale] = useState(false);
+  const [isOtherMuslim, setIsOtherMuslim] = useState(false);
+  const [isPartnerOtherMuslim, setIsPartnerOtherMuslim] = useState(false);
+  const [isPartnerOtherBackground, setIsPartnerOtherBackground] =
+    useState(false);
+  const [isPartnerOtherLanguage, setIsPartnerOtherLanguage] = useState(false);
 
-  // const userMail = typeof window !== undefined ? JSON.parse(localStorage.getItem("user_mail" || "")):"";
-  // const userContact = typeof window !== undefined ? JSON.parse(localStorage.getItem("user_contact" || "")):"";
   const [formData, setFormData] = useState({
     firstname: "",
     middlename: "",
@@ -114,20 +150,25 @@ const ApplicationForm = ({ refreshData }) => {
   const [isSubmited, setSubmited] = useState(false);
   const [isLoader, setLoader] = useState(false);
   const [errorDate, setErrorDate] = useState("");
+  const [isImgError, setImgError] = useState("");
+  const [isError, setError] = useState("");
+  const [isSuccess, setSuccess] = useState("");
+  const [isHobbyErr, setHobbyErr] = useState("");
+  const [selectedHobbies, setSelectedHobbies] = useState([]);
 
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
-  const day = today.getDate().toString().padStart(2, '0');
-  // const formattedToday = `${year}-${month}-${day}T00:00`;
-  const formattedToday = new Date().toISOString().split('T')[0];
-
+  const formattedToday = new Date().toISOString().split("T")[0];
 
   const InputHandler = (e) => {
     if (e.target.name === "image") {
       setPhotograph({ file: e.target.files[0] });
+      setImgError("");
     } else if (e.target.name === "hobby") {
-      setHobby(e.target.value);
+      const selectedOptions = Array.from(e.target.selectedOptions, (option) => option.value);
+      setFormData({
+        ...formData,
+        hobbies: selectedOptions,
+      });
+      setHobbyErr("");
     } else if (e.target.name === "dateOfBirth") {
       const enteredDate = new Date(e.target.value);
       const currentDate = new Date();
@@ -147,47 +188,77 @@ const ApplicationForm = ({ refreshData }) => {
       if (e.target.name === "nativelanguage" && e.target.value !== "other") {
         setIsOtherLanguage(false);
       }
-      if (e.target.name === "partnerNativeLanguage" && e.target.value === "other") {
+      if (
+        e.target.name === "partnerNativeLanguage" &&
+        e.target.value === "other"
+      ) {
         setIsPartnerOtherLanguage(true);
         setFormData({ ...formData, [e.target.name]: "" });
         return;
       }
-      if (e.target.name === "partnerNativeLanguage" && e.target.value !== "other") {
+      if (
+        e.target.name === "partnerNativeLanguage" &&
+        e.target.value !== "other"
+      ) {
         setIsPartnerOtherLanguage(false);
       }
 
-      if (e.target.name === "background" && e.target.value?.toLowerCase() === "other") {
+      if (
+        e.target.name === "background" &&
+        e.target.value?.toLowerCase() === "other"
+      ) {
         setIsOtherBackOption(true);
         setFormData({ ...formData, [e.target.name]: "" });
         return;
       }
-      if (e.target.name === "background" && e.target.value?.toLowerCase() !== "other") {
+      if (
+        e.target.name === "background" &&
+        e.target.value?.toLowerCase() !== "other"
+      ) {
         setIsOtherBackOption(false);
       }
 
-      if (e.target.name === "partnerBackground" && e.target.value?.toLowerCase() === "other") {
+      if (
+        e.target.name === "partnerBackground" &&
+        e.target.value?.toLowerCase() === "other"
+      ) {
         setIsPartnerOtherBackground(true);
         setFormData({ ...formData, [e.target.name]: "" });
         return;
       }
-      if (e.target.name === "partnerBackground" && e.target.value?.toLowerCase() !== "other") {
+      if (
+        e.target.name === "partnerBackground" &&
+        e.target.value?.toLowerCase() !== "other"
+      ) {
         setIsPartnerOtherBackground(false);
       }
 
-      if (e.target.name === "religion" && e.target.value?.toLowerCase() === "muslim(other)") {
+      if (
+        e.target.name === "religion" &&
+        e.target.value?.toLowerCase() === "muslim(other)"
+      ) {
         setIsOtherMuslim(true);
         setFormData({ ...formData, [e.target.name]: "" });
         return;
       }
-      if (e.target.name === "religion" && e.target.value?.toLowerCase() !== "muslim(other)") {
+      if (
+        e.target.name === "religion" &&
+        e.target.value?.toLowerCase() !== "muslim(other)"
+      ) {
         setIsOtherMuslim(false);
       }
-      if (e.target.name === "partnerReligion" && e.target.value?.toLowerCase() === "muslim(other)") {
+      if (
+        e.target.name === "partnerReligion" &&
+        e.target.value?.toLowerCase() === "muslim(other)"
+      ) {
         setIsPartnerOtherMuslim(true);
         setFormData({ ...formData, [e.target.name]: "" });
         return;
       }
-      if (e.target.name === "partnerReligion" && e.target.value?.toLowerCase() !== "muslim(other)") {
+      if (
+        e.target.name === "partnerReligion" &&
+        e.target.value?.toLowerCase() !== "muslim(other)"
+      ) {
         setIsPartnerOtherMuslim(false);
       }
 
@@ -196,124 +267,68 @@ const ApplicationForm = ({ refreshData }) => {
     }
   };
   const radioGender = (e) => {
-    if (e.target.name === 'gender' && e.target.value === "female") {
+    if (e.target.name === "gender" && e.target.value === "female") {
       setIsfemale(true);
       setFormData((prevFormData) => ({
         ...prevFormData,
-        hijabStatus: '',
-        partnerGender: 'male',
+        hijabStatus: "",
+        partnerGender: "male",
         [e.target.name]: e.target.value,
       }));
     }
 
-    if (e.target.name === 'gender' && e.target.value === "male") {
+    if (e.target.name === "gender" && e.target.value === "male") {
       setFormData((prevFormData) => ({
         ...prevFormData,
-        hijabStatus: '',
-        partnerGender: 'female',
+        hijabStatus: "",
+        partnerGender: "female",
         [e.target.name]: e.target.value,
       }));
       setIsfemale(false);
     }
-
   };
-
-  // const InputHandler = (e) => {
-  //   if (e.target.name === "image") {
-  //     setPhotograph({ file: e.target.files[0] });
-  //   } else if (e.target.name === "hobby") {
-  //     setHobby(e.target.value);
-  //   } else if (e.target.name === "dateOfBirth") {
-  //     const enteredDate = new Date(e.target.value);
-  //     const currentDate = new Date();
-  //     // console.log(currentDate)
-  //     if (enteredDate > currentDate) {
-  //       // Date is in the future, set an error message
-  //       setErrorDate("Invalid date of birth. Please enter a date in the past.");
-  //     } else {
-  //       // Date is valid, update the state and clear the error message
-  //       setFormData({ ...formData, ["dateOfBirth"]: e.target.value });
-  //       setErrorDate("");
-  //     }
-  //   } else {
-  //     if (e.target.name === "nativelanguage" && e.target.value === "other") {
-  //       setIsOtherLanguage(true)
-  //       setFormData({ ...formData, [e.target.name]: "" })
-  //       return
-  //     }
-  //     if (e.target.name === "nativelanguage" && e.target.value !== "other") {
-  //       setIsOtherLanguage(false)
-  //     }
-  //     if (e.target.name === "background" && e.target.value?.toLowerCase() === "other") {
-  //       setIsOtherBackOption(true)
-  //       setFormData({ ...formData, [e.target.name]: "" })
-  //       return
-  //     }
-  //     if (e.target.name === "background" && e.target.value?.toLowerCase() !== "other") {
-  //       setIsOtherBackOption(false)
-  //     }
-  //     if (e.target.name === "religion" && e.target.value?.toLowerCase() === "muslim(other)") {
-  //       setIsOtherMuslim(true)
-  //       setFormData({ ...formData, [e.target.name]: "" })
-  //       return
-  //     }
-  //     if (e.target.name === "religion" && e.target.value?.toLowerCase() !== "muslim(other)") {
-  //       setIsOtherMuslim(false)
-  //     }
-  //     if (e.target.name === 'gender' && e.target.value === "female") {
-  //       setIsfemale(true)
-  //       setFormData({...formData, partnerGender:"male"})
-  //       setFormData({ ...formData, hijabStatus: '' });        // formData.hijabStatus = ""
-  //     }
-  //     if (e.target.name === 'gender' && e.target.value === "male") {
-  //       setFormData({ ...formData, hijabStatus: '' });        // formData.hijabStatus = ""
-  //       setFormData({...formData, partnerGender:"female"})
-  //       setIsfemale(false)
-  //     }
-  //     setFormData({ ...formData, [e.target.name]: e.target.value });
-  //   }
-  // };
-
   const otherOptionHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  // const handleAddHobbies = () => {
+  //   if (!hobby) {
+  //     setHobbyErr("Please enter a valid hobby.");
+  //     return;
+  //   }
 
-  }
-  // console.log(formData);
-  const handleAddHobbies = () => {
-    if (!hobby) {
-      // Handle case where hobby is empty
-      toast.error("Please enter a valid hobby.");
-      return;
-    }
+  //   if (/^\s|[^\w\s]/.test(hobby)) {
+  //     setHobbyErr(
+  //       "Hobbies should not start with whitespace and also special character not allowed"
+  //     );
+  //     return;
+  //   }
 
-    if (/^\s|[^\w\s]/.test(hobby)) {
-      // Handle case where hobby starts with whitespace
-      toast.error("Hobbies should not start with whitespace and also special character not allowed");
-      return;
-    }
+  //   setFormData({
+  //     ...formData,
+  //     hobbies: [...(formData.hobbies || []), hobby.trim()], // Remove leading/trailing whitespaces
+  //   });
 
-    // Add the hobby to the formData
+  //   setHobby("");
+  // };
+  const removeHobbies = (index) => {
+    // let newHobbies = formData.hobbies.filter((items, index) => {
+    //   return index !== id;
+    // });
+    // setFormData({ ...formData, [`hobbies`]: newHobbies });
+    const updatedHobbies = [...formData.hobbies];
+    updatedHobbies.splice(index, 1);
+  
     setFormData({
       ...formData,
-      hobbies: [...(formData.hobbies || []), hobby.trim()], // Remove leading/trailing whitespaces
+      hobbies: updatedHobbies,
     });
-
-    // Clear the input
-    setHobby("");
   };
-  const removeHobbies = (id) => {
-    let newHobbies = formData.hobbies.filter((items, index) => {
-      return index !== id;
-    });
-    setFormData({ ...formData, [`hobbies`]: newHobbies });
-  };
-
   const uploadImage = async () => {
     setImageUpload(true);
 
     if (photograph == "" || photograph == undefined) {
       setImageUpload(false);
-      return toast.warn("Please upload image.");
+      return setImgError("Please upload image.");
     }
 
     try {
@@ -325,11 +340,9 @@ const ApplicationForm = ({ refreshData }) => {
       });
 
       if (response.status === 200) {
-        // console.log('Category added:', response?.data);
         setFormData({ ...formData, ["image"]: response?.data?.url });
         setImageDisable(true);
         setImageUpload(false);
-        // setSubmited(true);
       } else {
         setFormData({ ...formData, ["image"]: "" });
         setImageDisable(false);
@@ -340,18 +353,17 @@ const ApplicationForm = ({ refreshData }) => {
       setImageUpload(false);
     }
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
 
     if (/^\s/.test(formData.familyDetails)) {
-      toast.error("Your details should not start with whitespace.");
-      return
+      setError("Your details should not start with whitespace.");
+      return;
     }
     if (/^\s/.test(formData.address)) {
-      toast.error("Address should not start with whitespace.");
-      return
+      setError("Address should not start with whitespace.");
+      return;
     }
     setLoading(true);
     try {
@@ -361,27 +373,26 @@ const ApplicationForm = ({ refreshData }) => {
           "Content-Type": "application/json",
         },
       });
-      // console.log(formData)
-      // console.log(response)
       if (response.status === 200) {
-        toast.success("Details submit successfully.");
+        setSuccess("Details submit successfully!");
+        setError("");
         setLoading(false);
         setSubmited(true);
         getUserUpdate(2);
         refreshData();
       } else {
-        toast.error(response?.data);
+        setError(response?.data);
+        setSuccess("");
         setLoading(false);
         return;
       }
     } catch (error) {
       console.error("Error during category:", error);
-      toast.error(error?.response?.data || "server error");
+      setError(error?.response?.data || "Server error!");
+      setSuccess("");
       setLoading(false);
-
     }
   };
-
   const getUserUpdate = (step) => {
     setLoader(true);
     const options = {
@@ -401,7 +412,6 @@ const ApplicationForm = ({ refreshData }) => {
     axios
       .request(options)
       .then((response) => {
-        // console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
           refreshData();
@@ -418,8 +428,7 @@ const ApplicationForm = ({ refreshData }) => {
 
   return (
     <>
-      <ToastContainer />
-      {imageUpload && <Loader />}
+      {isLoader || (imageUpload && <Loader />)}
       <section className="bg-[#f3f3f3] rounded max-h-[100vh] overflow-y-scroll">
         <div className="container mx-auto">
           <div className="py-[40px] lg:py-[70px] flex flex-col justify-center">
@@ -427,11 +436,13 @@ const ApplicationForm = ({ refreshData }) => {
               application form
             </h4>
             <form className="" onSubmit={handleSubmit}>
-              <div >
+              <div>
                 {/*-----------first name -----------*/}
                 <div className="py-[20px] lg:max-w-[80%]  mx-auto flex flex-col md:grid md:grid-cols-2 gap-3 gap-x-10 items-start justify-center lg:px-0 px-[20px]">
                   <div className="inputDiv">
-                    <label htmlFor="firstname" className="login-input-label ">First Name*:</label>
+                    <label htmlFor="firstname" className="login-input-label ">
+                      First Name*:
+                    </label>
 
                     <input
                       id="firstname"
@@ -449,7 +460,9 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*-----------Middle name -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="middlename" className="login-input-label ">Middle Name:</label>
+                    <label htmlFor="middlename" className="login-input-label ">
+                      Middle Name:
+                    </label>
 
                     <input
                       type="text"
@@ -466,7 +479,9 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*-----------last name -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="lastname" className="login-input-label ">Last Name*:</label>
+                    <label htmlFor="lastname" className="login-input-label ">
+                      Last Name*:
+                    </label>
 
                     <input
                       type="text"
@@ -484,7 +499,9 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*-----------Age -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="age" className="login-input-label ">Age*:</label>
+                    <label htmlFor="age" className="login-input-label ">
+                      Age*:
+                    </label>
 
                     <input
                       type="number"
@@ -501,7 +518,9 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- dob -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="dateOfBirth" className="login-input-label ">DOB*:</label>
+                    <label htmlFor="dateOfBirth" className="login-input-label ">
+                      DOB*:
+                    </label>
 
                     <input
                       id="dateOfBirth"
@@ -574,7 +593,9 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- email -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="email" className="login-input-label ">Email*:</label>
+                    <label htmlFor="email" className="login-input-label ">
+                      Email*:
+                    </label>
 
                     <input
                       type="email"
@@ -592,7 +613,12 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- number -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="contactNumber" className="login-input-label ">Contact No.*:</label>
+                    <label
+                      htmlFor="contactNumber"
+                      className="login-input-label "
+                    >
+                      Contact No.*:
+                    </label>
 
                     <input
                       type="text"
@@ -611,7 +637,9 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- address -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="address" className="login-input-label ">Street Address:</label>
+                    <label htmlFor="address" className="login-input-label ">
+                      Street Address:
+                    </label>
 
                     <textarea
                       id="address"
@@ -628,7 +656,9 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- city -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="city" className="login-input-label ">City*:</label>
+                    <label htmlFor="city" className="login-input-label ">
+                      City*:
+                    </label>
 
                     <input
                       type="text"
@@ -646,7 +676,9 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- state -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="state" className="login-input-label ">State*:</label>
+                    <label htmlFor="state" className="login-input-label ">
+                      State*:
+                    </label>
 
                     <input
                       type="text"
@@ -662,7 +694,9 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- background -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="background" className="login-input-label ">Background*:</label>
+                    <label htmlFor="background" className="login-input-label ">
+                      Background*:
+                    </label>
                     <select
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                       id="background"
@@ -672,42 +706,51 @@ const ApplicationForm = ({ refreshData }) => {
                       required
                     >
                       <option value="">Select Ethnicity</option>
-                      {
-                        nativeBackOptions.map((items, index) => {
-                          return (
-                            <>
-                              <option key={index} value={items}>{items}</option>
-                            </>
-                          )
-                        })
-                      }
+                      {nativeBackOptions.map((items, index) => {
+                        return (
+                          <>
+                            <option key={index} value={items}>
+                              {items}
+                            </option>
+                          </>
+                        );
+                      })}
                     </select>
                   </div>
-                  {
-                    isOtherBackOption ?
-                      <div className="inputDiv">
-                        <label htmlFor="background" className="login-input-label ">Other Ethnicity*:</label>
+                  {isOtherBackOption ? (
+                    <div className="inputDiv">
+                      <label
+                        htmlFor="background"
+                        className="login-input-label "
+                      >
+                        Other Ethnicity*:
+                      </label>
 
-                        <input
-                          type="text"
-                          name="background"
-                          value={formData.background}
-                          placeholder="Other Ethnicity"
-                          className="login-input w-full mt-2 custom-input"
-                          onChange={otherOptionHandler}
-                          pattern="^[A-Za-z][A-Za-z\s]*$"
-                          title="Enter only alphabet"
-                          maxLength={64}
-                          required
-                        />
-                      </div>
-
-                      : ""
-                  }
+                      <input
+                        type="text"
+                        name="background"
+                        value={formData.background}
+                        placeholder="Other Ethnicity"
+                        className="login-input w-full mt-2 custom-input"
+                        onChange={otherOptionHandler}
+                        pattern="^[A-Za-z][A-Za-z\s]*$"
+                        title="Enter only alphabet"
+                        maxLength={64}
+                        required
+                      />
+                    </div>
+                  ) : (
+                    ""
+                  )}
 
                   {/* /////////////////////////////language///////////     */}
                   <div className="inputDiv">
-                    <label htmlFor="nativeLanguage" className="login-input-label ">Native Language*:</label>
+                    <label
+                      htmlFor="nativeLanguage"
+                      className="login-input-label "
+                    >
+                      Native Language*:
+                    </label>
                     <select
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                       id="nativelanguage"
@@ -720,32 +763,40 @@ const ApplicationForm = ({ refreshData }) => {
                       <option value="English">English</option>
                       <option value="other">Other</option>
                     </select>
-
                   </div>
-                  {
-                    isOtherLanguage ?
-                      <div className="inputDiv">
-                        <label htmlFor="nativeLanguage" className="login-input-label ">Other Native Language*:</label>
+                  {isOtherLanguage ? (
+                    <div className="inputDiv">
+                      <label
+                        htmlFor="nativeLanguage"
+                        className="login-input-label "
+                      >
+                        Other Native Language*:
+                      </label>
 
-                        <input
-                          type="text"
-                          name="nativelanguage"
-                          value={formData.nativelanguage}
-                          placeholder="Other Native Language"
-                          className="login-input w-full mt-2 custom-input"
-                          onChange={otherOptionHandler}
-                          pattern="^[A-Za-z][A-Za-z\s]*$"
-                          title="Enter only alphabet"
-                          maxLength={64}
-                          required
-                        />
-                      </div>
-
-                      : ""
-                  }
+                      <input
+                        type="text"
+                        name="nativelanguage"
+                        value={formData.nativelanguage}
+                        placeholder="Other Native Language"
+                        className="login-input w-full mt-2 custom-input"
+                        onChange={otherOptionHandler}
+                        pattern="^[A-Za-z][A-Za-z\s]*$"
+                        title="Enter only alphabet"
+                        maxLength={64}
+                        required
+                      />
+                    </div>
+                  ) : (
+                    ""
+                  )}
                   {/*----------- marital Status -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="maritalStatus" className="login-input-label ">Marital Status*:</label>
+                    <label
+                      htmlFor="maritalStatus"
+                      className="login-input-label "
+                    >
+                      Marital Status*:
+                    </label>
                     <select
                       id="maritalStatus"
                       name="maritalStatus"
@@ -766,7 +817,9 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- height -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="height" className="login-input-label ">Height*:</label>
+                    <label htmlFor="height" className="login-input-label ">
+                      Height*:
+                    </label>
 
                     <input
                       type="text"
@@ -782,7 +835,9 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- weigth/bodytype -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="weight" className="login-input-label ">Weight/Body Type*:</label>
+                    <label htmlFor="weight" className="login-input-label ">
+                      Weight/Body Type*:
+                    </label>
                     <select
                       id="weight"
                       name="weight"
@@ -803,7 +858,9 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- religion -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="religion" className="login-input-label ">Religion*:</label>
+                    <label htmlFor="religion" className="login-input-label ">
+                      Religion*:
+                    </label>
                     <select
                       id="religion"
                       name="religion"
@@ -821,30 +878,33 @@ const ApplicationForm = ({ refreshData }) => {
                       ))}
                     </select>
                   </div>
-                  {
-                    isOtherMuslim ?
-                      <div className="inputDiv">
-                        <label htmlFor="religion" className="login-input-label ">Other Muslim*:</label>
+                  {isOtherMuslim ? (
+                    <div className="inputDiv">
+                      <label htmlFor="religion" className="login-input-label ">
+                        Other Muslim*:
+                      </label>
 
-                        <input
-                          type="text"
-                          name="religion"
-                          value={formData.religion}
-                          placeholder="Other Muslim"
-                          className="login-input w-full mt-2 custom-input"
-                          onChange={otherOptionHandler}
-                          pattern="^[A-Za-z][A-Za-z\s]*$"
-                          title="Enter only alphabet"
-                          maxLength={64}
-                          required
-                        />
-                      </div>
-
-                      : ""
-                  }
+                      <input
+                        type="text"
+                        name="religion"
+                        value={formData.religion}
+                        placeholder="Other Muslim"
+                        className="login-input w-full mt-2 custom-input"
+                        onChange={otherOptionHandler}
+                        pattern="^[A-Za-z][A-Za-z\s]*$"
+                        title="Enter only alphabet"
+                        maxLength={64}
+                        required
+                      />
+                    </div>
+                  ) : (
+                    ""
+                  )}
                   {/*----------- education -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="education" className="login-input-label ">Education*:</label>
+                    <label htmlFor="education" className="login-input-label ">
+                      Education*:
+                    </label>
                     <select
                       id="education"
                       name="education"
@@ -867,7 +927,9 @@ const ApplicationForm = ({ refreshData }) => {
                   {/*----------- occupation -----------*/}
 
                   <div className="inputDiv">
-                    <label htmlFor="occupation" className="login-input-label ">Profession :</label>
+                    <label htmlFor="occupation" className="login-input-label ">
+                      Profession :
+                    </label>
                     <input
                       type="text"
                       name="occupation"
@@ -878,13 +940,14 @@ const ApplicationForm = ({ refreshData }) => {
                       title="Please enter a valid occuption without leading white space or special characters"
                       maxLength={64}
                       value={formData.occupation}
-
                     />
                   </div>
 
                   {/*----------- income -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="income" className="login-input-label ">Income(in dollar)*:</label>
+                    <label htmlFor="income" className="login-input-label ">
+                      Income(in dollar)*:
+                    </label>
                     <select
                       id="income"
                       name="income"
@@ -905,38 +968,45 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
 
                   {/* ////////////IsHijab//////////// */}
-                  {
-                    isfemale ?
-                      <div className="inputDiv">
-                        <label htmlFor="hijabStatus" className="login-input-label ">Hijab(For Female) :</label>
-                        <select
-                          id="hijabStatus"
-                          name="hijabStatus"
-                          onChange={InputHandler}
-
-                          value={formData.hijabStatus}
-                          className="login-input w-full mt-2 custom-input bg-white capitalize"
-                        >
-                          <option className="text-gray-100 " value="">
-                            Do you wear hijab?
-                          </option>
-                          <option value={true} className="py-2">
-                            Yes
-                          </option>
-                          <option value={false} className="py-2">
-                            No
-                          </option>
-                        </select>
-                      </div>
-                      : ""
-                  }
+                  {isfemale ? (
+                    <div className="inputDiv">
+                      <label
+                        htmlFor="hijabStatus"
+                        className="login-input-label "
+                      >
+                        Hijab(For Female) :
+                      </label>
+                      <select
+                        id="hijabStatus"
+                        name="hijabStatus"
+                        onChange={InputHandler}
+                        value={formData.hijabStatus}
+                        className="login-input w-full mt-2 custom-input bg-white capitalize"
+                      >
+                        <option className="text-gray-100 " value="">
+                          Do you wear hijab?
+                        </option>
+                        <option value={true} className="py-2">
+                          Yes
+                        </option>
+                        <option value={false} className="py-2">
+                          No
+                        </option>
+                      </select>
+                    </div>
+                  ) : (
+                    ""
+                  )}
 
                   {/*----------- hobbies -----------*/}
-                  <div className="flex flex-col items-center gap-1 inputDiv">
-                    <label htmlFor="hobby" className="login-input-label text-left w-full ">Interests/Hobbies :</label>
-                    <div className="flex w-full gap-6 inputDiv">
-
-                      <input
+                  <div className="inputDiv">
+                    <label
+                      htmlFor="hobby"
+                      className="login-input-label"
+                    >
+                      Interests/Hobbies :
+                    </label>
+                      {/* <input
                         type="text"
                         name="hobby"
                         placeholder="Hobbies"
@@ -946,24 +1016,45 @@ const ApplicationForm = ({ refreshData }) => {
                         pattern="^[^\s][A-Za-z0-9\s]*$"
                         title="Please enter a valid hobbies without leading white space or special characters"
                         maxLength={64}
-                      // maxLength={100}
-                      />
-                      <button
+                        // maxLength={100}
+                      /> */}
+                      {/* <button
                         type="button"
                         className="rounded px-1 py-1 text-[18px] cursor-pointer font-bold"
                         onClick={handleAddHobbies}
                       >
                         +
-                      </button>
-                    </div>
-                    <div className="text-[13px] text-left w-full px-2 font-[400]">
+                      </button> */}
+                      <select
+                        name="hobby"
+                        id="hobby"
+                        className="login-input w-full mt-2 custom-input bg-white capitalize"
+                        value={formData.hobbies}
+                        onChange={InputHandler}
+                        // multiple
+                      >
+                        <option className="text-gray-100" value="">Select a Hobby</option>
+                        {hobbiesList.map((hobbyOption, inx) => (
+                          <option
+                            key={inx}
+                            value={hobbyOption} className="py-2" >
+                            {hobbyOption}
+                          </option>
+                        ))}
+                      </select>
+                    {/* <div className="text-[13px] text-left w-full px-2 font-[400]">
                       Note* : Click on add button to add a hobby
-                    </div>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3  flex-col gap-3 justify-between w-full px-2">
+                    </div> */}
+                    {/* {isHobbyErr && (
+                      <div className="py-1 w-full px-4 rounded bg-[#e6c8c8e3] text-[red] text-[12px] font-medium mb-2">
+                        {isHobbyErr}
+                      </div>
+                    )} */}
+                    <div className="grid md:grid-cols-2 flex-col gap-3 justify-between w-full px-2">
                       {formData?.hobbies?.length > 0 &&
                         formData?.hobbies?.map((hob, inx) => (
                           <p className="flex gap-x-2 text-[14px]" key={inx}>
-                            <span className="max-w-[100px] text-ellipsis overflow-hidden flex whitespace-nowrap capitalize">
+                            <span className="max-w-[150px] text-ellipsis overflow-hidden flex whitespace-nowrap capitalize">
                               <b className="mr-2">{inx + 1}.</b> {hob}
                             </span>
                             <span
@@ -979,7 +1070,12 @@ const ApplicationForm = ({ refreshData }) => {
 
                   {/*----------- familyDetails -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="familyDetails" className="login-input-label ">Tell us something about yourself :</label>
+                    <label
+                      htmlFor="familyDetails"
+                      className="login-input-label "
+                    >
+                      Tell us something about yourself :
+                    </label>
                     <textarea
                       type="text"
                       name="familyDetails"
@@ -989,17 +1085,21 @@ const ApplicationForm = ({ refreshData }) => {
                       pattern="^\S.*$"
                       title="Please enter about yourself without leading white space"
                       maxLength={1000}
-                    // required
+                      // required
                     ></textarea>
                   </div>
                   {/*----------- Relocate -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="wantRelocate" className="login-input-label ">Are you willing to relocate? :</label>
+                    <label
+                      htmlFor="wantRelocate"
+                      className="login-input-label "
+                    >
+                      Are you willing to relocate? :
+                    </label>
                     <select
                       id="wantRelocate"
                       name="wantRelocate"
                       onChange={InputHandler}
-
                       value={formData.wantRelocate}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1013,17 +1113,17 @@ const ApplicationForm = ({ refreshData }) => {
                       <option value={false} className="py-2">
                         No
                       </option>
-
                     </select>
                   </div>
                   {/*----------- Have Kids -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="isKid" className="login-input-label ">Do you have kids? :</label>
+                    <label htmlFor="isKid" className="login-input-label ">
+                      Do you have kids? :
+                    </label>
                     <select
                       id="isKid"
                       name="isKid"
                       onChange={InputHandler}
-
                       value={formData.isKid}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1034,10 +1134,16 @@ const ApplicationForm = ({ refreshData }) => {
                       <option value={`No`} className="py-2">
                         No
                       </option>
-                      <option value={`Yes-Living with you full time.`} className="py-2">
+                      <option
+                        value={`Yes-Living with you full time.`}
+                        className="py-2"
+                      >
                         Yes - Living with you full time.
                       </option>
-                      <option value={`Yes-Living with other parent full time.`} className="py-2">
+                      <option
+                        value={`Yes-Living with other parent full time.`}
+                        className="py-2"
+                      >
                         Yes - Living with other parent full time.
                       </option>
                       <option value={`Yes-Coparenting.`} className="py-2">
@@ -1047,7 +1153,9 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/* no of kids */}
                   <div className="inputDiv">
-                    <label htmlFor="NoOfKids" className="login-input-label ">How many kids you have? :</label>
+                    <label htmlFor="NoOfKids" className="login-input-label ">
+                      How many kids you have? :
+                    </label>
                     <input
                       type="number"
                       name="NoOfKids"
@@ -1060,18 +1168,18 @@ const ApplicationForm = ({ refreshData }) => {
                       value={formData.NoOfKids}
                       min="0"
                       max="20"
-
                     />
                   </div>
 
                   {/*----------- Want Kids -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="wantKid" className="login-input-label ">Do you want kids? :</label>
+                    <label htmlFor="wantKid" className="login-input-label ">
+                      Do you want kids? :
+                    </label>
                     <select
                       id="wantKid"
                       name="wantKid"
                       onChange={InputHandler}
-
                       value={formData.wantKid}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1089,12 +1197,13 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- Smoke -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="isSmoke" className="login-input-label ">Do you smoke? :</label>
+                    <label htmlFor="isSmoke" className="login-input-label ">
+                      Do you smoke? :
+                    </label>
                     <select
                       id="isSmoke"
                       name="isSmoke"
                       onChange={InputHandler}
-
                       value={formData.isSmoke}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1112,7 +1221,12 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- Immigration Legal Status -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="immigrationStatus" className="login-input-label ">Immigration Legal Status*:</label>
+                    <label
+                      htmlFor="immigrationStatus"
+                      className="login-input-label "
+                    >
+                      Immigration Legal Status*:
+                    </label>
                     <select
                       id="immigrationStatus"
                       name="immigrationStatus"
@@ -1134,7 +1248,9 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/* /////////////////////////////////////////socialmedia */}
                   <div className="inputDiv">
-                    <label htmlFor="socialMedia" className="login-input-label ">Social Media(Link) :</label>
+                    <label htmlFor="socialMedia" className="login-input-label ">
+                      Social Media(Link) :
+                    </label>
                     <input
                       type="text"
                       name="socialMedia"
@@ -1146,7 +1262,6 @@ const ApplicationForm = ({ refreshData }) => {
                       title="Please enter a valid occuption without leading white space or special characters"
                       maxLength={200}
                       value={formData.socialMedia}
-
                     />
                   </div>
                   {/*----------- photo -----------*/}
@@ -1166,16 +1281,22 @@ const ApplicationForm = ({ refreshData }) => {
                           accept="image/png,image/jpg, image/jpeg , image/*"
                         />
                       </div>
+                      {isImgError && (
+                        <div className="py-1 px-4 rounded mt-2 bg-[#e6c8c8e3] text-[red] text-[12px] font-medium mb-2">
+                          {isImgError}
+                        </div>
+                      )}
                     </div>
                     <div className="">
                       <button
                         className={`focus-visible:outline-none text-[13px] px-4 py-1 rounded
-                                ${imageDisable
-                            ? " bg-[green]"
-                            : imageUpload
-                              ? "bg-[gray]"
-                              : "bg-[#070708bd] text-[white]"
-                          }`}
+                                ${
+                                  imageDisable
+                                    ? " bg-[green]"
+                                    : imageUpload
+                                    ? "bg-[gray]"
+                                    : "bg-[#070708bd] text-[white]"
+                                }`}
                         type="button"
                         onClick={uploadImage}
                         disabled={imageDisable || imageUpload}
@@ -1183,29 +1304,27 @@ const ApplicationForm = ({ refreshData }) => {
                         {imageDisable
                           ? "Uploaded"
                           : imageUpload
-                            ? "Loading.."
-                            : "Upload"}
+                          ? "Loading.."
+                          : "Upload"}
                       </button>
                     </div>
                   </div>
                   {/* <div className=""></div> */}
                 </div>
                 <div className="py-[20px] lg:max-w-[80%]  mx-auto flex flex-col md:grid md:grid-cols-2 gap-3 gap-x-10 items-start justify-center lg:px-0 px-[20px]">
-
                   <h3 style={{ fontSize: "22px" }}>Potential Partner</h3>
                 </div>
 
                 {/* ///////////////////////potential Partner///////////////// */}
                 <div className="py-[20px] lg:max-w-[80%]  mx-auto flex flex-col md:grid md:grid-cols-2 gap-3 gap-x-10 items-start justify-center lg:px-0 px-[20px]">
-
-
                   <div className="inputDiv">
-                    <label htmlFor="partnerAge" className="login-input-label ">Age Range :</label>
+                    <label htmlFor="partnerAge" className="login-input-label ">
+                      Age Range :
+                    </label>
                     <select
                       id="partnerAge"
                       name="partnerAge"
                       onChange={InputHandler}
-
                       value={formData.partnerAge}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1214,7 +1333,7 @@ const ApplicationForm = ({ refreshData }) => {
                       </option>
 
                       {partnerAgeArray?.map((sts, inx) => (
-                        <option value={sts} key={inx} className="py-2">
+                        <option value={sts?.trim()} key={inx} className="py-2">
                           {sts}
                         </option>
                       ))}
@@ -1223,7 +1342,10 @@ const ApplicationForm = ({ refreshData }) => {
 
                   {/* /////////////////gender/////////////// */}
                   <div className="">
-                    <label htmlFor="partnerGender" className="login-input-label ">
+                    <label
+                      htmlFor="partnerGender"
+                      className="login-input-label "
+                    >
                       Gender :
                     </label>
                     <div className="flex md:gap-x-5 gap-x-2  py-3  md:px-4">
@@ -1236,7 +1358,6 @@ const ApplicationForm = ({ refreshData }) => {
                           className="peer hidden"
                           disabled={true}
                           checked={formData.partnerGender === "male"}
-
                         />
                         <label htmlFor="male" className="custom-radio">
                           {" "}
@@ -1275,12 +1396,16 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/* //////marital status ///////// */}
                   <div className="inputDiv">
-                    <label htmlFor="partnerMaritalStatus" className="login-input-label ">Marital Status :</label>
+                    <label
+                      htmlFor="partnerMaritalStatus"
+                      className="login-input-label "
+                    >
+                      Marital Status :
+                    </label>
                     <select
                       id="partnerMaritalStatus"
                       name="partnerMaritalStatus"
                       onChange={InputHandler}
-
                       value={formData.partnerMaritalStatus}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1296,16 +1421,20 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- religion -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="partnerReligion" className="login-input-label ">Religion :</label>
+                    <label
+                      htmlFor="partnerReligion"
+                      className="login-input-label "
+                    >
+                      Religion :
+                    </label>
                     <select
                       id="partnerReligion"
                       name="partnerReligion"
                       onChange={InputHandler}
-
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
                       <option className="text-gray-100 " value="">
-                       Select Religion
+                        Select Religion
                       </option>
                       {religionType?.map((sts, inx) => (
                         <option value={sts} key={inx} className="py-2">
@@ -1315,80 +1444,96 @@ const ApplicationForm = ({ refreshData }) => {
                       <option value="Any">Any</option>
                     </select>
                   </div>
-                  {
-                    isPartnerOtherMuslim ?
-                      <div className="inputDiv">
-                        <label htmlFor="partnerReligion" className="login-input-label ">Other Muslim*:</label>
+                  {isPartnerOtherMuslim ? (
+                    <div className="inputDiv">
+                      <label
+                        htmlFor="partnerReligion"
+                        className="login-input-label "
+                      >
+                        Other Muslim*:
+                      </label>
 
-                        <input
-                          type="text"
-                          name="partnerReligion"
-                          value={formData.partnerReligion}
-                          placeholder="Other Muslim"
-                          className="login-input w-full mt-2 custom-input"
-                          onChange={otherOptionHandler}
-                          pattern="^[A-Za-z][A-Za-z\s]*$"
-                          title="Enter only alphabet"
-                          maxLength={64}
-                          required
-                        />
-                      </div>
-
-                      : ""
-                  }
+                      <input
+                        type="text"
+                        name="partnerReligion"
+                        value={formData.partnerReligion}
+                        placeholder="Other Muslim"
+                        className="login-input w-full mt-2 custom-input"
+                        onChange={otherOptionHandler}
+                        pattern="^[A-Za-z][A-Za-z\s]*$"
+                        title="Enter only alphabet"
+                        maxLength={64}
+                        required
+                      />
+                    </div>
+                  ) : (
+                    ""
+                  )}
                   {/*----------- background -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="partnerBackground" className="login-input-label ">Background:</label>
+                    <label
+                      htmlFor="partnerBackground"
+                      className="login-input-label "
+                    >
+                      Background:
+                    </label>
                     <select
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                       id="partnerBackground"
                       name="partnerBackground"
                       // value={nativeLanguage}
                       onChange={InputHandler}
-
                     >
                       <option value=""> Ethnicity</option>
-                      {
-                        nativeBackOptions.map((items, index) => {
-                          return (
-                            <>
-                              <option key={index} value={items}>{items}</option>
-                            </>
-                          )
-                        })
-                      }
+                      {nativeBackOptions.map((items, index) => {
+                        return (
+                          <>
+                            <option key={index} value={items}>
+                              {items}
+                            </option>
+                          </>
+                        );
+                      })}
                       <option value="Any">Any</option>
                     </select>
                   </div>
-                  {
-                    isPartnerOtherBackground ?
-                      <div className="inputDiv">
-                        <label htmlFor="partnerBackground" className="login-input-label ">Other Ethnicity*:</label>
+                  {isPartnerOtherBackground ? (
+                    <div className="inputDiv">
+                      <label
+                        htmlFor="partnerBackground"
+                        className="login-input-label "
+                      >
+                        Other Ethnicity*:
+                      </label>
 
-                        <input
-                          type="text"
-                          name="partnerBackground"
-                          value={formData.partnerBackground}
-                          placeholder="Other Ethnicity"
-                          className="login-input w-full mt-2 custom-input"
-                          onChange={otherOptionHandler}
-                          pattern="^[A-Za-z][A-Za-z\s]*$"
-                          title="Enter only alphabet"
-                          maxLength={64}
-                          required
-                        />
-                      </div>
-
-                      : ""
-                  }
+                      <input
+                        type="text"
+                        name="partnerBackground"
+                        value={formData.partnerBackground}
+                        placeholder="Other Ethnicity"
+                        className="login-input w-full mt-2 custom-input"
+                        onChange={otherOptionHandler}
+                        pattern="^[A-Za-z][A-Za-z\s]*$"
+                        title="Enter only alphabet"
+                        maxLength={64}
+                        required
+                      />
+                    </div>
+                  ) : (
+                    ""
+                  )}
 
                   <div className="inputDiv">
-                    <label htmlFor="partnerIncome" className="login-input-label ">Income(in dollar) :</label>
+                    <label
+                      htmlFor="partnerIncome"
+                      className="login-input-label "
+                    >
+                      Income(in dollar) :
+                    </label>
                     <select
                       id="partnerIncome"
                       name="partnerIncome"
                       onChange={InputHandler}
-
                       value={formData.partnerIncome}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1457,12 +1602,16 @@ const ApplicationForm = ({ refreshData }) => {
                   </div> */}
                   {/*----------- Relocate -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="partnerRelocate" className="login-input-label ">Willing to relocate :</label>
+                    <label
+                      htmlFor="partnerRelocate"
+                      className="login-input-label "
+                    >
+                      Willing to relocate :
+                    </label>
                     <select
                       id="partnerRelocate"
                       name="partnerRelocate"
                       onChange={InputHandler}
-
                       value={formData.partnerRelocate}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1476,18 +1625,21 @@ const ApplicationForm = ({ refreshData }) => {
                       <option value={false} className="py-2">
                         No
                       </option>
-
                     </select>
                   </div>
 
                   {/*----------- education -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="partnerEducation" className="login-input-label ">Education :</label>
+                    <label
+                      htmlFor="partnerEducation"
+                      className="login-input-label "
+                    >
+                      Education :
+                    </label>
                     <select
                       id="partnerEducation"
                       name="partnerEducation"
                       onChange={InputHandler}
-
                       value={formData.partnerEducation}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1503,7 +1655,12 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- height -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="partnerHeight" className="login-input-label ">Height :</label>
+                    <label
+                      htmlFor="partnerHeight"
+                      className="login-input-label "
+                    >
+                      Height :
+                    </label>
 
                     <input
                       type="text"
@@ -1518,13 +1675,17 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- weigth/bodytype -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="partnerWeight" className="login-input-label ">Weight/Body Type :</label>
+                    <label
+                      htmlFor="partnerWeight"
+                      className="login-input-label "
+                    >
+                      Weight/Body Type :
+                    </label>
                     <select
                       id="partnerWeight"
                       name="partnerWeight"
                       value={formData.partnerWeight}
                       onChange={InputHandler}
-
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
                       <option className="text-gray-100 " value="">
@@ -1542,12 +1703,16 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- Have Kids -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="partnerIsKid" className="login-input-label ">Do they have kids? :</label>
+                    <label
+                      htmlFor="partnerIsKid"
+                      className="login-input-label "
+                    >
+                      Do they have kids? :
+                    </label>
                     <select
                       id="partnerIsKid"
                       name="partnerIsKid"
                       onChange={InputHandler}
-
                       value={formData.partnerIsKid}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1564,18 +1729,21 @@ const ApplicationForm = ({ refreshData }) => {
                       <option value={`Any`} className="py-2">
                         Any.
                       </option>
-
                     </select>
                   </div>
 
                   {/*----------- Want Kids -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="partnerWantKid" className="login-input-label ">Do they want kids? :</label>
+                    <label
+                      htmlFor="partnerWantKid"
+                      className="login-input-label "
+                    >
+                      Do they want kids? :
+                    </label>
                     <select
                       id="partnerWantKid"
                       name="partnerWantKid"
                       onChange={InputHandler}
-
                       value={formData.partnerWantKid}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1596,12 +1764,16 @@ const ApplicationForm = ({ refreshData }) => {
                   </div>
                   {/*----------- Immigration Legal Status -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="partnerImmigrationStatus" className="login-input-label ">Immigration Legal Status :</label>
+                    <label
+                      htmlFor="partnerImmigrationStatus"
+                      className="login-input-label "
+                    >
+                      Immigration Legal Status :
+                    </label>
                     <select
                       id="partnerImmigrationStatus"
                       name="partnerImmigrationStatus"
                       onChange={InputHandler}
-
                       value={formData.partnerImmigrationStatus}
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                     >
@@ -1619,7 +1791,12 @@ const ApplicationForm = ({ refreshData }) => {
 
                   {/* /////////////////////////////language///////////     */}
                   <div className="inputDiv">
-                    <label htmlFor="partnerNativeLanguage" className="login-input-label ">Native Language:</label>
+                    <label
+                      htmlFor="partnerNativeLanguage"
+                      className="login-input-label "
+                    >
+                      Native Language:
+                    </label>
                     <select
                       className="login-input w-full mt-2 custom-input bg-white capitalize"
                       id="partnerNativeLanguage"
@@ -1631,33 +1808,41 @@ const ApplicationForm = ({ refreshData }) => {
                       <option value="English">English</option>
                       <option value="other">Other</option>
                     </select>
-
                   </div>
-                  {
-                    isPartnerOtherLanguage ?
-                      <div className="inputDiv">
-                        <label htmlFor="partnerNativeLanguage" className="login-input-label ">Other Native Language*:</label>
+                  {isPartnerOtherLanguage ? (
+                    <div className="inputDiv">
+                      <label
+                        htmlFor="partnerNativeLanguage"
+                        className="login-input-label "
+                      >
+                        Other Native Language*:
+                      </label>
 
-                        <input
-                          type="text"
-                          name="partnerNativeLanguage"
-                          value={formData.partnerNativeLanguage}
-                          placeholder="Other Native Language"
-                          className="login-input w-full mt-2 custom-input"
-                          onChange={otherOptionHandler}
-                          pattern="^[A-Za-z][A-Za-z\s]*$"
-                          title="Enter only alphabet"
-                          maxLength={100}
-                          required
-                        />
-                      </div>
-
-                      : ""
-                  }
+                      <input
+                        type="text"
+                        name="partnerNativeLanguage"
+                        value={formData.partnerNativeLanguage}
+                        placeholder="Other Native Language"
+                        className="login-input w-full mt-2 custom-input"
+                        onChange={otherOptionHandler}
+                        pattern="^[A-Za-z][A-Za-z\s]*$"
+                        title="Enter only alphabet"
+                        maxLength={100}
+                        required
+                      />
+                    </div>
+                  ) : (
+                    ""
+                  )}
 
                   {/*-----------Spoken language -----------*/}
                   <div className="inputDiv">
-                    <label htmlFor="partnerLanguageSpeak" className="login-input-label ">Language Spoken:</label>
+                    <label
+                      htmlFor="partnerLanguageSpeak"
+                      className="login-input-label "
+                    >
+                      Language Spoken:
+                    </label>
 
                     <input
                       type="text"
@@ -1670,11 +1855,15 @@ const ApplicationForm = ({ refreshData }) => {
                       title="Enter only letters and optional commas, but no white space at the beginning"
                       maxLength={100}
                       value={formData.partnerLanguageSpeak}
-
                     />
                   </div>
                   <div className="inputDiv">
-                    <label htmlFor="partnerDetail" className="login-input-label ">About Your Partner:</label>
+                    <label
+                      htmlFor="partnerDetail"
+                      className="login-input-label "
+                    >
+                      About Your Partner:
+                    </label>
 
                     <textarea
                       id="partnerDetail"
@@ -1689,49 +1878,63 @@ const ApplicationForm = ({ refreshData }) => {
                       value={formData.partnerDetail}
                     ></textarea>
                   </div>
-                  {
-                    !isfemale ?
-                      <div className="inputDiv">
-                        <label htmlFor="hijabStatus" className="login-input-label ">Hijab :</label>
-                        <select
-                          id="partnerHijabStatus"
-                          name="partnerHijabStatus"
-                          onChange={InputHandler}
-
-                          value={formData.partnerHijabStatus}
-                          className="login-input w-full mt-2 custom-input bg-white capitalize"
-                        >
-                          <option className="text-gray-100 " value="">
-                            Do they wear hijab?
-                          </option>
-                          <option value={true} className="py-2">
-                            Yes
-                          </option>
-                          <option value={false} className="py-2">
-                            No
-                          </option>
-                        </select>
-                      </div>
-
-
-                      : ""
-                  }
-
+                  {!isfemale ? (
+                    <div className="inputDiv">
+                      <label
+                        htmlFor="hijabStatus"
+                        className="login-input-label "
+                      >
+                        Hijab :
+                      </label>
+                      <select
+                        id="partnerHijabStatus"
+                        name="partnerHijabStatus"
+                        onChange={InputHandler}
+                        value={formData.partnerHijabStatus}
+                        className="login-input w-full mt-2 custom-input bg-white capitalize"
+                      >
+                        <option className="text-gray-100 " value="">
+                          Do they wear hijab?
+                        </option>
+                        <option value={true} className="py-2">
+                          Yes
+                        </option>
+                        <option value={false} className="py-2">
+                          No
+                        </option>
+                      </select>
+                    </div>
+                  ) : (
+                    ""
+                  )}
                 </div>
-                {/* ////////////////////////////submit//////////// */}
-                <div className="mt-6 text-right">
-                  <button
-                    type="submit"
-                    disabled={isLoading || isSubmited}
-                    className={`w-full max-w-[200px] bg-[#1f2432] font-medium p-2 rounded-lg hover:border hover:bg-[white] hover:border-[gray] hover:text-[black] text-[white] transition-all delay-75 ${isSubmited ? "bg-[gray]" : ""
+                <div className="w-full lg:max-w-[80%]  mx-auto">
+                  {isError && (
+                    <div className="py-2 px-4 rounded bg-[#e6c8c8e3] text-[red] text-[12px] font-medium mb-2">
+                      {isError}
+                    </div>
+                  )}
+                  {isSuccess && (
+                    <div className="py-2 px-4 rounded bg-[#dcf6dcdd] text-[green] text-[12px] font-medium mb-2">
+                      {isSuccess}
+                    </div>
+                  )}
+                  {/* ////////////////////////////submit//////////// */}
+                  <div className="mt-6 text-right">
+                    <button
+                      type="submit"
+                      disabled={isLoading || isSubmited}
+                      className={`w-full max-w-[200px] bg-[#1f2432] font-medium p-2 rounded-lg hover:border hover:bg-[white] hover:border-[gray] hover:text-[black] text-[white] transition-all delay-75 ${
+                        isSubmited ? "bg-[gray]" : ""
                       }`}
-                  >
-                    {isLoading
-                      ? "Loading.."
-                      : isSubmited
+                    >
+                      {isLoading
+                        ? "Loading.."
+                        : isSubmited
                         ? "Submited"
                         : "Submit"}
-                  </button>
+                    </button>
+                  </div>
                 </div>
               </div>
             </form>
