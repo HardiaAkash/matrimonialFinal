@@ -45,6 +45,6 @@ router.route("/counselVideo").post(isAuthJWT,authorizeRoles("Admin","SuperAdmin"
 router.route("/getCounselVideo").get(isAuthJWT, getAllCounsVideo)
 router.route("/isMatched/:id").post(isAuthJWT, authorizeRoles("Admin","SuperAdmin"),changeMatchStatus)
 router.route("/approvedForm").get(isAuthJWT, authorizeRoles("Admin","SuperAdmin"), approvedForm)
-router.route("/getTest/:id").get(findPotentialPartners)
+// router.route("/getTest/:id").get(findPotentialPartners)
 router.route("/getPotentialPartner/:id").get(isAuthJWT,findPotentialPartners)
 module.exports = router;
