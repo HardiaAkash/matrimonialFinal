@@ -26,7 +26,6 @@ import { toast } from "react-toastify";
 import protectedRoute from "@/components/Utils/protectedRoute";
 import { destroyCookie } from "nookies";
 import { useAuth } from "@/components/Utils/AuthContext";
-import AddAdmin from "../AdminPages/AddAdmin";
 import AllAdmin from "../AdminPages/AllAdmin";
 
 const SideMenu = () => {
