@@ -3,13 +3,21 @@ import React, { useState } from "react";
 import Loader from "../WebsiiteLoader/Index";
 import { useAuth } from "@/components/Utils/AuthContext";
 
-const AddVideo = ({ closeModal, isVideoUpload, updateId, getUserUpdate, title, previewData ,refreshData}) => {
+const AddVideo = ({
+  closeModal,
+  isVideoUpload,
+  updateId,
+  getUserUpdate,
+  title,
+  previewData,
+  refreshData,
+}) => {
   // const token = JSON.parse(localStorage.getItem("authToken"));
   // console.log(previewData.video);
   console.log(title);
-  const { userToken } = useAuth()
+  const { userToken } = useAuth();
   const [formData, setFormData] = useState({
-    video:previewData.video,
+    video: previewData.video,
   });
   const [video, setVideo] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -17,24 +25,26 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId, getUserUpdate, title, p
   const [videoUploading, setVideoUploading] = useState(false);
   const [isError, setError] = useState("");
   const [isSuccess, setSuccess] = useState("");
+  const [isUploded, setIsUploded] = useState(false);
 
+  console.log(formData);
   const InputHandler = (e) => {
     const file = e.target.files[0];
     const maxSize = 20 * 1024 * 1024;
     if (file && file.size > maxSize) {
-    setError("Please upload video upto 20mb.");
+      setError("Please upload video upto 20mb.");
       e.target.value = null;
     } else {
       setVideo({ file: e.target.files[0] });
     }
-    setError("")
+    setError("");
   };
 
   const addField = (e) => {
     setVideoDisable(false);
     setVideo("");
   };
-// console.log(formData);
+  // console.log(formData);
   const uploadVideo = async (e) => {
     setVideoUploading(true);
 
@@ -42,7 +52,7 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId, getUserUpdate, title, p
       if (!video) {
         setVideoUploading(false);
         return setError("Please upload a video.");
-        setSuccess("")
+        setSuccess("");
       }
 
       const response = await axios.post("api/auth/uploadImage", video, {
@@ -55,11 +65,12 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId, getUserUpdate, title, p
         // setVideoUrl(response?.data?.url);
         const videoUrl = {
           title,
-          url: response?.data?.url
-        }
+          url: response?.data?.url,
+        };
         setFormData({ ...formData, video: [...formData.video, videoUrl] });
         setVideoDisable(true);
         setVideoUploading(false);
+        setIsUploded(true);
       } else {
         setVideoDisable(false);
         setVideoUploading(false);
@@ -70,7 +81,7 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId, getUserUpdate, title, p
         error?.response?.data || error?.message
       );
       setError(error?.response?.data || "Server error !");
-      setSuccess("")
+      setSuccess("");
       setVideoUploading(false);
     }
   };
@@ -78,42 +89,46 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId, getUserUpdate, title, p
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
+    if (isUploded) {
+      if (formData?.video?.length < 1) {
+        setError("Please upload all video");
+        setSuccess("");
+      } else {
+        setLoading(true);
+        try {
+          const response = await axios.put(
+            `/api/auth/editForm/${updateId}`,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${userToken}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
 
-    if (formData?.video?.length < 1) {
-      setError("Please upload all video");
-      setSuccess("")
-    } else {
-      setLoading(true);
-      try {
-        const response = await axios.put(
-          `/api/auth/editForm/${updateId}`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${userToken}`,
-              "Content-Type": "application/json",
-            },
+          if (response.status === 200) {
+            setSuccess("Video submitted successfully.");
+            setError("");
+            setLoading(false);
+            refreshData();
+            setTimeout(() => {
+              closeModal();
+            }, 1000);
+          } else {
+            setLoading(false);
+            return;
           }
-        );
-
-        if (response.status === 200) {
-          setSuccess("Video submitted successfully.");
-          setError("");
+        } catch (error) {
+          console.error("Error during category:", error);
+          setError(error?.response?.data || "Server error");
+          setSuccess("");
           setLoading(false);
-          refreshData()
-          setTimeout(() => {
-            closeModal();
-          }, 1000);
-        } else {
-          setLoading(false);
-          return
         }
-      } catch (error) {
-        console.error("Error during category:", error);
-        setError(error?.response?.data || "Server error");
-        setSuccess("")
-        setLoading(false);
       }
+    }
+    else{
+      setError("Please upload video.")
     }
   };
 
@@ -129,9 +144,7 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId, getUserUpdate, title, p
           <div className="flex flex-col justify-center px-4 lg:px-8 py-4">
             <div className="py-2 mt-1 flex  items-end gap-x-10 mb-4">
               <div className="w-[50%]">
-                <span className="login-input-label cursor-pointer mb-1">
-                  
-                </span>
+                <span className="login-input-label cursor-pointer mb-1"></span>
                 <div className="flex sm:flex-row flex-col items-center  w-full">
                   <input
                     id="video"
@@ -148,10 +161,11 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId, getUserUpdate, title, p
               <div className="">
                 <button
                   className={`focus-visible:outline-none  text-white text-[13px] px-4 py-1 rounded
-                                        ${videoDisable
-                      ? "bg-[green]"
-                      : "bg-[#070708bd]"
-                    }`}
+                                        ${
+                                          videoDisable
+                                            ? "bg-[green]"
+                                            : "bg-[#070708bd]"
+                                        }`}
                   type="button"
                   onClick={uploadVideo}
                   disabled={videoDisable || videoUploading}
@@ -159,21 +173,21 @@ const AddVideo = ({ closeModal, isVideoUpload, updateId, getUserUpdate, title, p
                   {videoDisable
                     ? "Uploaded"
                     : videoUploading
-                      ? "Loading.."
-                      : "Upload"}{" "}
+                    ? "Loading.."
+                    : "Upload"}{" "}
                 </button>
               </div>
             </div>
             {isError && (
-                    <div className="py-2 px-4 rounded bg-[#e6c8c8e3] text-[red] text-[12px] font-medium mb-2">
-                      {isError}
-                    </div>
-                  )}
-                  {isSuccess && (
-                    <div className="py-2 px-4 rounded bg-[#dcf6dcdd] text-[green] text-[12px] font-medium mb-2">
-                      {isSuccess}
-                    </div>
-                  )}
+              <div className="py-2 px-4 rounded bg-[#e6c8c8e3] text-[red] text-[12px] font-medium mb-2">
+                {isError}
+              </div>
+            )}
+            {isSuccess && (
+              <div className="py-2 px-4 rounded bg-[#dcf6dcdd] text-[green] text-[12px] font-medium mb-2">
+                {isSuccess}
+              </div>
+            )}
             <div className=" flex pt-2 items-center justify-center md:justify-end  md:flex-nowrap gap-y-3 gap-x-3 ">
               <button
                 type="button"
