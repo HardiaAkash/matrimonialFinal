@@ -28,8 +28,8 @@ const MatchFound = ({ previewData }) => {
         }
       );
       if (res.status === 200) {
-        console.log(res.data.message);
-        setMatchCount(res.data.message.length);
+        // console.log(res.data.message);
+        setMatchCount(res?.data?.message?.length);
       } else {
         console.error("Failed to fetch data:", res.status);
       }
