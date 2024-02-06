@@ -23,14 +23,16 @@ const ProfileMatch = () => {
   const [isLoader, setLoader] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
   const [formStatus, setFormStatus] = useState("");
-
   const [dialogMatch, setDialogMatch] = useState(false);
   const [matchId, setMatchId] = useState("");
   const visiblePageCount = 10;
-  const { adminAuthToken } = useAuth()
+  const { adminAuthToken } = useAuth();
   // const token = JSON.parse(localStorage.getItem("token" || ""));
   const [checkedItems, setCheckedItems] = useState({});
-  const [totalPages,setTotalPages]=useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [matchData, setMatchData] = useState([]);
+  const [isViewPopup, setViewPopup] = useState(false);
+  console.log(matchData);
 
   // -------form api--------
 
@@ -51,12 +53,12 @@ const ProfileMatch = () => {
     axios
       .request(options)
       .then((response) => {
-        console.log(response?.data);
+        // console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
           setAllData(response?.data);
-          console.log(response?.data);
-          setTotalPages(response?.data?.pagination?.totalPages)
+          // console.log(response?.data);
+          setTotalPages(response?.data?.pagination?.totalPages);
         } else {
           setLoader(false);
           return;
@@ -67,37 +69,6 @@ const ProfileMatch = () => {
         console.error("Error:", error);
       });
   };
-
-  // ----------search api--------
-
-  //   const searchDataFunc = (search_cate) => {
-  //     setLoader(true);
-
-  //     const options = {
-  //       method: "GET",
-  //       url: `/api/auth/viewForm?search=${search_cate}`,
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     };
-  //     axios
-  //       .request(options)
-  //       .then((response) => {
-  //         console.log(response?.data);
-  //         if (response.status === 200) {
-  //           setLoader(false);
-  //           setAllData(response?.data);
-  //         } else {
-  //           setLoader(false);
-  //           return;
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         setLoader(false);
-  //         console.error("Error:", error);
-  //       });
-  //   };
 
   const handleSearchInput = (e) => {
     e.persist();
@@ -110,7 +81,7 @@ const ProfileMatch = () => {
   const refreshData = () => {
     setIsRefresh(!isRefresh);
     // getAllData(currentPage, searchText, genderText);
-    console.log(isRefresh);
+    // console.log(isRefresh);
   };
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -144,16 +115,39 @@ const ProfileMatch = () => {
           Authorization: `Bearer ${adminAuthToken}`,
         },
       });
-      if(res.statusText==="OK"){
+      if (res.statusText === "OK") {
         setSelectedItem(res?.data);
         setUserId(id);
         setAddPopup(true);
         setLoader(false);
         // console.log(res);
-      }
-      else{
+      } else {
         setLoader(false);
-        return
+        return;
+      }
+    } catch (error) {
+      setLoader(false);
+      console.error(error);
+    }
+  };
+  const handleViewMatches = async (id) => {
+    setLoader(true);
+    try {
+      const res = await axios.get(`/api/auth/getPotentialPartner/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${adminAuthToken}`,
+        },
+      });
+      if (res.statusText === "OK") {
+        setMatchData(res?.data?.message);
+        // setUserId(id);
+        setViewPopup(true);
+        setLoader(false);
+        // console.log(res);
+      } else {
+        setLoader(false);
+        return;
       }
     } catch (error) {
       setLoader(false);
@@ -180,12 +174,12 @@ const ProfileMatch = () => {
       const response = await axios(options);
 
       if (response.status === 200) {
-        console.log(response);
+        // console.log(response);
         setLoader(false);
         refreshData();
         // toast.success("Match successful!");
-        setDialogMatch(false)
-        setMatchId("")
+        setDialogMatch(false);
+        setMatchId("");
         // setCheckedItems((prev) => ({ ...prev, [id]: isMatched }));
         // setMatchId(response?.data)
       } else {
@@ -237,123 +231,138 @@ const ProfileMatch = () => {
                 onChange={genderHandler}
                 value={genderText}
               >
-                <option value="">
-                  All
-                </option>
+                <option value="">All</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 {/* <option value="other">Other</option> */}
               </select>
             </div>
-            {allData?.userForm?.length>0 ? (
-            <table className="w-full min-w-[640px] table-auto mt-[20px] ">
-              <thead>
-                <tr>
-                  <th className="py-3 px-2 text-left bg-[white]">
-                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      First Name
-                    </p>
-                  </th>
-                  <th className="py-3 px-5 text-left bg-[white] ">
-                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      Address
-                    </p>
-                  </th>
-                  <th className="py-3 px-5 text-left bg-[white]">
-                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      Contact No.
-                    </p>
-                  </th>
+            {allData?.userForm?.length > 0 ? (
+              <table className="w-full min-w-[640px] table-auto mt-[20px] ">
+                <thead>
+                  <tr>
+                    <th className="py-3 px-2 text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        First Name
+                      </p>
+                    </th>
+                    <th className="py-3 px-5 text-left bg-[white] ">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        Address
+                      </p>
+                    </th>
+                    <th className="py-3 px-5 text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        Contact No.
+                      </p>
+                    </th>
 
-                  <th className="py-3 px-5 text-left bg-[white]">
-                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      Email
-                    </p>
-                  </th>
+                    <th className="py-3 px-5 text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        Email
+                      </p>
+                    </th>
 
-                  <th className="py-3 px-5 text-left bg-[white]">
-                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      Gender
-                    </p>
-                  </th>
+                    <th className="py-3 px-5 text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        Gender
+                      </p>
+                    </th>
 
-                  <th className="py-3 px- text-left bg-[white]">
-                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      Preview
-                    </p>
-                  </th>
+                    <th className="py-3 px- text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        Preview
+                      </p>
+                    </th>
 
-                  <th className="py-3 px-5 text-left bg-[white]">
-                    <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
-                      Match
-                    </p>
-                  </th>
-                </tr>
-              </thead>
+                    <th className="py-3 px-5 text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        Potential Matches
+                      </p>
+                    </th>
+                    <th className="py-3 px-5 text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        Match
+                      </p>
+                    </th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                {allData?.userForm?.map((items, index) => {
-                  console.log(items);
-                  return (
-                    <tr key={index}>
-                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
-                        {items?.firstname}
-                      </td>
-                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize ">
-                        {items?.address}
-                      </td>
+                <tbody>
+                  {allData?.userForm?.map((items, index) => {
+                    // console.log(items);
+                    return (
+                      <tr key={index}>
+                        <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
+                          {items?.firstname}
+                        </td>
+                        <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize ">
+                          {items?.address}
+                        </td>
 
-                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
-                        {items?.contactNumber}
-                      </td>
-                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
-                        {items?.email}
-                      </td>
-                      <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
-                        {items?.gender}
-                      </td>
-                      <td>
-                        <button
-                          onClick={() => handleOpenPopup(items?._id)}
-                          className="text-[13px] px-2 py-1 rounded-sm border bg-[white]"
-                        >
-                          Preview
-                        </button>
-                      </td>
-
-                      <td className=" py-3 pl-4">
-                        {items.isMatched ==="true" ? (
-                          
-                          <button className=" py-1 px-1  rounded text-[13px]">Matched</button>
-                        ) : (
+                        <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
+                          {items?.contactNumber}
+                        </td>
+                        <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 ">
+                          {items?.email}
+                        </td>
+                        <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
+                          {items?.gender}
+                        </td>
+                        <td >
                           <button
-                            className="border-[green] border  py-1 px-2  rounded text-[13px]"
-                            onClick={() => {
-                              setMatchId(items._id);
-                              setDialogMatch(true);
-                            }}
+                            onClick={() => handleOpenPopup(items?._id)}
+                            className="text-[13px] px-2 py-1 rounded-sm border bg-[white]"
                           >
-                            Match
+                            Preview
                           </button>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>) : (
+                        </td>
+                        <td className=" py-3 pl-4">
+                          <button
+                            onClick={() => handleViewMatches(items?._id)}
+                            className="text-[13px] px-2 py-1 rounded-sm border bg-[white]"
+                          >
+                            View Matches
+                          </button>
+                        </td>
+
+                        <td >
+                          {items?.isMatched === "true" ? (
+                            <button className=" py-1 px-3  rounded text-[13px] border border-[transparent] hover:border-[red] bg-[#f5e8e8] hover:bg-[#f7d8d8] text-[red]" 
+                            onClick={()=>handleMatch(items._id, false)}>
+                              Unmatch
+                            </button>
+                          ) : (
+                            <button
+                              className="text-[green] bg-[#e7ffe7] border border-[transparent] hover:border-[green] py-1 px-4 hover:bg-[#e0fae0]  rounded text-[13px]"
+                              onClick={() => {
+                                setMatchId(items._id);
+                                setDialogMatch(true);
+                              }}
+                            >
+                              Match
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            ) : (
               <div className="py-4 px-4 w-full flex flex-col items-center justify-center border border-[#f3f3f3] bg-white rounded-[20px] mt-[10px]">
-      <p className="text-[18px] font-semibold">No data found</p>
-    </div>
+                <p className="text-[18px] font-semibold">No data found</p>
+              </div>
             )}
           </div>
         </div>
-        {totalPages>1 && (
-        <Pagination
-          currentPage={allData?.pagination?.currentPage}
-          totalPages={allData?.pagination?.totalPages}
-          onPageChange={handlePageChange}
-        />)}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={allData?.pagination?.currentPage}
+            totalPages={allData?.pagination?.totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
       </section>
 
       {/* ------------preview dialog box--------- */}
@@ -371,8 +380,8 @@ const ProfileMatch = () => {
             <div className="fixed inset-0 bg-black bg-opacity-25" />
           </Transition.Child>
 
-          <div className="fixed inset-0 overflow-y-auto" >
-            <div className="flex min-h-full items-center justify-center p-4 text-center" >
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -382,8 +391,8 @@ const ProfileMatch = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className=" w-full max-w-[800px] transform overflow-hidden rounded-2xl bg-white px-5  sm:pl-12 py-4 text-left align-middle shadow-2xl transition-all" >
-                <div className="flex justify-end items-end ">
+                <Dialog.Panel className=" w-full max-w-[800px] transform overflow-hidden rounded-2xl bg-white px-5  sm:pl-12 py-4 text-left align-middle shadow-2xl transition-all">
+                  <div className="flex justify-end items-end ">
                     <button
                       className=" cursor-pointer"
                       onClick={closeAddPopupModel}
@@ -447,10 +456,75 @@ const ProfileMatch = () => {
                     <p>Are you sure you want to match?</p>
                   </Dialog.Title>
                   <div className="mt-3 flex justify-center gap-14">
-                  <button className="px-5 py-1 rounded-lg border border-[green] text-[green]" onClick={()=> handleMatch(matchId, true)}>Yes</button>
-                  <button className="px-5 py-1 rounded-lg border border-[red] text-[red]" onClick={()=>{setMatchId("")
-                  setDialogMatch(false)
-                  }}>No</button>
+                    <button
+                      className="px-5 py-1 rounded-lg border border-[green] text-[green]"
+                      onClick={() => handleMatch(matchId, true)}
+                    >
+                      Yes
+                    </button>
+                    <button
+                      className="px-5 py-1 rounded-lg border border-[red] text-[red]"
+                      onClick={() => {
+                        setMatchId("");
+                        setDialogMatch(false);
+                      }}
+                    >
+                      No
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+
+      {/* ------------view mathc Dialog box--------- */}
+      <Transition appear show={isViewPopup} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => setViewPopup(false)}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/70 bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white px-7  sm:px-12 py-4 text-left align-middle shadow-2xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="flex  pt-[20px] text-left lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"
+                  >
+                    <p>Potential matches list </p>
+                  </Dialog.Title>
+
+                  <div className="py-6">
+                    {matchData?.length > 0 &&
+                      matchData?.map((item,inx) => {
+                        return <div className="flex items-center gap-5 text-[14px] capitalize" key={inx} >
+                          {inx+1}. {item?.firstname} {item?.lastname}
+                          <button  className="cursor-pointer  font-medium underline" onClick={()=>handleOpenPopup(item?.id)} >View profile</button>
+                           </div>;
+                      })}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
