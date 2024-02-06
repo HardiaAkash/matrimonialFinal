@@ -15,9 +15,19 @@ export const AuthProvider = ({ children }) => {
     const [userData, setUserData] = useState(null)
     const [userMail, setUserMail] = useState(null)
     const [userContact, setUserContact] = useState(null)
+    const [adminRole, setAdminRole] = useState(null)
+
+
     const setAuthToken = (newToken) => {
         setAdminAuthToken(newToken);
         setCookie(null, "ad_Auth", JSON.stringify(newToken), {
+            maxAge: 2 * 24 * 60 * 60, // 30 days in seconds
+            path: "/",
+        });
+    };
+    const setRoleOfAdmin = (role) => {
+        setAdminRole(role);
+        setCookie(null, "ad_Role", JSON.stringify(role), {
             maxAge: 2 * 24 * 60 * 60, // 30 days in seconds
             path: "/",
         });
@@ -100,6 +110,17 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const fetchAdRole = async () => {
+        if (typeof window !== "undefined") {
+            const storedRole = parseCookies()?.ad_Role;
+            if (storedRole) {
+                setAdminRole(JSON.parse(storedRole));
+            }
+            setLoading(false);
+        }
+    };
+
+
     useEffect(() => {
         const fetchToken = async () => {
             if (typeof window !== "undefined") {
@@ -113,10 +134,11 @@ export const AuthProvider = ({ children }) => {
 
         fetchToken();
         fetchuserToken()
+        fetchAdRole()
     }, []);
 
     return (
-        <AuthContext.Provider value={{ adminAuthToken,userToken, userData, userMail, userContact,setAuthToken, loading, setUserAuthToken }}>
+        <AuthContext.Provider value={{ adminAuthToken,userToken, userData, userMail, userContact,setAuthToken, loading, setUserAuthToken,setRoleOfAdmin ,adminRole}}>
             {children}
         </AuthContext.Provider>
     );
