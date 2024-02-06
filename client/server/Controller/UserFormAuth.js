@@ -672,6 +672,9 @@ exports.findPotentialPartners = async (req, res) => {
         .status(HttpStatus.NOT_FOUND)
         .json({ message: StatusMessage.NOT_FOUND });
     }
+    if (!currentUser.partnerAge) {
+      currentUser.partnerAge = "10-80"
+    }
 
     const potentialPartners = await UserForm.find({
       _id: { $ne: currentUser._id }, // Exclude the current user
