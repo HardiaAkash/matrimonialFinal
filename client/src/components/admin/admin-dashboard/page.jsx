@@ -3,6 +3,7 @@ import React, { useEffect, useState, Fragment } from "react";
 import axios from "axios";
 
 import HomeIcon from "../../../../public/admin/home.svg";
+import AddIcon from "../../../../public/admin/add.svg";
 import PageIcon from "../../../../public/admin/page.svg";
 import webIcon from "../../../../public/admin/web-site.svg";
 import VideoIcon from "../../../../public/admin/video.svg";
@@ -25,7 +26,8 @@ import { toast } from "react-toastify";
 import protectedRoute from "@/components/Utils/protectedRoute";
 import { destroyCookie } from "nookies";
 import { useAuth } from "@/components/Utils/AuthContext";
-import AddAdmin from "../AddAdmin";
+import AddAdmin from "../AdminPages/AddAdmin";
+import AllAdmin from "../AdminPages/AllAdmin";
 
 const SideMenu = () => {
   const [ComponentId, setComponentId] = useState(1);
@@ -36,6 +38,8 @@ const SideMenu = () => {
   // const token = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("token" || "")) : "";
   const [isLoading, setIsLoading] = useState(false);
   const { adminAuthToken, setRoleOfAdmin, adminRole } = useAuth();
+
+
   const menu = [
     {
       id: 1,
@@ -73,13 +77,18 @@ const SideMenu = () => {
       component: <ProfileDelete />,
       icon: Users,
     },
-    // adminRole == "SuperAdmin" &&
-    // {
-    //   id: 7,
-    //   label: "Add Admin",
-    //   component: <AddAdmin />,
-    // },
+    ...(adminRole == "SuperAdmin"
+    ? [
+        {
+          id: 7,
+          label: "Add Admin",
+          component: <AllAdmin />,
+          icon: AddIcon,
+        },
+      ]
+    : []),
   ];
+
 
   const handleClick = (id) => {
     setComponentId(id);
@@ -105,9 +114,8 @@ const SideMenu = () => {
         console.log(response?.data);
         if (response.status === 200) {
           setIsLoading(false);
-          // localStorage.removeItem("token");
           destroyCookie(null, "ad_Auth", { path: "/" });
-          // localStorage.removeItem("userID");
+          destroyCookie(null, "ad_Role", { path: "/" });
           router.push("/admin");
         } else {
           setIsLoading(false);
@@ -115,15 +123,12 @@ const SideMenu = () => {
           destroyCookie(null, "ad_Auth", { path: "/" });
           destroyCookie(null, "ad_Role", { path: "/" });
           router.push("/admin");
-
-          // localStorage.removeItem("token")
           return;
         }
       })
       .catch((error) => {
         setIsLoading(false);
         router.push("/admin");
-        // localStorage.removeItem("token")
         destroyCookie(null, "ad_Auth", { path: "/" });
         destroyCookie(null, "ad_Role", { path: "/" });
         console.error("Error:", error);
@@ -131,8 +136,6 @@ const SideMenu = () => {
   };
 
   useEffect(() => {
-    // const storedToken = localStorage.getItem("token" || "");
-
     if (adminAuthToken) {
       verify();
     } else {
