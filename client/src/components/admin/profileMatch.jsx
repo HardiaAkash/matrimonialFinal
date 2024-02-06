@@ -201,6 +201,11 @@ const ProfileMatch = () => {
     await handleMatch(id, newValue);
   };
 
+  const closeViewPopup = () => {
+    setViewPopup(false);
+  };
+
+
   return (
     <>
       {isLoader && <Loader />}
@@ -309,7 +314,7 @@ const ProfileMatch = () => {
                         <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
                           {items?.gender}
                         </td>
-                        <td >
+                        <td>
                           <button
                             onClick={() => handleOpenPopup(items?._id)}
                             className="text-[13px] px-2 py-1 rounded-sm border bg-[white]"
@@ -326,10 +331,12 @@ const ProfileMatch = () => {
                           </button>
                         </td>
 
-                        <td >
+                        <td>
                           {items?.isMatched === "true" ? (
-                            <button className=" py-1 px-3  rounded text-[13px] border border-[transparent] hover:border-[red] bg-[#f5e8e8] hover:bg-[#f7d8d8] text-[red]" 
-                            onClick={()=>handleMatch(items._id, false)}>
+                            <button
+                              className=" py-1 px-3  rounded text-[13px] border border-[transparent] hover:border-[red] bg-[#f5e8e8] hover:bg-[#f7d8d8] text-[red]"
+                              onClick={() => handleMatch(items._id, false)}
+                            >
                               Unmatch
                             </button>
                           ) : (
@@ -481,11 +488,7 @@ const ProfileMatch = () => {
 
       {/* ------------view mathc Dialog box--------- */}
       <Transition appear show={isViewPopup} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-10"
-          onClose={() => setViewPopup(false)}
-        >
+        <Dialog as="div" className="relative z-10" onClose={() => {}}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -509,22 +512,103 @@ const ProfileMatch = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className=" w-full max-w-[500px] transform overflow-hidden rounded-2xl bg-white px-7  sm:px-12 py-4 text-left align-middle shadow-2xl transition-all">
+                <Dialog.Panel className=" w-full max-w-[700px] overflow-y-scroll transform overflow-hidden rounded-2xl bg-white px-7  sm:px-12 py-4 text-left align-middle shadow-2xl transition-all">
+                <div className="flex justify-end items-end ">
+                    <button
+                      className=" cursor-pointer"
+                      onClick={closeViewPopup}
+                    >
+                      <CloseIcon />
+                    </button>
+                  </div>
                   <Dialog.Title
                     as="h3"
-                    className="flex  pt-[20px] text-left lg:text-[20px] text-[16px] font-semibold leading-6 text-gray-900"
+                    className="flex  text-left lg:text-[24px] text-[16px] font-semibold leading-6 text-gray-900"
                   >
                     <p>Potential matches list </p>
                   </Dialog.Title>
 
                   <div className="py-6">
-                    {matchData?.length > 0 &&
-                      matchData?.map((item,inx) => {
-                        return <div className="flex items-center gap-5 text-[14px] capitalize" key={inx} >
-                          {inx+1}. {item?.firstname} {item?.lastname}
-                          <button  className="cursor-pointer  font-medium underline" onClick={()=>handleOpenPopup(item?.id)} >View profile</button>
-                           </div>;
-                      })}
+
+                  {matchData?.length > 0 ? (
+              <table className="w-full min-w-[640px] table-auto mt-[20px] ">
+                <thead>
+                  <tr>
+                  <th className="py-3 px-2 text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                       S. No
+                      </p>
+                    </th>
+
+                    <th className="py-3 px-2 text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        First Name
+                      </p>
+                    </th>
+                    <th className="py-3 px-5 text-left bg-[white] ">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        Last Name
+                      </p>
+                    </th>
+                    <th className="py-3 px-5 text-left bg-[white]">
+                      <p className="block text-[12px] md:text-[14px] font-medium  text-[#72727b]">
+                        Action
+                      </p>
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {matchData?.map((items, index) => {
+                    // console.log(items);
+                    return (
+                      <tr key={index}>
+                        <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
+                        {index + 1}
+                        </td>
+                        <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize">
+                          {items?.firstname}
+                        </td>
+                        <td className="text-[12px] md:text-[14px] font-[400] py-3 px-5 capitalize ">
+                          {items?.lastname}
+                        </td>
+
+                        <td>
+                        <button
+                              className="cursor-pointer  font-medium underline"
+                              onClick={() => handleOpenPopup(items?.id)}
+                            >
+                              View profile
+                            </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            ) : (
+              <div className="py-4 px-4 w-full flex flex-col items-center justify-center border border-[#f3f3f3] bg-white rounded-[20px] mt-[10px]">
+                <p className="text-[18px] font-semibold">No data found</p>
+              </div>
+            )}
+
+                    {/* {matchData?.length > 0 &&
+                      matchData?.map((item, inx) => {
+                        return (
+                          <div
+                            className="flex items-center gap-5 text-[14px] capitalize"
+                            key={inx}
+                          >
+                            {inx + 1}. {item?.firstname} {item?.lastname}
+                            <button
+                              className="cursor-pointer  font-medium underline"
+                              onClick={() => handleOpenPopup(item?.id)}
+                            >
+                              View profile
+                            </button>
+                          </div>
+                        );
+                      })} */}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

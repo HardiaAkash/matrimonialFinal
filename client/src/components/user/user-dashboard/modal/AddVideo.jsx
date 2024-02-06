@@ -121,14 +121,19 @@ const AddVideo = ({
           }
         } catch (error) {
           console.error("Error during category:", error);
-          setError(error?.response?.data || "Server error");
-          setSuccess("");
-          setLoading(false);
+          if (error?.response?.status === 413) {
+            setError("Server error");
+            setSuccess("");
+            setLoading(false);
+          } else {
+            setError(error?.response?.data || "Server error");
+            setSuccess("");
+            setLoading(false);
+          }
         }
       }
-    }
-    else{
-      setError("Please upload video.")
+    } else {
+      setError("Please upload video.");
     }
   };
 
