@@ -163,10 +163,12 @@ const ApplicationForm = ({ refreshData }) => {
       setPhotograph({ file: e.target.files[0] });
       setImgError("");
     } else if (e.target.name === "hobby") {
-      const selectedOptions = Array.from(e.target.selectedOptions, (option) => option.value);
+      // const selectedOptions = Array.from(e.target.selectedOptions, (option) => option.value);
+      const selectedOption = [...formData.hobbies, e.target.value]
+      console.log(selectedOption)
       setFormData({
         ...formData,
-        hobbies: selectedOptions,
+        hobbies: selectedOption,
       });
       setHobbyErr("");
     } else if (e.target.name === "dateOfBirth") {
@@ -1029,7 +1031,7 @@ const ApplicationForm = ({ refreshData }) => {
                         name="hobby"
                         id="hobby"
                         className="login-input w-full mt-2 custom-input bg-white capitalize"
-                        value={formData.hobbies}
+                        value=""
                         onChange={InputHandler}
                         // multiple
                       >
@@ -1050,7 +1052,7 @@ const ApplicationForm = ({ refreshData }) => {
                         {isHobbyErr}
                       </div>
                     )} */}
-                    <div className="grid md:grid-cols-2 flex-col gap-3 justify-between w-full px-2">
+                    <div className="grid md:grid-cols-2 flex-col gap-3 justify-between w-full px-2 py-2">
                       {formData?.hobbies?.length > 0 &&
                         formData?.hobbies?.map((hob, inx) => (
                           <p className="flex gap-x-2 text-[14px]" key={inx}>

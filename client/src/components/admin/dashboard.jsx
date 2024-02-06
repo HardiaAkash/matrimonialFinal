@@ -65,6 +65,7 @@ const Dashboard = () => {
           setError("")
           setIsOpenPwd(false)
           destroyCookie(null, "ad_Auth", { path: "/" });
+          destroyCookie(null, "ad_Role", { path: "/" });
           router.push("/admin");
 
         } else {
