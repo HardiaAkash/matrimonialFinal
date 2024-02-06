@@ -157,7 +157,7 @@ const Dashboard = () => {
                       Change password
                     </button>
                   </Menu.Item>
-                  <Menu.Item>
+                  {/* <Menu.Item>
                     <button
                       onClick={() => setIsOpenAdmin(true)}
                       className="flex gap-x-3 hover:bg-lightBlue-600 hover:underline text-gray-700 rounded  text-sm group transition-colors items-center"
@@ -165,7 +165,7 @@ const Dashboard = () => {
                       <ProfileIcon className="h-4 w-4 mr-2" />
                       Add Admin
                     </button>
-                  </Menu.Item>
+                  </Menu.Item> */}
 
                 </div>
               </Menu.Items>
