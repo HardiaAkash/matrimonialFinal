@@ -155,6 +155,7 @@ const AddVideo = ({
                     id="video"
                     type="file"
                     name="video"
+                    capture
                     className="w-full"
                     onChange={InputHandler}
                     disabled={videoDisable}

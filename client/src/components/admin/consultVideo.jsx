@@ -130,19 +130,25 @@ const ConsultVideo = () => {
   };
 
   const inputHandler = (e) => {
-  const file = e.target.files[0];
-
-  if (file) {
-    const allowedTypes = ['video/mp4', 'video/x-m4v', 'video/*'];
-    if (allowedTypes.includes(file.type)) {
-      setVideo({ file });
-    } else {
-      toast.error("Please choose a video file.");
-      e.target.value = null;
-     
+    const file = e.target.files[0];
+  
+    if (file) {
+      const allowedTypes = ['video/mp4', 'video/x-m4v', 'video/*'];
+      const maxSize = 200 * 1024 * 1024; // 200MB in bytes
+  
+      if (file.size <= maxSize && allowedTypes.includes(file.type)) {
+        setVideo({ file });
+      } else {
+        if (file.size > maxSize) {
+          toast.error("Please choose a file smaller than 200MB.");
+        } else {
+          toast.error("Please choose a video file.");
+        }
+        e.target.value = null;
+      }
     }
-  }
-};
+  };
+  
 
 
 
