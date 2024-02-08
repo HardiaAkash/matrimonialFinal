@@ -164,7 +164,7 @@ const AddVideo = ({
       <div className="">
         <form action="" className="" onSubmit={handleSubmit}>
           <div className="flex flex-col justify-center px-4 lg:px-8 py-4">
-            <div className="py-2 mt-1 flex  items-end gap-x-10 mb-4">
+            <div className="py-2 mt-1 flex sm:flex-row sm:items-end gap-y-5 flex-col items-start gap-x-10 mb-4">
               <div className="w-[50%]">
                 <span className="login-input-label cursor-pointer mb-1"></span>
                 <div className="flex sm:flex-row flex-col items-center  w-full">
@@ -186,7 +186,7 @@ const AddVideo = ({
                       id="video"
                       type="file"
                       name="video"
-                      capture
+                      // capture
                       className="w-full"
                       onChange={InputHandler}
                       disabled={videoDisable}
