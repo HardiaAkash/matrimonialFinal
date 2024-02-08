@@ -28,8 +28,11 @@ const AddVideo = ({
   const [isSuccess, setSuccess] = useState("");
   const [isUploded, setIsUploded] = useState(false);
   const [IsCamera, setIsCamera] = useState(false);
-  const [isRecordingLive, setIsRecordingLive] = useState(false)
+  const [isRecordingLive, setIsRecordingLive] = useState(false);
+  const [recordedURL, setRecordedURL] = useState("");
+  const [isRecordedAvailable, setIsRecordedAvailable] = useState(false);
   // console.log(formData);
+  // console.log(recordedURL);
   const InputHandler = (e) => {
     const file = e.target.files[0];
     const maxSize = 20 * 1024 * 1024;
@@ -42,18 +45,18 @@ const AddVideo = ({
     setError("");
   };
 
-  const addField = (e) => {
-    setVideoDisable(false);
-    setVideo("");
-  };
+  // const addField = (e) => {
+  //   setVideoDisable(false);
+  //   setVideo("");
+  // };
   // console.log(formData);
   const uploadVideo = async (e) => {
     // console.log(video);
     const maxSize = 20 * 1024 * 1024;
     if (video?.size > maxSize) {
       setError("Please upload video upto 20mb.");
-      setVideo("")
-      return
+      setVideo("");
+      return;
     }
     // return
     setVideoUploading(true);
@@ -121,11 +124,13 @@ const AddVideo = ({
             setError("");
             setLoading(false);
             refreshData();
+            setIsCamera(false);
             setTimeout(() => {
               closeModal();
             }, 1000);
           } else {
             setLoading(false);
+            setIsCamera(false);
             return;
           }
         } catch (error) {
@@ -133,16 +138,19 @@ const AddVideo = ({
           if (error?.response?.status === 413) {
             setError("Server error");
             setSuccess("");
+            setIsCamera(false);
             setLoading(false);
           } else {
             setError(error?.response?.data || "Server error");
             setSuccess("");
+            setIsCamera(false);
             setLoading(false);
           }
         }
       }
     } else {
       setError("Please upload video.");
+      setIsCamera(false);
     }
   };
 
@@ -161,11 +169,18 @@ const AddVideo = ({
                 <span className="login-input-label cursor-pointer mb-1"></span>
                 <div className="flex sm:flex-row flex-col items-center  w-full">
                   {IsCamera ? (
-                    <VideoRecorder
-                      setVideo={setVideo}
-                      setIsCamera={setIsCamera}
-                      setIsRecordingLive={setIsRecordingLive}
-                    />
+                    isRecordedAvailable ? (
+                     "Please click on Upload button and then after successful upload click on Add button."
+                    ) : (
+                      <VideoRecorder
+                        setRecordedURL={setRecordedURL}
+                        setIsRecordedAvailable={setIsRecordedAvailable}
+                        setError={setError}
+                        setVideo={setVideo}
+                        setIsCamera={setIsCamera}
+                        setIsRecordingLive={setIsRecordingLive}
+                      />
+                    )
                   ) : (
                     <input
                       id="video"
@@ -201,19 +216,50 @@ const AddVideo = ({
                 </button>
               </div>
               <div>
-                <button
+                {IsCamera ? (
+                  <button
+                    className={`focus-visible:outline-none whitespace-nowrap text-white text-[13px] px-4 py-1 rounded
+                                         bg-[black]
+                                        `}
+                    type="button"
+                    onClick={() => {
+                      setIsCamera(!IsCamera);
+
+                      setError("");
+                    }}
+                  >
+                    Close
+                  </button>
+                ) : (
+                  <button
+                    className={`focus-visible:outline-none whitespace-nowrap text-white text-[13px] px-4 py-1 rounded bg-[#410d0d]
+                                        `}
+                    type="button"
+                    onClick={() => {
+                      setIsCamera(!IsCamera);
+                      setVideo("");
+                      setError("");
+                      setIsRecordedAvailable(false)
+                    }}
+                  >
+                    Open Camera
+                  </button>
+                )}
+                {/* <button
                   className={`focus-visible:outline-none whitespace-nowrap text-white text-[13px] px-4 py-1 rounded
-                                        ${
-                                          IsCamera ? "bg-[#410d0d]" : "bg-[black]"
-                                        }`}
+                                         bg-[black]
+                                        `}
                   type="button"
                   onClick={() => {
+                    
                     setIsCamera(!IsCamera)
+                    
                     setError("");
+                    
                     }}
                 >
-                  {IsCamera ? "Close Camera" : "Open Camera"}
-                </button>
+                  Close Camera
+                </button> */}
               </div>
             </div>
             {isError && (
