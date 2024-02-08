@@ -34,6 +34,7 @@ const AddVideo = ({
   // console.log(formData);
   // console.log(recordedURL);
   const InputHandler = (e) => {
+    setError("");
     const file = e.target.files[0];
     const maxSize = 20 * 1024 * 1024;
     if (file && file.size > maxSize) {
@@ -42,7 +43,6 @@ const AddVideo = ({
     } else {
       setVideo({ file: e.target.files[0] });
     }
-    setError("");
   };
 
   // const addField = (e) => {
@@ -198,7 +198,7 @@ const AddVideo = ({
                       className="w-full"
                       onChange={InputHandler}
                       disabled={videoDisable}
-                      accept="video/mp4,video/x-m4v,video/*"
+                      accept="video/mp4,video/x-m4v,video/*,video/webm"
                     />
                   )}
                 </div>
