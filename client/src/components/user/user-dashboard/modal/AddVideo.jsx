@@ -53,49 +53,57 @@ const AddVideo = ({
   const uploadVideo = async (e) => {
     // console.log(video);
     const maxSize = 20 * 1024 * 1024;
-    if (video?.size > maxSize) {
+    // console.log(video?.file?.size);
+    if (video?.file?.size > maxSize) {
       setError("Please upload video upto 20mb.");
+      setIsRecordedAvailable(false)
+      setIsCamera(false)
       setVideo("");
       return;
     }
-    // return
-    setVideoUploading(true);
-    try {
-      if (!video) {
-        setVideoUploading(false);
-        return setError("Please upload a video.");
+    else{
+      // alert("dsa")
+      // console.log(video);
+      // return
+      setVideoUploading(true);
+      try {
+        if (!video) {
+          setVideoUploading(false);
+          return setError("Please upload a video.");
+          setSuccess("");
+        }
+  
+        const response = await axios.post("api/auth/uploadImage", video, {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        if (response.status === 200) {
+          // setVideoUrl(response?.data?.url);
+          const videoUrl = {
+            title,
+            url: response?.data?.url,
+          };
+          setFormData({ ...formData, video: [...formData.video, videoUrl] });
+          setVideoDisable(true);
+          setVideoUploading(false);
+          setIsUploded(true);
+        } else {
+          setVideoDisable(false);
+          setVideoUploading(false);
+        }
+      } catch (error) {
+        console.error(
+          "Error uploading video:",
+          error?.response?.data || error?.message
+        );
+        setError(error?.response?.data || "Server error !");
         setSuccess("");
-      }
-
-      const response = await axios.post("api/auth/uploadImage", video, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (response.status === 200) {
-        // setVideoUrl(response?.data?.url);
-        const videoUrl = {
-          title,
-          url: response?.data?.url,
-        };
-        setFormData({ ...formData, video: [...formData.video, videoUrl] });
-        setVideoDisable(true);
-        setVideoUploading(false);
-        setIsUploded(true);
-      } else {
-        setVideoDisable(false);
         setVideoUploading(false);
       }
-    } catch (error) {
-      console.error(
-        "Error uploading video:",
-        error?.response?.data || error?.message
-      );
-      setError(error?.response?.data || "Server error !");
-      setSuccess("");
-      setVideoUploading(false);
     }
+    
   };
 
   const handleSubmit = async (e) => {
