@@ -38,7 +38,7 @@ const AllAdmin = () => {
       axios
         .request(options)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           if (response.status === 200 || response.status === 304) {
             setAllData(response?.data);
             setTotalPages(response?.data?.pagination?.totalPages);

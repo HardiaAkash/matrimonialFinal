@@ -32,7 +32,7 @@ const ProfileMatch = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [matchData, setMatchData] = useState([]);
   const [isViewPopup, setViewPopup] = useState(false);
-  console.log(matchData);
+  // console.log(matchData);
 
   // -------form api--------
 

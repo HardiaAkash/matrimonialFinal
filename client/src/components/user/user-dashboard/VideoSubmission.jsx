@@ -58,7 +58,7 @@ const VideoSubmission = ({ formId, refreshData, previewData }) => {
   };
 
   useEffect(() => {
-    console.log(previewData?.video?.length);
+    // console.log(previewData?.video?.length);
     if (previewData?.video?.length >= 7) {
       getUserUpdate(4);
       // setIsVideoUplod(true)

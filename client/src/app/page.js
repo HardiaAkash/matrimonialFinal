@@ -48,7 +48,7 @@ const  Home = () =>{
     setLoading(true)
     try {
       const res = await axios.get(`/api/auth/verifyTokenUser/${userToken}`);
-      console.log("verify", res.data?.data);
+      // console.log("verify", res.data?.data);
       if (res.status === 200) {
       setAuthenticated(true);
       setLoading(false)

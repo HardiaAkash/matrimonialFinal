@@ -110,7 +110,7 @@ const SideMenu = () => {
     axios
       .request(options)
       .then((response) => {
-        console.log(response?.data);
+        // console.log(response?.data);
         if (response.status === 200) {
           setIsLoading(false);
           destroyCookie(null, "ad_Auth", { path: "/" });

@@ -31,7 +31,7 @@ const Login = () => {
             });
             // console.log(response);
             if (response.status === 200) {
-                console.log("response",response?.data?.token);
+                // console.log("response",response?.data?.token);
                 localStorage.setItem("token", JSON.stringify(response?.data?.token));
                 setAuthToken(response?.data?.token)
                 router.push("/admin/admin-dashboard");

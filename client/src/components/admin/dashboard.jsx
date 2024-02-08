@@ -86,7 +86,7 @@ const Dashboard = () => {
   }
   const handleAdminSubmit = async (e) => {
     e.preventDefault()
-    console.log(adminData);
+    // console.log(adminData);
     try {
       await axios.post(
         "/api/auth/addAdmin",

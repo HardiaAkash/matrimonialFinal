@@ -165,7 +165,7 @@ const ApplicationForm = ({ refreshData }) => {
     } else if (e.target.name === "hobby") {
       // const selectedOptions = Array.from(e.target.selectedOptions, (option) => option.value);
       const selectedOption = [...formData.hobbies, e.target.value]
-      console.log(selectedOption)
+      // console.log(selectedOption)
       setFormData({
         ...formData,
         hobbies: selectedOption,
@@ -357,7 +357,7 @@ const ApplicationForm = ({ refreshData }) => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    // console.log(formData);
 
     if (/^\s/.test(formData.familyDetails)) {
       setError("Your details should not start with whitespace.");

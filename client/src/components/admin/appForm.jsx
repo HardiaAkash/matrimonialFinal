@@ -75,7 +75,7 @@ const AppForm = () => {
     axios
       .request(options)
       .then((response) => {
-        console.log(response?.data);
+        // console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
           setAllData(response?.data);
@@ -107,7 +107,7 @@ const AppForm = () => {
   const refreshData = () => {
     setIsRefresh(!isRefresh);
     // getAllData(currentPage, searchText, genderText);
-    console.log(isRefresh);
+    // console.log(isRefresh);
   };
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);

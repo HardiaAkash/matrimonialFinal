@@ -29,7 +29,7 @@ const CounselingVideo = ({refreshData}) => {
     axios
       .request(options)
       .then((response) => {
-        console.log(response?.data);
+        // console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
           setCounselingData(response?.data);

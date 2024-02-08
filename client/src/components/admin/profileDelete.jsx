@@ -43,10 +43,10 @@ const ProfileDelete = () => {
     axios
       .request(options)
       .then((response) => {
-        console.log(response?.data);
+        // console.log(response?.data);
         if (response.status === 200) {
           setLoader(false);
-          console.log("delete", response?.data?.pagination);
+          // console.log("delete", response?.data?.pagination);
           setAllData(response?.data);
           setTotalPages(response?.data?.pagination?.totalPages);
         } else {
@@ -94,7 +94,7 @@ const ProfileDelete = () => {
     axios
       .request(options)
       .then((response) => {
-        console.log(response?.data);
+        // console.log(response?.data);
         if (response.status === 200) {
           setAllData(response?.data);
           //   setLoader(false);
@@ -137,9 +137,9 @@ const ProfileDelete = () => {
   };
 
   //   -------delete api--------
-console.log(allData?.deleteUserRequests);
+// console.log(allData?.deleteUserRequests);
   const handleDelete = (userID) => {
-    console.log(userID);
+    // console.log(userID);
     // ;
     // alert("deleted successfully");
     // setDialogMatch(false);
@@ -157,7 +157,7 @@ console.log(allData?.deleteUserRequests);
     axios
       .request(options)
       .then(function (response) {
-        console.log(response);
+        // console.log(response);
         if (response.status === 200) {
           //   ;
           toast.success("Deleted successfully !");
@@ -234,7 +234,7 @@ console.log(allData?.deleteUserRequests);
 
               <tbody>
                 {Array.isArray(allData?.deleteUserRequests)&& allData?.deleteUserRequests?.map((items, index) => {
-                  console.log(items.userId);
+                  {/* console.log(items.userId); */}
                   return (
                     <>
                       <tr key={index}>

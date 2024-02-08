@@ -33,7 +33,7 @@ const ConsultVideo = () => {
     axios
       .request(options)
       .then((response) => {
-        console.log(response?.data);
+        // console.log(response?.data);
         if (response.status === 200) {
           setIsLoader(false);
           setAllData(response?.data);
@@ -59,7 +59,7 @@ const ConsultVideo = () => {
       toast.error("Choose video Please!");
       return;
     }
-    console.log("videos", video);
+    // console.log("videos", video);
     // return;
     setVideoUploading(true);
     setIsLoader(true);
@@ -72,7 +72,7 @@ const ConsultVideo = () => {
       });
       if (response.status === 200) {
         // setVideoUrl(response?.data?.url);
-        console.log(response?.data?.url);
+        // console.log(response?.data?.url);
         // const videoUrl = response?.data?.url;
         setFormData({ ...formData, video: response?.data?.url });
         // setVideoDisable(true);
@@ -96,9 +96,9 @@ const ConsultVideo = () => {
   };
 
   const getVideoAws = async (e) => {
-    console.log(e.videoA);
+    // console.log(e.videoA);
     // console.log(videoA);
-    console.log("Form Dta", formData);
+    // console.log("Form Dta", formData);
 
     try {
       const response = await axios.post(
@@ -116,7 +116,7 @@ const ConsultVideo = () => {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
+        // console.log(response.data);
         closePopup();
         setVideoUploading(false);
         setIsLoader(false);

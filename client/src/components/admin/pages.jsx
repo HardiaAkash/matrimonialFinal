@@ -96,7 +96,7 @@ const searchDataFunc = (search_cate) => {
   axios
     .request(options)
     .then((response) => {
-      console.log(response?.data);
+      // console.log(response?.data);
       if (response.status === 200) {
         setAllData(response?.data);
         setTotalPages(response?.data?.pagination?.totalPages);

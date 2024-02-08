@@ -34,7 +34,7 @@ const Preview = ({ selectedItem, closeModal, refreshData }) => {
             key={index}
             className="space-y-1 sm:space-y-3 text-[12px] sm:text-[16px]"
           >
-            {console.log(item)}
+            {/* {console.log(item)} */}
             <div className="flex justify-start ">
               <label className="w-[45%] sm:w-[30%] mr-2">First name</label>
               <div className="w-[50%] sm:w-[60%]">{item.firstname}</div>

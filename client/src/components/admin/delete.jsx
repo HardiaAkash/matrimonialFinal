@@ -32,7 +32,7 @@ const Delete = ({ categoryID, closeModal, refreshData }) => {
     axios
       .request(options)
       .then(function (response) {
-        console.log(response);
+        // console.log(response);
         if (response.status === 200) {
           setLoading(false);
           toast.success("Deleted successfully !");

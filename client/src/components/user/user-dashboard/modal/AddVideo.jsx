@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import Loader from "../WebsiiteLoader/Index";
 import { useAuth } from "@/components/Utils/AuthContext";
+import VideoRecorder from "@/components/Utils/VideoRecorder";
 
 const AddVideo = ({
   closeModal,
@@ -14,7 +15,7 @@ const AddVideo = ({
 }) => {
   // const token = JSON.parse(localStorage.getItem("authToken"));
   // console.log(previewData.video);
-  console.log(title);
+  // console.log(title);
   const { userToken } = useAuth();
   const [formData, setFormData] = useState({
     video: previewData.video,
@@ -26,8 +27,9 @@ const AddVideo = ({
   const [isError, setError] = useState("");
   const [isSuccess, setSuccess] = useState("");
   const [isUploded, setIsUploded] = useState(false);
-
-  console.log(formData);
+  const [IsCamera, setIsCamera] = useState(false);
+  const [isRecordingLive, setIsRecordingLive] = useState(false)
+  // console.log(formData);
   const InputHandler = (e) => {
     const file = e.target.files[0];
     const maxSize = 20 * 1024 * 1024;
@@ -46,8 +48,15 @@ const AddVideo = ({
   };
   // console.log(formData);
   const uploadVideo = async (e) => {
+    // console.log(video);
+    const maxSize = 20 * 1024 * 1024;
+    if (video?.size > maxSize) {
+      setError("Please upload video upto 20mb.");
+      setVideo("")
+      return
+    }
+    // return
     setVideoUploading(true);
-
     try {
       if (!video) {
         setVideoUploading(false);
@@ -88,7 +97,7 @@ const AddVideo = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    // console.log(formData);
     if (isUploded) {
       if (formData?.video?.length < 1) {
         setError("Please upload all video");
@@ -151,16 +160,24 @@ const AddVideo = ({
               <div className="w-[50%]">
                 <span className="login-input-label cursor-pointer mb-1"></span>
                 <div className="flex sm:flex-row flex-col items-center  w-full">
-                  <input
-                    id="video"
-                    type="file"
-                    name="video"
-                    capture
-                    className="w-full"
-                    onChange={InputHandler}
-                    disabled={videoDisable}
-                    accept="video/mp4,video/x-m4v,video/*"
-                  />
+                  {IsCamera ? (
+                    <VideoRecorder
+                      setVideo={setVideo}
+                      setIsCamera={setIsCamera}
+                      setIsRecordingLive={setIsRecordingLive}
+                    />
+                  ) : (
+                    <input
+                      id="video"
+                      type="file"
+                      name="video"
+                      capture
+                      className="w-full"
+                      onChange={InputHandler}
+                      disabled={videoDisable}
+                      accept="video/mp4,video/x-m4v,video/*"
+                    />
+                  )}
                 </div>
               </div>
 
@@ -174,13 +191,28 @@ const AddVideo = ({
                                         }`}
                   type="button"
                   onClick={uploadVideo}
-                  disabled={videoDisable || videoUploading}
+                  disabled={videoDisable || videoUploading || isRecordingLive}
                 >
                   {videoDisable
                     ? "Uploaded"
                     : videoUploading
                     ? "Loading.."
                     : "Upload"}{" "}
+                </button>
+              </div>
+              <div>
+                <button
+                  className={`focus-visible:outline-none whitespace-nowrap text-white text-[13px] px-4 py-1 rounded
+                                        ${
+                                          IsCamera ? "bg-[#410d0d]" : "bg-[black]"
+                                        }`}
+                  type="button"
+                  onClick={() => {
+                    setIsCamera(!IsCamera)
+                    setError("");
+                    }}
+                >
+                  {IsCamera ? "Close Camera" : "Open Camera"}
                 </button>
               </div>
             </div>
