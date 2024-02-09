@@ -27,8 +27,13 @@ const PreviewNew = ({ selectedItem, closeModal, refreshData }) => {
       <div className="py-[20px]">
         <div className="flex flex-col lg:flex-row xl:gap-14 gap-8 border-b border-[#313a4654]">
           <div className="min-w-[35%]">
-            <Image src={previewData?.image} width={350} height={350} />
-          </div>
+          {
+            previewData?.image ? 
+            <Image src={previewData?.image} width={350} height={350} alt="No Image"/>
+
+            :"No Image"
+          }
+                      </div>
           <div className=" w-full pb-2">
             <h4 className=" whitespace-nowrap capitalize 2xl:text-[30px] lg:text-[26px]  text-[24px] font-medium">
               {previewData?.firstname} {previewData?.middlename}{" "}
