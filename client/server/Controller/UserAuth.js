@@ -276,23 +276,23 @@ exports.deleteUser = async (req, res) => {
     const deletedReq = await DeleteUser.findOneAndDelete({ userId });
     const deleteForm = await UserForm.findOneAndDelete({ userID: userId });
 
-    if (deleteForm && deleteForm.image) {
-      // Delete images from S3
+    // if (deleteForm && deleteForm.image) {
+    //   // Delete images from S3
 
-      await deleteFileByURL(deleteForm.image);
-    }
+    //   await deleteFileByURL(deleteForm.image);
+    // }
 
-    if (
-      deleteForm &&
-      deleteForm.video &&
-      Array.isArray(deleteForm.video) &&
-      deleteForm.video.length > 0
-    ) {
-      // Delete videos from S3
-      for (const videoUrl of deleteForm.video) {
-        await deleteFileByURL(videoUrl);
-      }
-    }
+    // if (
+    //   deleteForm &&
+    //   deleteForm.video &&
+    //   Array.isArray(deleteForm.video) &&
+    //   deleteForm.video.length > 0
+    // ) {
+    //   // Delete videos from S3
+    //   for (const videoUrl of deleteForm.video) {
+    //     await deleteFileByURL(videoUrl);
+    //   }
+    // }
 
     return res.status(HttpStatus.OK).json(StatusMessage.USER_DELETED);
   } catch (error) {
