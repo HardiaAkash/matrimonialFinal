@@ -15,6 +15,7 @@ const VideoRecorder = ({
   const videoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
+  const [streaming, setStreaming] = useState([]);
 
   const startRecording = async () => {
     try {
@@ -31,9 +32,12 @@ const VideoRecorder = ({
         video: true,
         audio: true,
       });
+      // console.log(stream);
       videoRef.current.srcObject = stream;
-
+      setStreaming(stream);
+      // console.log(stream);
       const mediaRecorder = new MediaRecorder(stream);
+      console.log(mediaRecorder);
       mediaRecorderRef.current = mediaRecorder;
 
       mediaRecorder.ondataavailable = (event) => {
@@ -55,7 +59,7 @@ const VideoRecorder = ({
         document.body.appendChild(a);
         a.click();
         URL.revokeObjectURL(url);
-       
+
         setRecordedURL(blob);
       };
 
@@ -71,12 +75,28 @@ const VideoRecorder = ({
       setIsCamera(false);
     }
   };
+  console.log(streaming);
+  // console.log(videoRef.current);
 
   const stopRecording = () => {
     mediaRecorderRef.current.stop();
+    // Assume stream is the variable that holds the stream object
+    const stream = videoRef.current.srcObject;
+    const tracks = stream.getTracks();
+
+    tracks.forEach((track) => {
+      track.stop();
+    });
+
+    videoRef.current.srcObject = null;
+
     setIsRecording(false);
     setIsRecordedAvailable(true);
     setIsRecordingLive(false);
+    // mediaRecorderRef.current = null
+    // streaming.getTracks().forEach(function(track) {
+    //   track.stop();
+    // });
   };
 
   return (

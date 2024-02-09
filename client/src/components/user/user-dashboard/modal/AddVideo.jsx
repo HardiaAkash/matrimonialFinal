@@ -230,9 +230,10 @@ const AddVideo = ({
                                          bg-[black]
                                         `}
                     type="button"
+                    disabled={isRecordingLive}
                     onClick={() => {
                       setIsCamera(!IsCamera);
-
+                      
                       setError("");
                     }}
                   >
@@ -285,12 +286,13 @@ const AddVideo = ({
                 type="button"
                 className="rounded-[6px] py-1 px-4 max-w-[300px] w-full lg:w-[50%] border border-[gray] bg-white text-black"
                 onClick={hideModal}
+                disabled={isRecordingLive}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || isRecordingLive}
                 className="custom-button rounded-[6px] py-1 px-4 max-w-[300px] w-full lg:w-[50%] border bg-[#1f2432] text-white"
               >
                 {isLoading ? "Loading.." : "Add"}
